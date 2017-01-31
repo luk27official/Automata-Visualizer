@@ -52,7 +52,7 @@ function validateStateTransitions() {
 
     for(let state in states) {
         let transitions = this.getConnectedLinks(states[state], {outbound: true});
-        let symbols = getTransitionSymbols(transitions);
+        let symbols = this.getTransitionSymbols(transitions);
 
         status = checkTransitionFoEachSymbolInAlphabet.call(this, symbols);
         if(!status.valid) {
@@ -92,18 +92,4 @@ function checkSymbolDuplication(symbols) {
     }
 
     return {valid: true};
-}
-
-function getTransitionSymbols(transitions) {
-    let symbols = [];
-
-    for(let transition in transitions) {
-        symbols.push(getTransitionSymbol(transitions[transition]));
-    }
-
-    return symbols;
-}
-
-function getTransitionSymbol(transition) {
-    return transition.attributes.labels[0].attrs.text.text;
 }

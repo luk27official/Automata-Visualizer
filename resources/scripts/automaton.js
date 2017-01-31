@@ -10,7 +10,9 @@ var Automaton = joint.dia.Graph.extend({
     updateStateName: updateStateName,
     updateStateType: updateStateType,
     checkInitialState: checkInitialState,
-    checkTransitionsValidity: checkTransitionsValidity
+    checkTransitionsValidity: checkTransitionsValidity,
+    getTransitionSymbols: getTransitionSymbols,
+    getTransitionSymbol: getTransitionSymbol
 });
 
 function insertState(options) {
@@ -65,4 +67,18 @@ function checkTransitionsValidity(symbols) {
     }
 
     return {valid: true};
+}
+
+function getTransitionSymbols(transitions) {
+    let symbols = [];
+
+    for(let transition in transitions) {
+        symbols.push(this.getTransitionSymbol(transitions[transition]));
+    }
+
+    return symbols;
+}
+
+function getTransitionSymbol(transition) {
+    return transition.attributes.labels[0].attrs.text.text;
 }
