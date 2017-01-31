@@ -2,7 +2,13 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="resources/css/joint.min.css" />
+		<link href="resources/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="resources/css/flat-ui.min.css" rel="stylesheet">
+		<link rel="shortcut icon" href="resources/img/favicon.ico">
+
 		<script src="resources/scripts/libs/jquery.js"></script>
+		<script src="resources/scripts/libs/vendor/video.js"></script>
+    	<script src="resources/scripts/libs/flat-ui.min.js"></script>
 		<script src="resources/scripts/libs/lodash.js"></script>
 		<script src="resources/scripts/libs/backbone.js"></script>
 		<script src="resources/scripts/libs/joint.min.js"></script>
@@ -14,6 +20,20 @@
 		<title>Deterministic Finite Automaton</title>
 	</head>
 	<body>
+		<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+					<span class="sr-only">Toggle navigation</span>
+				</button>
+				<a class="navbar-brand" href="#">Automata Visualizer</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse-01">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#fakelink">DFA</a></li>
+					<li><a href="#fakelink">NFA</a></li>
+				</ul>
+			</div>
+		</nav>
 		<div class="toolbar">
 			<input id="insert" type="button" value="insert State" onclick="toolbarAction = 'insert'">
 			<input id="remove" type="button" value="remove state" onclick="toolbarAction = 'remove'">
@@ -27,7 +47,7 @@
 		</div>
 		<div id="paper"></div>
         <script>
-            var automaton = new DFA();
+            var automaton = new NFA();
             console.log(automaton);
         </script>
 		<script src="resources/scripts/sketch.js"></script>

@@ -57,7 +57,7 @@ function removeFinalState(id) {
 }
 
 function checkInitialState() {
-    if(!this.initialState) return {valid: false, msg: 'No initial state has been set.'};
+    if(!this.initialState || !this.initialState.initial) return {valid: false, msg: 'No initial state has been set.'};
     return {valid: true, msg: 'Valid'};
 }
 
