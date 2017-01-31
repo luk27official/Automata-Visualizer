@@ -29,14 +29,7 @@ function removeState(state) {
 }
 
 function updateStateName(state, name) {
-    // let states = this.getElements();
-    // for(let state in states) {
-    //     if(states[state].id === state.id) continue;
-    //     if(states[state].getName() === name) return 0;
-    // }
-
     state.setName(name);
-    //return 1;
 }
 
 function updateStateType(state, type) {
