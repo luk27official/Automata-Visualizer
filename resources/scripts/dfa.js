@@ -35,8 +35,7 @@ function runValidations(word) {
     status = validateStateTransitions.call(this);
     if(!status.valid) return status;
 
-    if(!this.initialState) return {valid: false, msg: 'No initial state has been set.'};
-    return {valid: true, msg: 'Valid'};
+    return this.checkInitialState();
 }
 
 function validateWord(word) {
@@ -67,7 +66,7 @@ function validateStateTransitions() {
             return status;
         }
 
-        status = checkTransitionsValidity.call(this, symbols);
+        status = this.checkTransitionsValidity(symbols);
         if(!status.valid) {
             status.msg = 'The state ' + states[state].getName() + ' has a transition with the symbol ' + status.msg + ' which is not supported by the alphabet.';
             return status;
@@ -90,14 +89,6 @@ function checkSymbolDuplication(symbols) {
         for(let x = i + 1; x < symbols.length; x++) {
             if(symbols[i] === symbols[x]) return {valid: false, msg: symbols[i]};
         }
-    }
-
-    return {valid: true};
-}
-
-function checkTransitionsValidity(symbols) {
-    for(let symbol in symbols) {
-        if(!this.alphabet.includes(symbols[symbol])) return {valid: false, msg: symbols[symbol]};
     }
 
     return {valid: true};

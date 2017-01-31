@@ -8,7 +8,9 @@ var Automaton = joint.dia.Graph.extend({
     insertState: insertState,
     removeState: removeState,
     updateStateName: updateStateName,
-    updateStateType: updateStateType
+    updateStateType: updateStateType,
+    checkInitialState: checkInitialState,
+    checkTransitionsValidity: checkTransitionsValidity
 });
 
 function insertState(options) {
@@ -50,4 +52,17 @@ function removeFinalState(id) {
     for(let i = this.finalStates.length - 1; i >= 0; i--) {
         if(this.finalStates[i].id === id) this.finalStates.splice(i, 1);
     }
+}
+
+function checkInitialState() {
+    if(!this.initialState) return {valid: false, msg: 'No initial state has been set.'};
+    return {valid: true, msg: 'Valid'};
+}
+
+function checkTransitionsValidity(symbols) {
+    for(let symbol in symbols) {
+        if(!this.alphabet.includes(symbols[symbol])) return {valid: false, msg: symbols[symbol]};
+    }
+
+    return {valid: true};
 }
