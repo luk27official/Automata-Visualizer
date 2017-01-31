@@ -1,23 +1,29 @@
 
 var DFA = Automaton.extend({
-    run: run
+    run: run,
+    _runValidations: _runValidations,
+    _processWord: _processWord,
+    _validateWord: _validateWord,
+    _validateStateTransitions: _validateStateTransitions,
+    _checkTransitionForEachSymbolInAlphabet: _checkTransitionForEachSymbolInAlphabet,
+    _checkSymbolDuplication: _checkSymbolDuplication
 });
 
 function run(word) {
-    let status = runValidations.call(this, word);
+    let status = this._runValidations(word);
     if(!status.valid) return status;
 
-    return processWord.call(this, word);
+    return this._processWord(word);
 }
 
-function processWord(word) {
+function _processWord(word) {
     this.currentState = this.initialState;
     let transitions;
 
     for(symbol in word) {
         transitions = this.getConnectedLinks(this.currentState, {outbound: true});
         for(transition in transitions) {
-            if(getTransitionSymbol(transitions[transition]) === word[symbol]) {
+            if(this.getTransitionSymbol(transitions[transition]) === word[symbol]) {
                 this.currentState = transitions[transition].getTargetElement();
                 break;
             }
@@ -28,17 +34,17 @@ function processWord(word) {
     return {valid: false, msg: 'The inserted word is not accepted.'};
 }
 
-function runValidations(word) {
-    let status = validateWord.call(this, word);
+function _runValidations(word) {
+    let status = this._validateWord(word);
     if(!status.valid) return status;
 
-    status = validateStateTransitions.call(this);
+    status = this._validateStateTransitions();
     if(!status.valid) return status;
 
     return this.checkInitialState();
 }
 
-function validateWord(word) {
+function _validateWord(word) {
     for(let symbol in word) {
         if(!this.alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
     }
@@ -46,7 +52,7 @@ function validateWord(word) {
     return {valid: true};
 }
 
-function validateStateTransitions() {
+function _validateStateTransitions() {
     let states = this.getElements();
     let status;
 
@@ -54,13 +60,13 @@ function validateStateTransitions() {
         let transitions = this.getConnectedLinks(states[state], {outbound: true});
         let symbols = this.getTransitionSymbols(transitions);
 
-        status = checkTransitionFoEachSymbolInAlphabet.call(this, symbols);
+        status = this._checkTransitionForEachSymbolInAlphabet(symbols);
         if(!status.valid) {
             status.msg = 'The state ' + states[state].getName() + ' lacks a transition for the symbol ' + status.msg;
             return status;
         }
 
-        status = checkSymbolDuplication(symbols);
+        status = this._checkSymbolDuplication(symbols);
         if(!status.valid) {
             status.msg = 'The state ' + states[state].getName() + ' has more than one transition for the symbol ' + status.msg;
             return status;
@@ -76,7 +82,7 @@ function validateStateTransitions() {
     return {valid: true};
 }
 
-function checkTransitionFoEachSymbolInAlphabet(symbols) {
+function _checkTransitionForEachSymbolInAlphabet(symbols) {
     for(let symbol in this.alphabet) {
         if(!symbols.includes(this.alphabet[symbol])) return {valid: false, msg: this.alphabet[symbol]};
     }
@@ -84,7 +90,7 @@ function checkTransitionFoEachSymbolInAlphabet(symbols) {
     return {valid: true};
 }
 
-function checkSymbolDuplication(symbols) {
+function _checkSymbolDuplication(symbols) {
     for(let i = 0; i < symbols.length - 1; i++) {
         for(let x = i + 1; x < symbols.length; x++) {
             if(symbols[i] === symbols[x]) return {valid: false, msg: symbols[i]};
