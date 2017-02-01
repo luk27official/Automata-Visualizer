@@ -1,9 +1,57 @@
 <!DOCTYPE html>
 <html>
-	<head>		
+	<head>
+		<link rel="stylesheet" href="resources/css/joint.min.css" />
+		<link href="resources/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="resources/css/flat-ui.min.css" rel="stylesheet">
+		<link rel="shortcut icon" href="resources/img/favicon.ico">
+
+		<script src="resources/scripts/libs/jquery.js"></script>
+		<script src="resources/scripts/libs/vendor/video.js"></script>
+    	<script src="resources/scripts/libs/flat-ui.min.js"></script>
+		<script src="resources/scripts/libs/lodash.js"></script>
+		<script src="resources/scripts/libs/backbone.js"></script>
+		<script src="resources/scripts/libs/joint.min.js"></script>
+		<script src="resources/scripts/libs/joint.shapes.fsa.js"></script>
+		<script src="resources/scripts/state.js"></script>
+		<script src="resources/scripts/automaton.js"></script>
+		<script src="resources/scripts/dfa.js"></script>
+		<script src="resources/scripts/nfa.js"></script>
+		<script src="resources/scripts/events.js"></script>
+		<title>Automata Visualizer</title>
 	</head>
 	<body>
-		<a href="dfa.html">DFA</a>
-		<script>console.log(automaton);</script>
+		<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+					<span class="sr-only">Toggle navigation</span>
+				</button>
+				<a class="navbar-brand" href="#">Automata Visualizer</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-collapse-01">
+				<ul class="nav navbar-nav">
+					<li class="active" id="DFA" onclick="changeAutomaton(this)"><a>DFA</a></li>
+					<li id="NFA" onclick="changeAutomaton(this)"><a>NFA</a></li>
+				</ul>
+			</div>
+		</nav>
+		<div class="toolbar">
+			<input id="insert" type="button" value="insert State" onclick="toolbarAction = 'insert'">
+			<input id="remove" type="button" value="remove state" onclick="toolbarAction = 'remove'">
+			<input id="select" type="button" value="select" onclick="toolbarAction = 'select'">
+			<input type="button" id="evaluate" value="Evaluate" onclick="evaluateWord()">
+			<button class="btn btn-default btn-wide btn-success" onclick="saveAutomaton()">Save</button>
+			<div id="toolbar">
+				<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)">Initial
+				<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)">Final
+				<input id="set-name" type="button" value="set name">
+			</div>
+		</div>
+		<div id="paper"></div>
+        <script>
+            var automaton = new DFA();
+            console.log(automaton);
+        </script>
+		<script src="resources/scripts/sketch.js"></script>
 	</body>
 </html>

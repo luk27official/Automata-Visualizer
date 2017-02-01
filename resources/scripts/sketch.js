@@ -23,50 +23,9 @@ $('#set-name').click(function() {
 
 registerEventHandlers(paper, automaton);
 
-// paper.on('blank:pointerclick', function(evt, x, y) {
-//     if(selectedCell && !selectedCell.initial) selectedCell.attr({circle: {fill: '#5755a1'}});
-//     selectedCell = null;
-//     $('#toolbar').hide();
-//     if(toolbarAction === 'insert') {
-//         automaton.insertState({
-//             position: { x: x, y: y },
-//             size: { width: 60, height: 60 }
-//         });
-//     }
-// });
-
-// paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-//     if(toolbarAction === 'remove') {
-//         automaton.removeState(cellView.model);
-//         $('#toolbar').hide();
-//         selectedCell = null;
-//     }
-// });
-
-// paper.on('cell:pointerclick', function(cellView, evt, x, y) {
-//     console.log('click');
-//     if(toolbarAction === 'select') {
-//         if(cellView.model.isElement()) {
-//             if(selectedCell && !selectedCell.initial) selectedCell.attr({circle: {fill: '#5755a1'}});
-//             selectedCell = cellView.model;
-//             selectedCell.attr({circle: {fill: 'green'}});
-//             document.getElementById('initialCheckbox').checked = selectedCell.initial;
-//             document.getElementById('finalCheckbox').checked = selectedCell.final;
-//             $('#toolbar').show();
-//         }
-//     }
-// });
-
-// automaton.on('change:source change:target', function(link) {
-//     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
-//         setTransitionSymbol(link);
-//     }
-// });
-
 function setStateName() {
     let name = prompt('New name for state:');
     let result = automaton.updateStateName(selectedCell, name);
-    //if(!result) alert('A state with that name already exists!');
 }
 
 function setTransitionSymbol(link) {
