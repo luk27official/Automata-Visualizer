@@ -36,10 +36,10 @@
 			</div>
 		</nav>
 		<div class="toolbar">
-			<input id="insert" type="button" value="insert State" onclick="toolbarAction = 'insert'">
-			<input id="remove" type="button" value="remove state" onclick="toolbarAction = 'remove'">
-			<input id="select" type="button" value="select" onclick="toolbarAction = 'select'">
-			<input type="button" id="evaluate" value="Evaluate" onclick="evaluateWord()">
+			<button id="insert" class="btn btn-primary" onclick="toolbarAction = 'insert'">Insert state</button>
+			<button id="remove" class="btn btn-danger" onclick="toolbarAction = 'remove'">Remove state</button>
+			<button id="select" class="btn btn-info" onclick="toolbarAction = 'select'">Select state</button>
+			<button id="evaluate" class="btn btn-inverse" onclick="evaluateWord()">Evaluate</button>
 			<button class="btn btn-default btn-wide btn-success" onclick="saveAutomaton()">Save</button>
 			<div id="toolbar">
 				<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)">Initial

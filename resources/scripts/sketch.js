@@ -104,7 +104,8 @@ function setNewAutomaton(name) {
     height: 1000,
     gridSize: 1,
     model: automaton,
-    defaultLink: new joint.shapes.fsa.Arrow
+    defaultLink: new joint.shapes.fsa.Arrow,
+    clickThreshold: 1
     });
 
     registerEventHandlers(paper, automaton);    
