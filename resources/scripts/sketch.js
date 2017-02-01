@@ -73,6 +73,7 @@ function saveAutomaton() {
 }
 
 function changeAutomaton(item) {
+    if(!confirm('Changing the type of Automaton will erase the current graph. Are you sure about this?')) return;
     $('#' + currentAutomaton).removeClass('active');
     currentAutomaton = item.id;
     item.className = 'active';
