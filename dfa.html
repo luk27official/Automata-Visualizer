@@ -29,8 +29,8 @@
 			</div>
 			<div class="collapse navbar-collapse" id="navbar-collapse-01">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#fakelink">DFA</a></li>
-					<li><a href="#fakelink">NFA</a></li>
+					<li  id="DFA" onclick="changeAutomaton(this)"><a>DFA</a></li>
+					<li class="active" id="NFA" onclick="changeAutomaton(this)"><a>NFA</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -39,9 +39,10 @@
 			<input id="remove" type="button" value="remove state" onclick="toolbarAction = 'remove'">
 			<input id="select" type="button" value="select" onclick="toolbarAction = 'select'">
 			<input type="button" id="evaluate" value="Evaluate" onclick="evaluateWord()">
+			<button class="btn btn-default btn-wide btn-success" onclick="saveAutomaton()">Save</button>
 			<div id="toolbar">
-				<input id="checkbox-initial" type="checkbox" onclick="setInitial(this)">Initial
-				<input id="checkbox-final" type="checkbox" onclick="setFinal(this)">Final
+				<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)">Initial
+				<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)">Final
 				<input id="set-name" type="button" value="set name">
 			</div>
 		</div>

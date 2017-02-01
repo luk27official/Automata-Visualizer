@@ -1,5 +1,6 @@
 
 var toolbarAction = 'select';
+var currentAutomaton = 'NFA';
 var selectedCell = null;
 var insertedAlphabet = null;
 
@@ -9,7 +10,8 @@ var paper = new joint.dia.Paper({
     height: 1000,
     gridSize: 1,
     model: automaton,
-    defaultLink: new joint.shapes.fsa.Arrow
+    defaultLink: new joint.shapes.fsa.Arrow,
+    clickThreshold: 1
 });
 
 $('#toolbar').hide();
@@ -40,13 +42,14 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 });
 
 paper.on('cell:pointerclick', function(cellView, evt, x, y) {
+    console.log('click');
     if(toolbarAction === 'select') {
         if(cellView.model.isElement()) {
             if(selectedCell && !selectedCell.initial) selectedCell.attr({circle: {fill: '#5755a1'}});
             selectedCell = cellView.model;
             selectedCell.attr({circle: {fill: 'green'}});
-            document.getElementById('checkbox-initial').checked = selectedCell.initial;
-            document.getElementById('checkbox-final').checked = selectedCell.final;
+            document.getElementById('initialCheckbox').checked = selectedCell.initial;
+            document.getElementById('finalCheckbox').checked = selectedCell.final;
             $('#toolbar').show();
         }
     }
@@ -102,4 +105,45 @@ function evaluateWord() {
     status = automaton.run(word);
     console.log(status.msg);
     alert(status.msg);
+}
+
+function saveAutomaton() {
+    let json = JSON.stringify(automaton.toJson());
+}
+
+function changeAutomaton(item) {
+    // $('#' + currentAutomaton).removeClass('active');
+    // currentAutomaton = item.id;
+    // item.className = 'active';
+    // automaton.clear();
+    // paper.remove();
+    // setNewAutomaton(item.id);
+}
+
+function setNewAutomaton(name) {
+    // switch(name) {
+    //     case 'DFA':
+    //         automaton = new DFA();
+    //         console.log('DFA');
+    //         break;
+        
+    //     case 'NFA':
+    //         automaton = new NFA();
+    //         console.log('NFA');
+    //         break;
+    // }
+    // paper = null;
+    // let div = document.createElement('paper');
+    // document.body.appendChild(div);
+    // console.log(document.getElementById('paper'));
+
+    // paper = new joint.dia.Paper({
+    // el: $('#paper'),
+    // width: 1800,
+    // height: 1000,
+    // gridSize: 1,
+    // model: automaton,
+    // defaultLink: new joint.shapes.fsa.Arrow
+    // });
+    // console.log(document.getElementById('paper'));
 }
