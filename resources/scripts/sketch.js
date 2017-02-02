@@ -1,5 +1,5 @@
 
-var automaton = new Automaton();
+var automaton = new DFA();
 var graph = new joint.dia.Graph;
 var toolbarAction = 'select';
 var currentAutomaton = 'DFA';
@@ -78,7 +78,7 @@ function evaluateWord() {
     else prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
 
     if(!insertedAlphabet) return
-    automaton.alphabet = insertedAlphabet.split(" ");
+    automaton._alphabet = insertedAlphabet.split(" ");
     let word = prompt('Insert the word to evaluate:');
     if(!word) return;
 

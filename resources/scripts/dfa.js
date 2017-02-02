@@ -1,13 +1,18 @@
 
-var DFA = Automaton.extend({
-    run: run,
-    _runValidations: _runValidations,
-    _processWord: _processWord,
-    _validateWord: _validateWord,
-    _validateStateTransitions: _validateStateTransitions,
-    _checkTransitionForEachSymbolInAlphabet: _checkTransitionForEachSymbolInAlphabet,
-    _checkSymbolDuplication: _checkSymbolDuplication
-});
+function DFA() {
+    Automaton.call(this);
+
+    this.run = run;
+    this._runValidations = runValidations;
+    this._processWord = processWord;
+    this._validateWord = validateWord;
+    this._validateStateTransitions = validateStateTransitions;
+    this._checkTransitionForEachSymbolInAlphabet = checkTransitionForEachSymbolInAlphabet;
+    this._checkSymbolDuplication = checkSymbolDuplication;
+}
+
+DFA.prototype = Object.create(Automaton.prototype);
+DFA.prototype.constructor = DFA;
 
 function run(word) {
     let status = this._runValidations(word);
@@ -16,49 +21,49 @@ function run(word) {
     return this._processWord(word);
 }
 
-function _processWord(word) {
-    this.currentState = this.initialState;
+function processWord(word) {
+    this._currentState = this._initialState;
     let transitions;
 
     for(symbol in word) {
-        transitions = this.getConnectedLinks(this.currentState, {outbound: true});
+        transitions = this._currentState._getTransitions();
         for(transition in transitions) {
-            if(this.getTransitionSymbol(transitions[transition]) === word[symbol]) {
-                this.currentState = transitions[transition].getTargetElement();
+            if(transitions[transition].getSymbol() === word[symbol]) {
+                this._currentState = transitions[transition].getTarget();
                 break;
             }
         }
     }
 
-    if(this.currentState.final) return {valid: true, msg: 'Word accepted!'};
+    if(this._currentState.isFinal()) return {valid: true, msg: 'Word accepted!'};
     return {valid: false, msg: 'The inserted word is not accepted.'};
 }
 
-function _runValidations(word) {
+function runValidations(word) {
     let status = this._validateWord(word);
     if(!status.valid) return status;
 
     status = this._validateStateTransitions();
     if(!status.valid) return status;
 
-    return this.checkInitialState();
+    return this._checkInitialState();
 }
 
-function _validateWord(word) {
+function validateWord(word) {
     for(let symbol in word) {
-        if(!this.alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
+        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
     }
 
     return {valid: true};
 }
 
-function _validateStateTransitions() {
-    let states = this.getElements();
+function validateStateTransitions() {
+    let states = this.getStates();
     let status;
 
     for(let state in states) {
-        let transitions = this.getConnectedLinks(states[state], {outbound: true});
-        let symbols = this.getTransitionSymbols(transitions);
+        let transitions = states[state]._getTransitions();
+        let symbols = this._getTransitionSymbols(transitions);
 
         status = this._checkTransitionForEachSymbolInAlphabet(symbols);
         if(!status.valid) {
@@ -72,7 +77,7 @@ function _validateStateTransitions() {
             return status;
         }
 
-        status = this.checkTransitionsValidity(symbols);
+        status = this._checkTransitionsValidity(symbols);
         if(!status.valid) {
             status.msg = 'The state ' + states[state].getName() + ' has a transition with the symbol ' + status.msg + ' which is not supported by the alphabet.';
             return status;
@@ -82,15 +87,15 @@ function _validateStateTransitions() {
     return {valid: true};
 }
 
-function _checkTransitionForEachSymbolInAlphabet(symbols) {
-    for(let symbol in this.alphabet) {
-        if(!symbols.includes(this.alphabet[symbol])) return {valid: false, msg: this.alphabet[symbol]};
+function checkTransitionForEachSymbolInAlphabet(symbols) {
+    for(let symbol in this._alphabet) {
+        if(!symbols.includes(this._alphabet[symbol])) return {valid: false, msg: this._alphabet[symbol]};
     }
 
     return {valid: true};
 }
 
-function _checkSymbolDuplication(symbols) {
+function checkSymbolDuplication(symbols) {
     for(let i = 0; i < symbols.length - 1; i++) {
         for(let x = i + 1; x < symbols.length; x++) {
             if(symbols[i] === symbols[x]) return {valid: false, msg: symbols[i]};

@@ -1,22 +1,24 @@
 
 function Automaton() {
-    this.insertState = insertState;
-    this.removeState = removeState;
-    this.updateStateName = updateStateName;
-    this.updateStateType = updateStateType;
-    this.getCounter = getCounter;
-    this.getState = getState;
-
     this._counter = 0;
     this._alphabet = [];
     this._states = [];
     this._initialState = null;
     this._currentState = null;
-    this._checkInitialState = checkInitialState;
-    this._checkTransitionsValidity = checkTransitionsValidity;
-    this._getTransitionSymbols = getTransitionSymbols;
-    this._getTransitionSymbol = getTransitionSymbol;
 }
+
+Automaton.prototype.insertState = insertState;
+Automaton.prototype.removeState = removeState;
+Automaton.prototype.updateStateName = updateStateName;
+Automaton.prototype.updateStateType = updateStateType;
+Automaton.prototype.getCounter = getCounter;
+Automaton.prototype.getState = getState;
+Automaton.prototype.getStates = getStates;
+
+Automaton.prototype._checkInitialState = checkInitialState;
+Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
+Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
+Automaton.prototype._getTransitionSymbol = getTransitionSymbol;
 
 function insertState() {
     let state = new State('q' + this._counter);
@@ -79,7 +81,7 @@ function getTransitionSymbols(transitions) {
     let symbols = [];
 
     for(let transition in transitions) {
-        symbols.push(this.getTransitionSymbol(transitions[transition]));
+        symbols.push(this._getTransitionSymbol(transitions[transition]));
     }
 
     return symbols;
@@ -96,6 +98,10 @@ function getState(name) {
     }
 
     return null;
+}
+
+function getStates() {
+    return this._states;
 }
 
 function getCounter() {
