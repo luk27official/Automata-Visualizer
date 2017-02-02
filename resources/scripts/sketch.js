@@ -101,7 +101,7 @@ function changeAutomaton(item) {
 
 function resetGraph(item) {
     $('#toolbar').hide();
-    automaton.clear();
+    graph.clear();
     paper.remove();
     toolbarAction = 'select';
     selectedCell = null;
@@ -122,12 +122,12 @@ function setNewAutomaton(name) {
     width: 1800,
     height: 1000,
     gridSize: 1,
-    model: automaton,
+    model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
     clickThreshold: 1
     });
 
-    registerEventHandlers(paper, automaton);    
+    registerEventHandlers(paper, graph);    
 }
 
 function generateNewAutomaton(name) {

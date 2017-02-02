@@ -1,10 +1,15 @@
 
-var NFA = Automaton.extend({
-    run: run,
-    _runValidations: _runValidations,
-    _validateWord: _validateWord,
-    _processWord: _processWord
-});
+function NFA() {
+    Automaton.call(this);
+
+    this.run = run;
+    this._runValidations = runValidations;
+    this._validateWord = validateWord;
+    this._processWord = processWord;
+}
+
+NFA.prototype = Object.create(Automaton.prototype);
+NFA.prototype.constructor = NFA;
 
 function run(word) {
     let status = this._runValidations(word);
@@ -13,17 +18,17 @@ function run(word) {
     return this._processWord(word);
 }
 
-function _processWord(word) {
-    let currentStates = [this.initialState];
+function processWord(word) {
+    let currentStates = [this._initialState];
     let nextStates = [];
     let transitions = [];
 
     for(let symbol in word) {
         for(state in currentStates) {
-            transitions = this.getConnectedLinks(currentStates[state], {outbound: true});
+            transitions = currentStates[state]._getTransitions();
             for(let transition in transitions) {
-                if(this.getTransitionSymbol(transitions[transition]) !== word[symbol]) continue;
-                nextStates.push(transitions[transition].getTargetElement());
+                if(transitions[transition].getSymbol() !== word[symbol]) continue;
+                nextStates.push(transitions[transition].getTarget());
             }
         }
 
@@ -32,22 +37,22 @@ function _processWord(word) {
     }
 
     for(let state in currentStates) {
-        if(currentStates[state].final) return {valid: true, msg: 'Valid!!'};
+        if(currentStates[state].isFinal()) return {valid: true, msg: 'Valid!!'};
     }
 
     return {valid: false, msg: 'Word not accepted!!'};
 }
 
-function _runValidations(word) {
+function runValidations(word) {
     let status = this._validateWord(word);
     if(!status.valid) return status;
 
-    return this.checkInitialState();
+    return this._checkInitialState();
 }
 
-function _validateWord(word) {
+function validateWord(word) {
     for(let symbol in word) {
-        if(!this.alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
+        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
     }
 
     return {valid: true};

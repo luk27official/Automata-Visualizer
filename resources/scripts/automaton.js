@@ -18,7 +18,6 @@ Automaton.prototype.getStates = getStates;
 Automaton.prototype._checkInitialState = checkInitialState;
 Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
 Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
-Automaton.prototype._getTransitionSymbol = getTransitionSymbol;
 
 function insertState() {
     let state = new State('q' + this._counter);
@@ -81,14 +80,10 @@ function getTransitionSymbols(transitions) {
     let symbols = [];
 
     for(let transition in transitions) {
-        symbols.push(this._getTransitionSymbol(transitions[transition]));
+        symbols.push(transitions[transition].getSymbol());
     }
 
     return symbols;
-}
-
-function getTransitionSymbol(transition) {
-    return transition.getSymbol();
 }
 
 function getState(name) {
