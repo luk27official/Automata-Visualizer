@@ -3,7 +3,8 @@ var events = {
     blankPointerClick: blankPointerClick,
     cellPointerDown: cellPointerDown,
     cellPointerClick: cellPointerClick,
-    changeSourceChangeTarget:changeSourceChangeTarget
+    changeSourceChangeTarget:changeSourceChangeTarget,
+    remove: remove
 };
 
 function blankPointerClick(evt, x, y) {
@@ -21,18 +22,18 @@ function blankPointerClick(evt, x, y) {
         }));
 
         automaton.insertState();
-        console.log(automaton._states);
+        console.log(automaton);
     }
 }
 
 function cellPointerDown(cellView, evt, x, y) {
     if(toolbarAction === 'remove') {
-        automaton.removeState(cellView.model.attributes.attrs.text.text);
         cellView.model.remove();
+        automaton.removeState(cellView.model.attributes.attrs.text.text);
         $('#toolbar').hide();
         selectedCell = null;
         selectedState = null;
-        console.log(automaton._states);
+        console.log(automaton);
     }
 }
 
@@ -55,4 +56,8 @@ function changeSourceChangeTarget(link) {
     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
         setTransition(link);
     }
+}
+
+function remove(cell) {
+    if(cell.isLink()) removeLink(cell);
 }

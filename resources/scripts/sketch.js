@@ -32,7 +32,7 @@ function setStateName() {
     selectedCell.attr({
         text: {text: name}
     });
-    console.log(automaton._states);
+    console.log(automaton);
 }
 
 function setTransition(link) {
@@ -53,19 +53,19 @@ function setTransition(link) {
 
     let state = automaton.getState(getElementText(source));
     state.addTransition(automaton.getState(getElementText(target)), name, link.id);
-    console.log(automaton._states);
+    console.log(automaton);
 }
 
 function setInitial(checkbox) {
     console.log('initial - ', checkbox.checked);
     automaton.updateStateType(selectedState, {initial: checkbox.checked}, updateElementAppearance);
-    console.log(automaton._states);
+    console.log(automaton);
 }
 
 function setFinal(checkbox) {
     console.log('final - ', checkbox.checked);
     automaton.updateStateType(selectedState, {final: checkbox.checked}, updateElementAppearance);
-    console.log(automaton._states);
+    console.log(automaton);
 }
 
 function updateElementAppearance(attr) {
@@ -143,13 +143,21 @@ function generateNewAutomaton(name) {
     }
 }
 
+function getElementText(cell) {
+    return cell.attributes.attrs.text.text
+}
+
+function removeLink(link) {
+    let source = graph.getCell(link.attributes.source.id);
+    let state = automaton.getState(getElementText(source));
+    state.removeTransition(link.id);
+    console.log(automaton);
+}
+
 function registerEventHandlers(paper, graph) {
     paper.on('blank:pointerclick', events.blankPointerClick);
     paper.on('cell:pointerdown', events.cellPointerDown);
     paper.on('cell:pointerclick', events.cellPointerClick);
-    graph.on('change:source change:target',events.changeSourceChangeTarget);
-}
-
-function getElementText(cell) {
-    return cell.attributes.attrs.text.text
+    graph.on('change:source change:target', events.changeSourceChangeTarget);
+    graph.on('remove', events.remove);
 }
