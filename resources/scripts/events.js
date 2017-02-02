@@ -7,33 +7,45 @@ var events = {
 };
 
 function blankPointerClick(evt, x, y) {
-    if(selectedCell && !selectedCell.initial) selectedCell.attr({circle: {fill: '#5755a1'}});
+    if(selectedState && !selectedState.isInitial()) selectedCell.attr({circle: {fill: '#5755a1'}});
     selectedCell = null;
+    selectedState = null;
     $('#toolbar').hide();
     if(toolbarAction === 'insert') {
-        automaton.insertState({
+        graph.addCell(new joint.shapes.fsa.State({
             position: { x: x, y: y },
-            size: { width: 60, height: 60 }
-        });
+            size: { width: 60, height: 60 },
+            attrs: {
+                text: {text: 'q' + automaton.getCounter()}
+            }
+        }));
+
+        automaton.insertState();
+        console.log(automaton._states);
     }
 }
 
 function cellPointerDown(cellView, evt, x, y) {
     if(toolbarAction === 'remove') {
-        automaton.removeState(cellView.model);
+        automaton.removeState(cellView.model.attributes.attrs.text.text);
+        cellView.model.remove();
         $('#toolbar').hide();
         selectedCell = null;
+        selectedState = null;
+        console.log(automaton._states);
     }
 }
 
 function cellPointerClick(cellView, evt, x, y) {
     if(toolbarAction === 'select') {
         if(cellView.model.isElement()) {
-            if(selectedCell && !selectedCell.initial) selectedCell.attr({circle: {fill: '#5755a1'}});
+            if(selectedState && !selectedState.isInitial()) selectedCell.attr({circle: {fill: '#5755a1'}});
+
+            selectedState = automaton.getState(cellView.model.attributes.attrs.text.text);
             selectedCell = cellView.model;
             selectedCell.attr({circle: {fill: 'green'}});
-            document.getElementById('initialCheckbox').checked = selectedCell.initial;
-            document.getElementById('finalCheckbox').checked = selectedCell.final;
+            document.getElementById('initialCheckbox').checked = selectedState.isInitial();
+            document.getElementById('finalCheckbox').checked = selectedState.isFinal();
             $('#toolbar').show();
         }
     }
@@ -41,6 +53,6 @@ function cellPointerClick(cellView, evt, x, y) {
 
 function changeSourceChangeTarget(link) {
     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
-        setTransitionSymbol(link);
+        setTransition(link);
     }
 }

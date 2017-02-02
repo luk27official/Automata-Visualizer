@@ -1,69 +1,75 @@
 
-var Automaton = joint.dia.Graph.extend({
-    alphabet: [],
-    finalStates: [],
-    initialState: null,
-    currentState: null,
-    counter: 0,
-    insertState: insertState,
-    removeState: removeState,
-    updateStateName: updateStateName,
-    updateStateType: updateStateType,
-    checkInitialState: checkInitialState,
-    checkTransitionsValidity: checkTransitionsValidity,
-    getTransitionSymbols: getTransitionSymbols,
-    getTransitionSymbol: getTransitionSymbol
-});
+function Automaton() {
+    this.insertState = insertState;
+    this.removeState = removeState;
+    this.updateStateName = updateStateName;
+    this.updateStateType = updateStateType;
+    this.getCounter = getCounter;
+    this.getState = getState;
 
-function insertState(options) {
-    let state = new State(options);
-
-    state.attr({
-        text: {text: 'q' + this.counter}
-    });
-    
-    this.addCell(state);
-    this.counter++;
+    this._counter = 0;
+    this._alphabet = [];
+    this._states = [];
+    this._initialState = null;
+    this._currentState = null;
+    this._checkInitialState = checkInitialState;
+    this._checkTransitionsValidity = checkTransitionsValidity;
+    this._getTransitionSymbols = getTransitionSymbols;
+    this._getTransitionSymbol = getTransitionSymbol;
 }
 
-function removeState(state) {
-    if(state.initial) this.initialState = null;
-    else if(state.final) removeFinalState.call(this, state.id);
-    state.remove();
+function insertState() {
+    let state = new State('q' + this._counter);
+    
+    this._states.push(state);
+    this._counter++;
+}
+
+function removeState(name) {
+    let state = null;
+
+    for(let i = 0; i < this._states.length; i++) {
+        if(this._states[i].getName() === name) {
+            state = this._states[i];
+            this._states.splice(i, 1);
+            break;
+        }
+    }
+
+    if(state.isInitial()) this._initialState = null;
 }
 
 function updateStateName(state, name) {
+    if(this.getState(name)) return {valid: 'false', msg: 'A state with that name already exists!'};
     state.setName(name);
 }
 
-function updateStateType(state, type) {
+function updateStateType(state, type, updateAppearance) {
+    let appearance = {};
+
     if(type.initial) {
-        let states = this.getElements();
-        for(let state in states) {
-            if(states[state].initial) {
-                states[state].setBehavior({initial: false});
+        for(let state in this._states) {
+            if(this._states[state].isInitial()) {
+                appearance = this._states[state].setBehavior({initial: false});
+                updateAppearance(appearance);
                 break;
             }
         }
-        this.initialState = state;
+        this._initialState = state;
     }
-    state.setBehavior(type);
-}
 
-function removeFinalState(id) {
-    for(let i = this.finalStates.length - 1; i >= 0; i--) {
-        if(this.finalStates[i].id === id) this.finalStates.splice(i, 1);
-    }
+    appearance = state.setBehavior(type);
+    updateAppearance(appearance);
 }
 
 function checkInitialState() {
-    if(!this.initialState || !this.initialState.initial) return {valid: false, msg: 'No initial state has been set.'};
+    if(!this._initialState || !this._initialState.isInitial()) return {valid: false, msg: 'No initial state has been set.'};
     return {valid: true, msg: 'Valid'};
 }
 
 function checkTransitionsValidity(symbols) {
     for(let symbol in symbols) {
-        if(!this.alphabet.includes(symbols[symbol])) return {valid: false, msg: symbols[symbol]};
+        if(!this._alphabet.includes(symbols[symbol])) return {valid: false, msg: symbols[symbol]};
     }
 
     return {valid: true};
@@ -80,5 +86,18 @@ function getTransitionSymbols(transitions) {
 }
 
 function getTransitionSymbol(transition) {
-    return transition.attributes.labels[0].attrs.text.text;
+    return transition.getSymbol();
+}
+
+function getState(name) {
+    for(let state in this._states) {
+        if(this._states[state].getName() === name)
+            return this._states[state];
+    }
+
+    return null;
+}
+
+function getCounter() {
+    return this._counter;
 }

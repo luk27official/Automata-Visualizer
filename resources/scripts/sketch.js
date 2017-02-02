@@ -1,7 +1,10 @@
 
+var automaton = new Automaton();
+var graph = new joint.dia.Graph;
 var toolbarAction = 'select';
 var currentAutomaton = 'DFA';
 var selectedCell = null;
+var selectedState = null;
 var insertedAlphabet = null;
 
 var paper = new joint.dia.Paper({
@@ -9,7 +12,7 @@ var paper = new joint.dia.Paper({
     width: 1800,
     height: 1000,
     gridSize: 1,
-    model: automaton,
+    model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
     clickThreshold: 1
 });
@@ -21,14 +24,20 @@ $('#set-name').click(function() {
     setStateName();
 });
 
-registerEventHandlers(paper, automaton);
+registerEventHandlers(paper, graph);
 
 function setStateName() {
     let name = prompt('New name for state:');
-    let result = automaton.updateStateName(selectedCell, name);
+    let result = automaton.updateStateName(selectedState, name);
+    selectedCell.attr({
+        text: {text: name}
+    });
+    console.log(automaton._states);
 }
 
-function setTransitionSymbol(link) {
+function setTransition(link) {
+    let source = link.getSourceElement();
+    let target = link.getTargetElement();
     let name = prompt('Symbol:');
     if(!name) {
         link.remove();
@@ -41,16 +50,26 @@ function setTransitionSymbol(link) {
             text: {fill: 'blue', text: name}
         }
     });
+
+    let state = automaton.getState(getElementText(source));
+    state.addTransition(automaton.getState(getElementText(target)), name, link.id);
+    console.log(automaton._states);
 }
 
 function setInitial(checkbox) {
     console.log('initial - ', checkbox.checked);
-    automaton.updateStateType(selectedCell, {initial: checkbox.checked});
+    automaton.updateStateType(selectedState, {initial: checkbox.checked}, updateElementAppearance);
+    console.log(automaton._states);
 }
 
 function setFinal(checkbox) {
     console.log('final - ', checkbox.checked);
-    automaton.updateStateType(selectedCell, {final: checkbox.checked});
+    automaton.updateStateType(selectedState, {final: checkbox.checked}, updateElementAppearance);
+    console.log(automaton._states);
+}
+
+function updateElementAppearance(attr) {
+    selectedCell.attr(attr);
 }
 
 function evaluateWord() {
@@ -129,4 +148,8 @@ function registerEventHandlers(paper, graph) {
     paper.on('cell:pointerdown', events.cellPointerDown);
     paper.on('cell:pointerclick', events.cellPointerClick);
     graph.on('change:source change:target',events.changeSourceChangeTarget);
+}
+
+function getElementText(cell) {
+    return cell.attributes.attrs.text.text
 }
