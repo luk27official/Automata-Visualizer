@@ -19,8 +19,8 @@ Automaton.prototype._checkInitialState = checkInitialState;
 Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
 Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
 
-function insertState() {
-    let state = new State('q' + this._counter);
+function insertState(id) {
+    let state = new State('q' + this._counter, id);
     
     this._states.push(state);
     this._counter++;
@@ -41,10 +41,7 @@ function removeState(name) {
 }
 
 function updateStateName(state, name) {
-    if(this.getState(name)) return {valid: false, msg: 'A state with that name already exists!'};
-
     state.setName(name);
-    return {valid: true};
 }
 
 function updateStateType(state, type, updateAppearance) {
@@ -88,9 +85,9 @@ function getTransitionSymbols(transitions) {
     return symbols;
 }
 
-function getState(name) {
+function getState(id) {
     for(let state in this._states) {
-        if(this._states[state].getName() === name)
+        if(this._states[state].getId() === id)
             return this._states[state];
     }
 

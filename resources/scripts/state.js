@@ -1,5 +1,7 @@
 
-function State(name) {
+var State = (function() {
+
+function State(name, id) {
     this.getName = getName;
     this.setName = setName;
     this.setBehavior = setBehavior;
@@ -7,12 +9,15 @@ function State(name) {
     this.removeTransition = removeTransition;
     this.isInitial = isInitial;
     this.isFinal = isFinal;
+    this.getId = getId;
 
     this._name = name;
+    this._id = id
     this._transitions = [];
     this._initial = false;
     this._final = false;
     this._getTransitions = getTransitions;
+    
 }
 
 function getName() {
@@ -68,3 +73,11 @@ function isFinal() {
 function getTransitions() {
     return this._transitions;
 }
+
+function getId() {
+    return this._id;
+}
+
+return State;
+
+})();

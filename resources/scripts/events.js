@@ -15,15 +15,16 @@ function blankPointerClick(evt, x, y) {
     selectedState = null;
     $('#toolbar').hide();
     if(toolbarAction === 'insert') {
-        graph.addCell(new joint.shapes.fsa.State({
+        let element = new joint.shapes.fsa.State({
             position: { x: x, y: y },
             size: { width: 60, height: 60 },
             attrs: {
                 text: {text: 'q' + automaton.getCounter()}
             }
-        }));
+        });
+        graph.addCell(element);
 
-        automaton.insertState();
+        automaton.insertState(element.id);
         console.log(automaton);
     }
 }
@@ -44,7 +45,7 @@ function cellPointerClick(cellView, evt, x, y) {
         if(cellView.model.isElement()) {
             if(selectedState && !selectedState.isInitial()) selectedCell.attr({circle: {fill: '#5755a1'}});
 
-            selectedState = automaton.getState(cellView.model.attributes.attrs.text.text);
+            selectedState = automaton.getState(cellView.model.id);
             selectedCell = cellView.model;
             selectedCell.attr({circle: {fill: 'green'}});
             document.getElementById('initialCheckbox').checked = selectedState.isInitial();

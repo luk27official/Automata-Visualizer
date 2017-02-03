@@ -29,10 +29,11 @@ registerEventHandlers(paper, graph);
 
 function setStateName() {
     let name = prompt('New name for state:');
-    if(!automaton.updateStateName(selectedState, name).valid) {
-        alert('A state with that name already exists.');
-        return;
-    }
+    automaton.updateStateName(selectedState, name);
+    // if(!automaton.updateStateName(selectedState, name).valid) {
+    //     alert('A state with that name already exists.');
+    //     return;
+    // }
     selectedCell.attr({
         text: {text: name}
     });
@@ -55,8 +56,8 @@ function setTransition(link) {
         }
     });
 
-    let state = automaton.getState(getElementText(source));
-    state.addTransition(automaton.getState(getElementText(target)), name, link.id);
+    let state = automaton.getState(source.id);
+    state.addTransition(automaton.getState(target.id), name, link.id);
     console.log(automaton);
 }
 
@@ -154,7 +155,7 @@ function getElementText(cell) {
 function removeLink(link) {
     if(!link.get('target').id) return;
     let source = graph.getCell(link.attributes.source.id);
-    let state = automaton.getState(getElementText(source));
+    let state = automaton.getState(source.id);
     state.removeTransition(link.id);
     console.log(automaton);
 }
