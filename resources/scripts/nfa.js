@@ -1,4 +1,6 @@
 
+var NFA = (function () {
+
 function NFA() {
     Automaton.call(this);
 
@@ -57,3 +59,7 @@ function validateWord(word) {
 
     return {valid: true};
 }
+
+return NFA;
+
+})();

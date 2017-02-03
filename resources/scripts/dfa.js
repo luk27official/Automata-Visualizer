@@ -1,4 +1,6 @@
 
+var DFA = (function() {
+
 function DFA() {
     Automaton.call(this);
 
@@ -104,3 +106,7 @@ function checkSymbolDuplication(symbols) {
 
     return {valid: true};
 }
+
+return DFA;
+
+})();
