@@ -41,8 +41,10 @@ function removeState(name) {
 }
 
 function updateStateName(state, name) {
-    if(this.getState(name)) return {valid: 'false', msg: 'A state with that name already exists!'};
+    if(this.getState(name)) return {valid: false, msg: 'A state with that name already exists!'};
+
     state.setName(name);
+    return {valid: true};
 }
 
 function updateStateType(state, type, updateAppearance) {

@@ -29,7 +29,10 @@ registerEventHandlers(paper, graph);
 
 function setStateName() {
     let name = prompt('New name for state:');
-    let result = automaton.updateStateName(selectedState, name);
+    if(!automaton.updateStateName(selectedState, name).valid) {
+        alert('A state with that name already exists.');
+        return;
+    }
     selectedCell.attr({
         text: {text: name}
     });
