@@ -14,7 +14,8 @@ var paper = new joint.dia.Paper({
     gridSize: 1,
     model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
-    clickThreshold: 1
+    clickThreshold: 1,
+    linkPinning: false
 });
 
 $('#toolbar').hide();
@@ -148,6 +149,7 @@ function getElementText(cell) {
 }
 
 function removeLink(link) {
+    if(!link.get('target').id) return;
     let source = graph.getCell(link.attributes.source.id);
     let state = automaton.getState(getElementText(source));
     state.removeTransition(link.id);
@@ -160,4 +162,6 @@ function registerEventHandlers(paper, graph) {
     paper.on('cell:pointerclick', events.cellPointerClick);
     graph.on('change:source change:target', events.changeSourceChangeTarget);
     graph.on('remove', events.remove);
+    graph.on('change:target', events.changeTarget);
+    graph.on('change:source', events.changeSource);
 }

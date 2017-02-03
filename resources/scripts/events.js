@@ -4,6 +4,8 @@ var events = {
     cellPointerDown: cellPointerDown,
     cellPointerClick: cellPointerClick,
     changeSourceChangeTarget:changeSourceChangeTarget,
+    changeTarget: changeTarget,
+    changeSource: changeSource,
     remove: remove
 };
 
@@ -55,6 +57,18 @@ function cellPointerClick(cellView, evt, x, y) {
 function changeSourceChangeTarget(link) {
     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
         setTransition(link);
+    }
+}
+
+function changeTarget(link) {
+    if(link.get('target').id) {
+        console.log('cambio');
+    }
+}
+
+function changeSource(link) {
+    if(link.get('source').id) {
+        console.log('cambio');
     }
 }
 
