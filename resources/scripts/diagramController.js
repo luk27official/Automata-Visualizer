@@ -90,6 +90,16 @@ function evaluateWord() {
     alert(status.msg);
 }
 
+function convertToDFA() {
+    let status;
+    if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
+    else prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
+
+    if(!insertedAlphabet) return
+    automaton._alphabet = insertedAlphabet.split(" ");
+    automaton.convertToDFA();
+}
+
 function saveAutomaton() {
     let json = JSON.stringify(automaton.toJson());
 }
@@ -127,7 +137,8 @@ function setNewAutomaton(name) {
     gridSize: 1,
     model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
-    clickThreshold: 1
+    clickThreshold: 1,
+    linkPinning: false
     });
 
     registerEventHandlers(paper, graph);    

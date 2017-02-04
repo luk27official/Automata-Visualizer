@@ -24,7 +24,7 @@ function run(word) {
 }
 
 function processWord(word) {
-    this._currentState = this._initialState;
+    this._currentState = this.getInitialState();
     let transitions;
 
     for(symbol in word) {

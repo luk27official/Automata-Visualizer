@@ -4,6 +4,8 @@ var State = (function() {
 function State(name, id) {
     this.getName = getName;
     this.setName = setName;
+    this.getInternalName = getInternalName;
+    this.setInternalName = setInternalName;
     this.setBehavior = setBehavior;
     this.addTransition = addTransition;
     this.removeTransition = removeTransition;
@@ -12,6 +14,7 @@ function State(name, id) {
     this.getId = getId;
 
     this._name = name;
+    this._internalName = name;
     this._id = id
     this._transitions = [];
     this._initial = false;
@@ -77,6 +80,14 @@ function getTransitions() {
 function getId() {
     return this._id;
 }
+
+function getInternalName() {
+    return this._internalName;
+}
+
+function setInternalName(name) {
+    this._internalName = name;
+} 
 
 return State;
 
