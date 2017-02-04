@@ -23,6 +23,16 @@ function blankPointerClick(evt, x, y) {
             }
         });
         graph.addCell(element);
+        // let initialSymbol =  new joint.shapes.basic.initialSymbol({
+        //     position: { x: x - 40, y: y + 50 },
+        //     size: { width: 40, height: 40 }
+        // }); 
+        // initialSymbol.attr({
+
+        //     polygon: { fill: '#000000', 'stroke-width': 2, stroke: 'black' }
+        // });
+        // graph.addCell(initialSymbol);
+        // element.embed(initialSymbol);
 
         automaton.insertState(element.id);
         console.log(automaton);

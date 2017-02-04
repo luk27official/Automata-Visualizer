@@ -30,10 +30,6 @@ registerEventHandlers(paper, graph);
 function setStateName() {
     let name = prompt('New name for state:');
     automaton.updateStateName(selectedState, name);
-    // if(!automaton.updateStateName(selectedState, name).valid) {
-    //     alert('A state with that name already exists.');
-    //     return;
-    // }
     selectedCell.attr({
         text: {text: name}
     });
@@ -62,13 +58,13 @@ function setTransition(link) {
 }
 
 function setInitial(checkbox) {
-    console.log('initial - ', checkbox.checked);
     automaton.updateStateType(selectedState, {initial: checkbox.checked}, updateElementAppearance);
+    if(selectedState.isInitial()) setInitialSymbol(selectedCell.get('position').x, selectedCell.get('position').y);
+    else selectedCell.getEmbeddedCells()[0].remove();
     console.log(automaton);
 }
 
 function setFinal(checkbox) {
-    console.log('final - ', checkbox.checked);
     automaton.updateStateType(selectedState, {final: checkbox.checked}, updateElementAppearance);
     console.log(automaton);
 }
@@ -168,4 +164,17 @@ function registerEventHandlers(paper, graph) {
     graph.on('remove', events.remove);
     graph.on('change:target', events.changeTarget);
     graph.on('change:source', events.changeSource);
+}
+
+function setInitialSymbol(x, y) {
+    let initialSymbol =  new joint.shapes.basic.initialSymbol({
+        position: { x: x - 40, y: y + 50 },
+        size: { width: 40, height: 40 }
+    }); 
+
+    initialSymbol.attr({
+        polygon: { fill: '#000000', 'stroke-width': 2, stroke: 'black' }
+    });
+    graph.addCell(initialSymbol);
+    selectedCell.embed(initialSymbol);
 }

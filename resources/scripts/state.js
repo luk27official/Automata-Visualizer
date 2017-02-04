@@ -40,7 +40,7 @@ function setBehavior(behavior) {
 
     if(behavior.initial) {
         this._initial = true;
-        return {circle: {fill: '#000000'}};
+        return {circle: {fill: '#5755a1'}};
     }
     if(behavior.final) {
         this._final = true;
