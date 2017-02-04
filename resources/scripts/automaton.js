@@ -14,6 +14,7 @@ Automaton.prototype.updateStateType = updateStateType;
 Automaton.prototype.getCounter = getCounter;
 Automaton.prototype.getState = getState;
 Automaton.prototype.getStates = getStates;
+Automaton.prototype.getInitialState = getInitialState;
 
 Automaton.prototype._checkInitialState = checkInitialState;
 Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
@@ -44,14 +45,14 @@ function updateStateName(state, name) {
     state.setName(name);
 }
 
-function updateStateType(state, type, updateAppearance) {
+function updateStateType(state, type, removeInitialSymbol) {
     let appearance = {};
 
     if(type.initial) {
         for(let state in this._states) {
             if(this._states[state].isInitial()) {
-                appearance = this._states[state].setBehavior({initial: false});
-                updateAppearance(appearance);
+                this._states[state].setBehavior({initial: false});
+                removeInitialSymbol();
                 break;
             }
         }
@@ -59,7 +60,6 @@ function updateStateType(state, type, updateAppearance) {
     }
 
     appearance = state.setBehavior(type);
-    updateAppearance(appearance);
 }
 
 function checkInitialState() {
@@ -100,4 +100,8 @@ function getStates() {
 
 function getCounter() {
     return this._counter;
+}
+
+function getInitialState() {
+    return this._initialState;
 }

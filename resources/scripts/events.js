@@ -10,7 +10,7 @@ var events = {
 };
 
 function blankPointerClick(evt, x, y) {
-    if(selectedState && !selectedState.isInitial()) selectedCell.attr({circle: {fill: '#5755a1'}});
+    if(selectedState) selectedCell.attr({circle: {fill: '#5755a1'}});
     selectedCell = null;
     selectedState = null;
     $('#toolbar').hide();

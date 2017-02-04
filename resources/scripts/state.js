@@ -31,20 +31,20 @@ function setName(name) {
 function setBehavior(behavior) {
     if(!behavior.initial && behavior.initial !== undefined) {
         this._initial = false;
-        return {circle: {fill: '#5755a1'}};
+        //return {circle: {fill: '#5755a1'}};
     }
     if(!behavior.final && behavior.final !== undefined) {
         this._final = false;
-        return {circle: {'stroke-width': 2}};
+        //return {circle: {'stroke-width': 2}};
     }
 
     if(behavior.initial) {
         this._initial = true;
-        return {circle: {fill: '#5755a1'}};
+        //return {circle: {fill: '#5755a1'}};
     }
     if(behavior.final) {
         this._final = true;
-        return {circle: {'stroke-width': 4}};
+        //return {circle: {'stroke-width': 4}};
     }
 }
 

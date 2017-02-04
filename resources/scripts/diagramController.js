@@ -58,19 +58,21 @@ function setTransition(link) {
 }
 
 function setInitial(checkbox) {
-    automaton.updateStateType(selectedState, {initial: checkbox.checked}, updateElementAppearance);
+    automaton.updateStateType(selectedState, {initial: checkbox.checked}, removeInitialSymbol);
     if(selectedState.isInitial()) setInitialSymbol(selectedCell.get('position').x, selectedCell.get('position').y);
-    else selectedCell.getEmbeddedCells()[0].remove();
+    else removeInitialSymbol();
     console.log(automaton);
 }
 
 function setFinal(checkbox) {
-    automaton.updateStateType(selectedState, {final: checkbox.checked}, updateElementAppearance);
+    automaton.updateStateType(selectedState, {final: checkbox.checked}, removeInitialSymbol);
+    if(selectedState.isFinal()) selectedCell.attr({circle: {'stroke-width': 4}});
+    else selectedCell.attr({circle: {'stroke-width': 2}});
     console.log(automaton);
 }
 
-function updateElementAppearance(attr) {
-    selectedCell.attr(attr);
+function removeInitialSymbol() {
+    graph.getCell(automaton.getInitialState().getId()).getEmbeddedCells()[0].remove();
 }
 
 function evaluateWord() {
