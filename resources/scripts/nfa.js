@@ -15,6 +15,7 @@ function NFA() {
     this._checkIfNewStateIsCurrentState = checkIfNewStateIsCurrentState;
     this._checkIfNewStateExists = checkIfNewStateExists;
     this._createDFAState = createDFAState;
+    this._toJSON = toJSON;
 }
 
 NFA.prototype = Object.create(Automaton.prototype);
@@ -38,6 +39,7 @@ function convert() {
     let initialState = this.getInitialState();
     let currentState = new State('{' + initialState.getName() + '}', 0);
     currentState.setInternalName(initialState.getInternalName());
+    currentState.setBehavior({initial: true});
     let newStates = [currentState];
     let pendingStates = [];
 
@@ -47,7 +49,7 @@ function convert() {
     }
 
     console.log(newStates);
-    return newStates;
+    return this._toJSON(newStates);
 }
 
 function runPass(newStates, pendingStates, currentState) {
@@ -134,6 +136,35 @@ function createDFAState(newStateName, constructedInternalName, pendingStates, sy
     currentState.addTransition(newState, symbol, 0);
     newStates.push(newState);
     pendingStates.push(newState);
+}
+
+function toJSON(states) {
+    let jsonStates = [];
+    let json = {};
+    let transitions = [];
+    let edge = {};
+
+    for(let state in states) {
+        json.name = states[state].getName();
+        json.internalName = states[state].getInternalName();
+        json.initial = states[state].isInitial();
+        json.final = states[state].isFinal();
+
+        transitions = states[state]._getTransitions();
+        json.transitions = [];
+        for(let transition in transitions) {
+            edge.source = transitions[transition].getSource().getInternalName();
+            edge.target = transitions[transition].getTarget().getInternalName();
+            edge.symbol = transitions[transition].getSymbol();
+            json.transitions.push(edge);
+            edge = {};
+        }
+
+        jsonStates.push(json);
+        json = {};
+    }
+
+    return jsonStates;
 }
 
 function processWord(word) {

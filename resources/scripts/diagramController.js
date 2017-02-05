@@ -101,8 +101,9 @@ function convertToDFA() {
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");
     newStates = automaton.convertToDFA();
-    // dataToSend = JSON.stringify({name: 'jack'});
-    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html/?data=' + encodeURIComponent(dataToSend));
+    console.log(newStates);
+    dataToSend = JSON.stringify({type: 'DFA', states: newStates});
+    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function saveAutomaton() {
@@ -152,9 +153,11 @@ function setNewAutomaton(name) {
 function generateNewAutomaton(name) {
     switch(name) {
         case 'DFA':
+            $('#convertDFA').hide();
             return new DFA();
         
         case 'NFA':
+            $('#convertDFA').show();
             return new NFA();
         
         default:
