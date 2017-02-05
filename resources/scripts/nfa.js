@@ -11,6 +11,10 @@ function NFA() {
     this._processWord = processWord;
     this._convert = convert;
     this._runPass = runPass;
+    this._getTargetNamesForNewState = getTargetNamesForNewState;
+    this._checkIfNewStateIsCurrentState = checkIfNewStateIsCurrentState;
+    this._checkIfNewStateExists = checkIfNewStateExists;
+    this._createDFAState = createDFAState;
 }
 
 NFA.prototype = Object.create(Automaton.prototype);
@@ -32,8 +36,8 @@ function convertToDFA() {
 
 function convert() {
     let initialState = this.getInitialState();
-    let currentState = new State(initialState.getInternalName(), 0);
-    //currentState.setInternalName(initialState.getInternalName());
+    let currentState = new State('{' + initialState.getName() + '}', 0);
+    currentState.setInternalName(initialState.getInternalName());
     let newStates = [currentState];
     let pendingStates = [];
 
@@ -41,61 +45,95 @@ function convert() {
     for(let i = 0; i < pendingStates.length; i++) {
         this._runPass(newStates, pendingStates, pendingStates[i]);
     }
-    // for(let state in pendingStates) {
-    //     this._runPass(newStates, pendingStates, pendingStates[state]);
-    // }
 
     console.log(newStates);
+    return newStates;
 }
 
 function runPass(newStates, pendingStates, currentState) {
     let names = currentState.getInternalName();
-    let state = null;
-    let newState = null;
-    let transitions = [];
     let newStateName = [];
-    let newStateExists = false;
     let constructedInternalName = '';
 
     names = names.split(',');
 
     for(let symbol in this._alphabet) {
-        newStateExists = false;
-
-        for(let name in names) {
-            state = this._getStateByInternalName(names[name]);
-            transitions = this._getTransitionsBySymbol(state, this._alphabet[symbol]);
-            for(let transition in transitions) {
-                newStateName.push(transitions[transition].getTarget().getInternalName());
-            }
-        }
-
+        newStateName = this._getTargetNamesForNewState(names, this._alphabet[symbol]);
         constructedInternalName = newStateName.join();
         
         if(!constructedInternalName) continue;
-        if(currentState.getInternalName() === constructedInternalName) {
-            currentState.addTransition(currentState, this._alphabet[symbol], 0);
-            newStateName = [];
-            continue;
-        }
+        if(checkIfNewStateIsCurrentState(currentState, constructedInternalName, this._alphabet[symbol])) continue;
+        if(checkIfNewStateExists(newStates, constructedInternalName, currentState, this._alphabet[symbol])) continue;
 
-        for(let state in newStates) {
-            if(newStates[state].getInternalName() !== constructedInternalName) continue;
-            currentState.addTransition(newStates[state], this._alphabet[symbol], 0);
-            newStateName = [];
-            newStateExists = true;
-        }
-
-        if(newStateExists) continue
-        
-        newState = new State(constructedInternalName, 0);
-        //newState.setInternalName(constructedInternalName);
-        currentState.addTransition(newState, this._alphabet[symbol], 0);
-        newStates.push(newState);
-        pendingStates.push(newState);
-
-        newStateName = [];
+        this._createDFAState(newStateName, constructedInternalName, pendingStates, this._alphabet[symbol], currentState, newStates);
     }
+}
+
+function getTargetNamesForNewState(names, symbol) {
+    let state = null;
+    let transitions = [];
+    let newStateName = [];
+    let targetInternalName = '';
+    let exists = false;
+
+    for(let name in names) {
+        state = this._getStateByInternalName(names[name]);
+        transitions = this._getTransitionsBySymbol(state, symbol);
+        for(let transition in transitions) {
+            exists = false;
+            targetInternalName = transitions[transition].getTarget().getInternalName();
+            for(let internalName in newStateName) {
+                if(newStateName[internalName] === targetInternalName) {
+                    exists = true;
+                    break;
+                }                
+            }
+            
+            if(exists) continue;
+            newStateName.push(targetInternalName);
+        }
+    }
+
+    return newStateName;
+}
+
+function checkIfNewStateIsCurrentState(currentState, constructedInternalName, symbol) {
+    if(currentState.getInternalName() === constructedInternalName) {
+        currentState.addTransition(currentState, symbol, 0);
+        return true;
+    }
+
+    return false;
+}
+
+function checkIfNewStateExists(newStates, constructedInternalName, currentState, symbol) {
+    for(let state in newStates) {
+        if(newStates[state].getInternalName() !== constructedInternalName) continue;
+        currentState.addTransition(newStates[state], symbol, 0);
+        return true;
+    }
+
+    return false;
+}
+
+function createDFAState(newStateName, constructedInternalName, pendingStates, symbol, currentState, newStates) {
+    let displayName = [];
+    let newState = null;
+    let final = false;
+    let state = null;
+
+    for(let name in newStateName) {
+        state = this._getStateByInternalName(newStateName[name]);
+        if(!final) final = state.isFinal();
+        displayName.push(state.getName());
+    }
+    
+    newState = new State('{' + displayName.join() + '}', 0);
+    newState.setInternalName(constructedInternalName);
+    newState.setBehavior({final: final});
+    currentState.addTransition(newState, symbol, 0);
+    newStates.push(newState);
+    pendingStates.push(newState);
 }
 
 function processWord(word) {

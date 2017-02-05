@@ -92,12 +92,17 @@ function evaluateWord() {
 
 function convertToDFA() {
     let status;
+    let dataToSend;
+    let newStates = [];
+
     if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
     else prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
 
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");
-    automaton.convertToDFA();
+    newStates = automaton.convertToDFA();
+    // dataToSend = JSON.stringify({name: 'jack'});
+    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html/?data=' + encodeURIComponent(dataToSend));
 }
 
 function saveAutomaton() {

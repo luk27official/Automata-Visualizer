@@ -13,6 +13,7 @@ Automaton.prototype.updateStateName = updateStateName;
 Automaton.prototype.updateStateType = updateStateType;
 Automaton.prototype.getCounter = getCounter;
 Automaton.prototype.getState = getState;
+Automaton.prototype.getStateByName = getStateByName;
 Automaton.prototype.getStates = getStates;
 Automaton.prototype.getInitialState = getInitialState;
 
@@ -90,6 +91,15 @@ function getTransitionSymbols(transitions) {
 function getState(id) {
     for(let state in this._states) {
         if(this._states[state].getId() === id)
+            return this._states[state];
+    }
+
+    return null;
+}
+
+function getStateByName(name) {
+    for(let state in this._states) {
+        if(this._states[state].getName() === name)
             return this._states[state];
     }
 
