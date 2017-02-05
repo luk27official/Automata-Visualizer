@@ -233,6 +233,14 @@ function renderAutomaton() {
     for(let state in states) {
         element = generateVisualElement(x, y, states[state].getName());
         states[state]._id = element.id;
+        if(states[state].isInitial()) {
+            selectedCell = element;
+            setInitialSymbol(selectedCell.get('position').x, selectedCell.get('position').y);
+            selectedCell = null;
+        }
+        
+        if(states[state].isFinal()) element.attr({circle: {'stroke-width': 4}});
+
         x += 100;
         if(x >= width - 200) { x = 100; y += 100; }
     }
@@ -243,7 +251,7 @@ function renderAutomaton() {
             sourceId =  transitions[transition].getSource().getId();
             targetId = transitions[transition].getTarget().getId();
             symbol = transitions[transition].getSymbol();
-            
+
             link = generateVisualLink(sourceId, targetId, symbol);
             transitions[transition]._id = link.id;
         }

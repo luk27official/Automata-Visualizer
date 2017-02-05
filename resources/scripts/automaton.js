@@ -165,6 +165,8 @@ function buildStates(states) {
         this._counter++;
         newState = null;
     }
+
+    this._initialState = this._states[0];
 }
 
 function buildTransitions(states) {
