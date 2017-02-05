@@ -5,8 +5,13 @@ function Automaton() {
     this._states = [];
     this._initialState = null;
     this._currentState = null;
+
+    //Private
+    this._buildStates = buildStates;
+    this._buildTransitions = buildTransitions;
 }
 
+//Public
 Automaton.prototype.insertState = insertState;
 Automaton.prototype.removeState = removeState;
 Automaton.prototype.updateStateName = updateStateName;
@@ -16,7 +21,9 @@ Automaton.prototype.getState = getState;
 Automaton.prototype.getStateByName = getStateByName;
 Automaton.prototype.getStates = getStates;
 Automaton.prototype.getInitialState = getInitialState;
+Automaton.prototype.buildFromJSON = buildFromJSON;
 
+//Protected
 Automaton.prototype._checkInitialState = checkInitialState;
 Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
 Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
@@ -137,4 +144,36 @@ function getTransitionsBySymbol(state, symbol) {
     }
 
     return response;
+}
+
+function buildFromJSON(data) {
+    let states = data.states;
+
+    this._buildStates(states);
+    this._buildTransitions(states);
+}
+
+function buildStates(states) {
+    let newState = null;
+
+    for(let state in states) {
+        newState = new State(states[state].name, 0);
+        newState.setBehavior({initial: states[state].initial, final: states[state].final});
+        newState.setInternalName(states[state].internalName);
+        
+        this._states.push(newState);
+        this._counter++;
+        newState = null;
+    }
+}
+
+function buildTransitions(states) {
+    let edge = null;
+
+    for(let i = 0; i < this._states.length; i++) {
+        for(let transition in states[i].transitions) {
+            edge = states[i].transitions[transition];
+            this._states[i].addTransition(this._getStateByInternalName(edge.target), edge.symbol, 0);
+        }
+    }
 }

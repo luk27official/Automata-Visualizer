@@ -1,22 +1,33 @@
 
-var automaton = new DFA();
+var automaton;
+var currentAutomaton;
 var graph = new joint.dia.Graph;
 var toolbarAction = 'select';
-var currentAutomaton = 'DFA';
 var selectedCell = null;
 var selectedState = null;
 var insertedAlphabet = null;
+var width = 1800;
+var height = 1000;
 
 var paper = new joint.dia.Paper({
     el: $('#paper'),
-    width: 1800,
-    height: 1000,
+    width: width,
+    height: height,
     gridSize: 1,
     model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
     clickThreshold: 1,
     linkPinning: false
 });
+
+let data = window.location.search
+if(data) {
+    constructAutomatonFromUrlParameter();
+}
+else {
+    automaton = new DFA();
+    currentAutomaton = 'DFA';
+}
 
 $('#toolbar').hide();
 
@@ -138,8 +149,8 @@ function setNewAutomaton(name) {
 
     paper = new joint.dia.Paper({
     el: $('#paper'),
-    width: 1800,
-    height: 1000,
+    width: width,
+    height: height,
     gridSize: 1,
     model: graph,
     defaultLink: new joint.shapes.fsa.Arrow,
@@ -198,4 +209,68 @@ function setInitialSymbol(x, y) {
     });
     graph.addCell(initialSymbol);
     selectedCell.embed(initialSymbol);
+}
+
+function constructAutomatonFromUrlParameter() {
+    let data = window.location.search.slice(1).split('=')[1];
+    data = JSON.parse(decodeURIComponent(data));
+    console.log(data);
+    automaton = generateNewAutomaton(data.type);
+    currentAutomaton = data.type;
+    automaton.buildFromJSON(data);
+    console.log(automaton);
+    renderAutomaton();
+}
+
+function renderAutomaton() {
+    let states = automaton.getStates();
+    let transitions = [];
+    let element = null;
+    let link = null;
+    let sourceId = targetId = symbol = 0;
+    let x = y = 100;
+
+    for(let state in states) {
+        element = generateVisualElement(x, y, states[state].getName());
+        states[state]._id = element.id;
+        x += 100;
+        if(x >= width - 200) { x = 100; y += 100; }
+    }
+
+    for(let state in states) {
+        transitions = states[state]._getTransitions();
+        for(let transition in transitions) {
+            sourceId =  transitions[transition].getSource().getId();
+            targetId = transitions[transition].getTarget().getId();
+            symbol = transitions[transition].getSymbol();
+            
+            link = generateVisualLink(sourceId, targetId, symbol);
+            transitions[transition]._id = link.id;
+        }
+    }
+}
+
+function generateVisualElement(x, y, text) {
+    let element = new joint.shapes.fsa.State({
+        position: { x: x, y: y },
+        size: { width: 60, height: 60 },
+        attrs: {
+            text: {text: text}
+        }
+    });
+
+    graph.addCell(element);
+    return element;
+}
+
+function generateVisualLink(sourceId, targetId, symbol, vertices) {    
+    let link = new joint.shapes.fsa.Arrow({
+        source: { id: sourceId },
+        target: { id: targetId },
+        labels: [{ position: .5, attrs: { text: { text: symbol || '', 'font-weight': 'bold' } } }],
+        vertices: vertices || []
+    });
+
+    graph.addCell(link);
+    return link;
 }
