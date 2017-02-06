@@ -6,8 +6,8 @@ var toolbarAction = 'select';
 var selectedCell = null;
 var selectedState = null;
 var insertedAlphabet = null;
-var width = 1800;
-var height = 1000;
+var width = 1920;
+var height = 1080;
 
 var paper = new joint.dia.Paper({
     el: $('#paper'),
@@ -89,7 +89,9 @@ function removeInitialSymbol() {
 function evaluateWord() {
     let status;
     if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
-    else prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
+    else {
+        insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
+    }
 
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");
@@ -107,7 +109,9 @@ function convertToDFA() {
     let newStates = [];
 
     if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
-    else prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
+    else {
+        insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
+    }
 
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");

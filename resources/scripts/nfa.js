@@ -100,8 +100,23 @@ function getTargetNamesForNewState(names, symbol) {
 }
 
 function checkIfNewStateIsCurrentState(currentState, constructedInternalName, symbol) {
-    if(currentState.getInternalName() === constructedInternalName) {
-        currentState.addTransition(currentState, symbol, 0);
+    let internalName = currentState.getInternalName().split(',');
+    let constructedName = constructedInternalName.split(',');
+    let counterCheck = 0;
+
+    if(internalName.length !== constructedName.length) return false;
+
+    for(let i = 0; i < constructedName.length; i++) {
+        for(let name in internalName) {
+            if(constructedName[i] === internalName[name]) {
+                counterCheck++;
+                break;
+            }
+        }
+    }
+
+    if(counterCheck >= constructedName.length) {
+         currentState.addTransition(currentState, symbol, 0);
         return true;
     }
 
@@ -109,10 +124,28 @@ function checkIfNewStateIsCurrentState(currentState, constructedInternalName, sy
 }
 
 function checkIfNewStateExists(newStates, constructedInternalName, currentState, symbol) {
+    let internalName = '';
+    let constructedName = constructedInternalName.split(',');
+    let counterCheck = 0;
+
     for(let state in newStates) {
-        if(newStates[state].getInternalName() !== constructedInternalName) continue;
-        currentState.addTransition(newStates[state], symbol, 0);
-        return true;
+        internalName = newStates[state].getInternalName().split(',');
+        if(internalName.length !== constructedName.length) continue;
+
+        for(let i = 0; i < constructedName.length; i++) {
+            for(let name in internalName) {
+                if(constructedName[i] === internalName[name]) {
+                    counterCheck++;
+                    break;
+                }
+            }
+        }
+
+        if(counterCheck >= constructedName.length) {
+            currentState.addTransition(newStates[state], symbol, 0);
+            return true;
+        }
+        counterCheck = 0;
     }
 
     return false;
