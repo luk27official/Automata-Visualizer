@@ -97,7 +97,7 @@ function evaluateWord() {
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");
     let word = prompt('Insert the word to evaluate:');
-    if(!word) return;
+    //if(!word) return;
 
     status = automaton.run(word);
     console.log(status.msg);
@@ -175,6 +175,10 @@ function generateNewAutomaton(name) {
         case 'NFA':
             $('#convertDFA').show();
             return new NFA();
+
+        case 'NFAE':
+            $('#convertDFA').hide();
+            return new NFAE();
         
         default:
             return null;

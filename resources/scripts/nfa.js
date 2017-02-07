@@ -7,8 +7,7 @@ function NFA() {
     this.run = run;
     this.convertToDFA = convertToDFA;
 
-    this._runValidations = runValidations;
-    this._validateWord = validateWord;
+    //this._runValidations = runValidations;
     this._processWord = processWord;
     this._convert = convert;
     this._runPass = runPass;
@@ -22,6 +21,7 @@ function NFA() {
 NFA.prototype = Object.create(Automaton.prototype);
 NFA.prototype._consumeSymbol = consumeSymbol;
 NFA.prototype._isWordValid = isWordValid;
+NFA.prototype._runValidations = runValidations;
 NFA.prototype.constructor = NFA;
 
 function run(word) {
@@ -69,14 +69,6 @@ function runValidations(word) {
     if(!status.valid) return status;
 
     return this._checkInitialState();
-}
-
-function validateWord(word) {
-    for(let symbol in word) {
-        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
-    }
-
-    return {valid: true};
 }
 
 function convertToDFA() {

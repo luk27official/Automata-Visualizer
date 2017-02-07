@@ -7,7 +7,6 @@ function DFA() {
     this.run = run;
     this._runValidations = runValidations;
     this._processWord = processWord;
-    this._validateWord = validateWord;
     this._validateStateTransitions = validateStateTransitions;
     this._checkTransitionForEachSymbolInAlphabet = checkTransitionForEachSymbolInAlphabet;
     this._checkSymbolDuplication = checkSymbolDuplication;
@@ -49,14 +48,6 @@ function runValidations(word) {
     if(!status.valid) return status;
 
     return this._checkInitialState();
-}
-
-function validateWord(word) {
-    for(let symbol in word) {
-        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
-    }
-
-    return {valid: true};
 }
 
 function validateStateTransitions() {

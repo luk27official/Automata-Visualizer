@@ -29,6 +29,7 @@ Automaton.prototype._checkTransitionsValidity = checkTransitionsValidity;
 Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
 Automaton.prototype._getStateByInternalName = getStateByInternalName;
 Automaton.prototype._getTransitionsBySymbol = getTransitionsBySymbol;
+Automaton.prototype._validateWord = validateWord;
 
 function insertState(id) {
     let state = new State('q' + this._counter, id);
@@ -178,4 +179,12 @@ function buildTransitions(states) {
             this._states[i].addTransition(this._getStateByInternalName(edge.target), edge.symbol, 0);
         }
     }
+}
+
+function validateWord(word) {
+    for(let symbol in word) {
+        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
+    }
+
+    return {valid: true};
 }
