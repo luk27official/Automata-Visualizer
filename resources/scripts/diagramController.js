@@ -64,6 +64,12 @@ function setTransition(link) {
     });
 
     let state = automaton.getState(source.id);
+    if(source.id === target.id) {
+        let posX = source.get('position').x;
+        let posY = source.get('position').y;
+        state.transitionY += 30;
+        link.set('vertices', (link.get('vertices') || []).concat([{ x: posX+10, y: posY-state.transitionY }, {x:posX+50, y:posY-state.transitionY}]));
+    }
     state.addTransition(automaton.getState(target.id), name, link.id);
     console.log(automaton);
 }
@@ -256,7 +262,7 @@ function renderAutomaton() {
             targetId = transitions[transition].getTarget().getId();
             symbol = transitions[transition].getSymbol();
 
-            link = generateVisualLink(sourceId, targetId, symbol);
+            link = generateVisualLink(sourceId, targetId, symbol, states[state]);
             transitions[transition]._id = link.id;
         }
     }
@@ -265,7 +271,6 @@ function renderAutomaton() {
 function generateVisualElement(x, y, text) {
     let element = new joint.shapes.fsa.State({
         position: { x: x, y: y },
-        size: { width: 60, height: 60 },
         attrs: {
             text: {text: text}
         }
@@ -275,14 +280,21 @@ function generateVisualElement(x, y, text) {
     return element;
 }
 
-function generateVisualLink(sourceId, targetId, symbol, vertices) {    
+function generateVisualLink(sourceId, targetId, symbol, state) {    
     let link = new joint.shapes.fsa.Arrow({
         source: { id: sourceId },
         target: { id: targetId },
         labels: [{ position: .5, attrs: { text: { text: symbol || '', 'font-weight': 'bold' } } }],
-        vertices: vertices || []
+        vertices: []
     });
 
     graph.addCell(link);
+
+    if(sourceId === targetId) {
+        let posX = link.getSourceElement().get('position').x;
+        let posY = link.getSourceElement().get('position').y;
+        state.transitionY += 30;
+        link.set('vertices', (link.get('vertices') || []).concat([{ x: posX+10, y: posY-state.transitionY }, {x:posX+50, y:posY-state.transitionY}]));
+    }
     return link;
 }

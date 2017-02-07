@@ -10,6 +10,7 @@ joint.shapes.fsa = {};
 joint.shapes.fsa.State = joint.shapes.basic.Circle.extend({
     defaults: _.defaultsDeep({
         type: 'fsa.State',
+        size: { width: 60, height: 60 },
         attrs: {
             circle: { 'stroke-width': 2, fill: '#5755a1', magnet: true },
             text: { 'font-weight': '600', fill: 'white' }

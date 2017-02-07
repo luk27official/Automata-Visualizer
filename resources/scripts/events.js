@@ -17,7 +17,6 @@ function blankPointerClick(evt, x, y) {
     if(toolbarAction === 'insert') {
         let element = new joint.shapes.fsa.State({
             position: { x: x, y: y },
-            size: { width: 60, height: 60 },
             attrs: {
                 text: {text: 'q' + automaton.getCounter()}
             }
