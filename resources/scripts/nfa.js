@@ -6,6 +6,7 @@ function NFA() {
 
     this.run = run;
     this.convertToDFA = convertToDFA;
+
     this._runValidations = runValidations;
     this._validateWord = validateWord;
     this._processWord = processWord;
@@ -19,6 +20,8 @@ function NFA() {
 }
 
 NFA.prototype = Object.create(Automaton.prototype);
+NFA.prototype._consumeSymbol = consumeSymbol;
+NFA.prototype._isWordValid = isWordValid;
 NFA.prototype.constructor = NFA;
 
 function run(word) {
@@ -26,6 +29,54 @@ function run(word) {
     if(!status.valid) return status;
 
     return this._processWord(word);
+}
+
+function processWord(word) {
+    let currentStates = [this.getInitialState()];
+
+    for(let symbol in word) {
+        currentStates = this._consumeSymbol(currentStates, word[symbol]);
+    }
+
+    return this._isWordValid(currentStates);
+}
+
+function consumeSymbol(currentStates, symbol) {
+    let nextStates = [];
+    let transitions = [];
+
+    for(state in currentStates) {
+        transitions = currentStates[state]._getTransitions();
+        for(let transition in transitions) {
+            if(transitions[transition].getSymbol() !== symbol) continue;
+            nextStates.push(transitions[transition].getTarget());
+        }
+    }
+
+    return nextStates;
+}
+
+function isWordValid(currentStates) {
+    for(let state in currentStates) {
+        if(currentStates[state].isFinal()) return {valid: true, msg: 'Valid!!'};
+    }
+
+    return {valid: false, msg: 'Word not accepted!!'};
+}
+
+function runValidations(word) {
+    let status = this._validateWord(word);
+    if(!status.valid) return status;
+
+    return this._checkInitialState();
+}
+
+function validateWord(word) {
+    for(let symbol in word) {
+        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
+    }
+
+    return {valid: true};
 }
 
 function convertToDFA() {
@@ -105,7 +156,6 @@ function checkIfNewStateIsCurrentState(currentState, constructedInternalName, sy
     let counterCheck = 0;
 
     if(internalName.length !== constructedName.length) return false;
-
     for(let i = 0; i < constructedName.length; i++) {
         for(let name in internalName) {
             if(constructedName[i] === internalName[name]) {
@@ -198,46 +248,6 @@ function toJSON(states) {
     }
 
     return jsonStates;
-}
-
-function processWord(word) {
-    let currentStates = [this.getInitialState()];
-    let nextStates = [];
-    let transitions = [];
-
-    for(let symbol in word) {
-        for(state in currentStates) {
-            transitions = currentStates[state]._getTransitions();
-            for(let transition in transitions) {
-                if(transitions[transition].getSymbol() !== word[symbol]) continue;
-                nextStates.push(transitions[transition].getTarget());
-            }
-        }
-
-        currentStates = nextStates;
-        nextStates = [];
-    }
-
-    for(let state in currentStates) {
-        if(currentStates[state].isFinal()) return {valid: true, msg: 'Valid!!'};
-    }
-
-    return {valid: false, msg: 'Word not accepted!!'};
-}
-
-function runValidations(word) {
-    let status = this._validateWord(word);
-    if(!status.valid) return status;
-
-    return this._checkInitialState();
-}
-
-function validateWord(word) {
-    for(let symbol in word) {
-        if(!this._alphabet.includes(word[symbol])) return {valid: false, msg: 'The inserted word has the symbol ' + word[symbol] + ' which is not supported by the alphabet.'};
-    }
-
-    return {valid: true};
 }
 
 return NFA;

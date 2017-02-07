@@ -64,12 +64,7 @@ function setTransition(link) {
     });
 
     let state = automaton.getState(source.id);
-    if(source.id === target.id) {
-        let posX = source.get('position').x;
-        let posY = source.get('position').y;
-        state.transitionY += 30;
-        link.set('vertices', (link.get('vertices') || []).concat([{ x: posX+10, y: posY-state.transitionY }, {x:posX+50, y:posY-state.transitionY}]));
-    }
+    curveTransition(source.id, target.id, link, state);
     state.addTransition(automaton.getState(target.id), name, link.id);
     console.log(automaton);
 }
@@ -289,12 +284,15 @@ function generateVisualLink(sourceId, targetId, symbol, state) {
     });
 
     graph.addCell(link);
+    curveTransition(sourceId, targetId, link, state);
+    return link;
+}
 
+function curveTransition(sourceId, targetId, link, state) {
     if(sourceId === targetId) {
         let posX = link.getSourceElement().get('position').x;
         let posY = link.getSourceElement().get('position').y;
         state.transitionY += 30;
         link.set('vertices', (link.get('vertices') || []).concat([{ x: posX+10, y: posY-state.transitionY }, {x:posX+50, y:posY-state.transitionY}]));
     }
-    return link;
 }
