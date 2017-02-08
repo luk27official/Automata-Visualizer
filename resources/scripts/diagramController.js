@@ -8,20 +8,13 @@ var insertedAlphabet = null;
 
 var graph = new joint.dia.Graph;
 var switcher = new Switcher();
+var loader = new Loader();
 var toolbarAction = 'select';
 var width = 1920;
 var height = 1080;
 var paper = generateNewPaper();
 
-let data = window.location.search
-if(data) {
-    constructAutomatonFromUrlParameter();
-}
-else {
-    automaton = new DFA();
-    currentAutomaton = 'DFA';
-    diagram = new Diagram(graph, paper, automaton);
-}
+checkUrlParameter();
 
 $('#toolbar').hide();
 
@@ -31,6 +24,25 @@ $('#set-name').click(function() {
 });
 
 registerEventHandlers(paper, graph);
+
+function checkUrlParameter() {
+    let data = window.location.search;
+    if(data) startSpecial();
+    else startNormal();
+}
+
+function startSpecial() {
+    let config = loader.constructAutomatonFromUrl(switcher, graph, paper);
+    automaton = config.automaton;
+    currentAutomaton = config.currentAutomaton;
+    diagram = config.diagram;
+}
+
+function startNormal() {
+    automaton = new DFA();
+    currentAutomaton = 'DFA';
+    diagram = new Diagram(graph, paper, automaton);
+}
 
 function setStateName() {
     let name = prompt('New name for state:');
@@ -133,7 +145,7 @@ function resetGraph(item) {
     insertedAlphabet = null;
     paper = null;
 
-    automaton = switcher.setNewAutomaton(item.id);
+    automaton = switcher.getNewAutomaton(item.id);
     let div = document.createElement('div');
     div.id = 'paper';
     document.body.appendChild(div);
@@ -165,52 +177,4 @@ function registerEventHandlers(paper, graph) {
     graph.on('remove', events.remove);
     graph.on('change:target', events.changeTarget);
     graph.on('change:source', events.changeSource);
-}
-
-function constructAutomatonFromUrlParameter() {
-    let data = window.location.search.slice(1).split('=')[1];
-    data = JSON.parse(decodeURIComponent(data));
-    console.log(data);
-    automaton = generateNewAutomaton(data.type);
-    currentAutomaton = data.type;
-    diagram = new Diagram(graph, paper, automaton);
-    automaton.buildFromJSON(data);
-    console.log(automaton);
-    renderAutomaton();
-}
-
-function renderAutomaton() {
-    let states = automaton.getStates();
-    let transitions = [];
-    let element = null;
-    let link = null;
-    let sourceId = targetId = symbol = 0;
-    let x = y = 100;
-
-    for(let state in states) {
-        element = diagram.generateVisualElement(x, y, states[state].getName());
-        states[state]._id = element.id;
-        if(states[state].isInitial()) {
-            selectedCell = element;
-            diagram.setInitialSymbol(selectedCell);
-            selectedCell = null;
-        }
-        
-        if(states[state].isFinal()) element.attr({circle: {'stroke-width': 4}});
-
-        x += 100;
-        if(x >= width - 200) { x = 100; y += 100; }
-    }
-
-    for(let state in states) {
-        transitions = states[state]._getTransitions();
-        for(let transition in transitions) {
-            sourceId =  transitions[transition].getSource().getId();
-            targetId = transitions[transition].getTarget().getId();
-            symbol = transitions[transition].getSymbol();
-
-            link = diagram.generateVisualLink(sourceId, targetId, symbol, states[state]);
-            transitions[transition]._id = link.id;
-        }
-    }
 }

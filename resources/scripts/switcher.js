@@ -2,11 +2,11 @@
 var Switcher = (function() {
 
 function Switcher() {
-    this.setNewAutomaton = setNewAutomaton;
+    this.getNewAutomaton = getNewAutomaton;
     this.generateNewAutomaton = generateNewAutomaton;
 }
 
-function setNewAutomaton(name) {
+function getNewAutomaton(name) {
     return generateNewAutomaton(name); 
 }
 
