@@ -20,6 +20,8 @@ var paper = new joint.dia.Paper({
     linkPinning: false
 });
 
+var diagram = new Diagram(graph, paper, automaton);
+
 let data = window.location.search
 if(data) {
     constructAutomatonFromUrlParameter();
@@ -64,27 +66,23 @@ function setTransition(link) {
     });
 
     let state = automaton.getState(source.id);
-    curveTransition(source.id, target.id, link, state);
+    diagram.curveTransition(source.id, target.id, link, state);
     state.addTransition(automaton.getState(target.id), name, link.id);
     console.log(automaton);
 }
 
 function setInitial(checkbox) {
-    automaton.updateStateType(selectedState, {initial: checkbox.checked}, removeInitialSymbol);
-    if(selectedState.isInitial()) setInitialSymbol(selectedCell.get('position').x, selectedCell.get('position').y);
-    else removeInitialSymbol();
+    automaton.updateStateType(selectedState, {initial: checkbox.checked}, diagram.removeInitialSymbol);
+    if(selectedState.isInitial()) diagram.setInitialSymbol(selectedCell);
+    else diagram.removeInitialSymbol();
     console.log(automaton);
 }
 
 function setFinal(checkbox) {
-    automaton.updateStateType(selectedState, {final: checkbox.checked}, removeInitialSymbol);
+    automaton.updateStateType(selectedState, {final: checkbox.checked}, diagram.removeInitialSymbol);
     if(selectedState.isFinal()) selectedCell.attr({circle: {'stroke-width': 4}});
     else selectedCell.attr({circle: {'stroke-width': 2}});
     console.log(automaton);
-}
-
-function removeInitialSymbol() {
-    graph.getCell(automaton.getInitialState().getId()).getEmbeddedCells()[0].remove();
 }
 
 function evaluateWord() {
@@ -185,18 +183,6 @@ function generateNewAutomaton(name) {
     }
 }
 
-function getElementText(cell) {
-    return cell.attributes.attrs.text.text
-}
-
-function removeLink(link) {
-    if(!link.get('target').id) return;
-    let source = graph.getCell(link.attributes.source.id);
-    let state = automaton.getState(source.id);
-    state.removeTransition(link.id);
-    console.log(automaton);
-}
-
 function registerEventHandlers(paper, graph) {
     paper.on('blank:pointerclick', events.blankPointerClick);
     paper.on('cell:pointerdown', events.cellPointerDown);
@@ -205,19 +191,6 @@ function registerEventHandlers(paper, graph) {
     graph.on('remove', events.remove);
     graph.on('change:target', events.changeTarget);
     graph.on('change:source', events.changeSource);
-}
-
-function setInitialSymbol(x, y) {
-    let initialSymbol =  new joint.shapes.basic.initialSymbol({
-        position: { x: x - 40, y: y + 50 },
-        size: { width: 40, height: 40 }
-    }); 
-
-    initialSymbol.attr({
-        polygon: { fill: '#000000', 'stroke-width': 2, stroke: 'black' }
-    });
-    graph.addCell(initialSymbol);
-    selectedCell.embed(initialSymbol);
 }
 
 function constructAutomatonFromUrlParameter() {
@@ -240,11 +213,11 @@ function renderAutomaton() {
     let x = y = 100;
 
     for(let state in states) {
-        element = generateVisualElement(x, y, states[state].getName());
+        element = diagram.generateVisualElement(x, y, states[state].getName());
         states[state]._id = element.id;
         if(states[state].isInitial()) {
             selectedCell = element;
-            setInitialSymbol(selectedCell.get('position').x, selectedCell.get('position').y);
+            diagram.setInitialSymbol(selectedCell);
             selectedCell = null;
         }
         
@@ -261,42 +234,8 @@ function renderAutomaton() {
             targetId = transitions[transition].getTarget().getId();
             symbol = transitions[transition].getSymbol();
 
-            link = generateVisualLink(sourceId, targetId, symbol, states[state]);
+            link = diagram.generateVisualLink(sourceId, targetId, symbol, states[state]);
             transitions[transition]._id = link.id;
         }
-    }
-}
-
-function generateVisualElement(x, y, text) {
-    let element = new joint.shapes.fsa.State({
-        position: { x: x, y: y },
-        attrs: {
-            text: {text: text}
-        }
-    });
-
-    graph.addCell(element);
-    return element;
-}
-
-function generateVisualLink(sourceId, targetId, symbol, state) {    
-    let link = new joint.shapes.fsa.Arrow({
-        source: { id: sourceId },
-        target: { id: targetId },
-        labels: [{ position: .5, attrs: { text: { text: symbol || '', 'font-weight': 'bold' } } }],
-        vertices: []
-    });
-
-    graph.addCell(link);
-    curveTransition(sourceId, targetId, link, state);
-    return link;
-}
-
-function curveTransition(sourceId, targetId, link, state) {
-    if(sourceId === targetId) {
-        let posX = link.getSourceElement().get('position').x;
-        let posY = link.getSourceElement().get('position').y;
-        state.transitionY += 30;
-        link.set('vertices', (link.get('vertices') || []).concat([{ x: posX+10, y: posY-state.transitionY }, {x:posX+50, y:posY-state.transitionY}]));
     }
 }

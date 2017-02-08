@@ -15,12 +15,7 @@ function blankPointerClick(evt, x, y) {
     selectedState = null;
     $('#toolbar').hide();
     if(toolbarAction === 'insert') {
-        let element = new joint.shapes.fsa.State({
-            position: { x: x, y: y },
-            attrs: {
-                text: {text: 'q' + automaton.getCounter()}
-            }
-        });
+        let element = diagram.generateVisualElement(x, y, 'q' + automaton.getCounter());
 
         graph.addCell(element);
         automaton.insertState(element.id);
@@ -73,5 +68,5 @@ function changeSource(link) {
 }
 
 function remove(cell) {
-    if(cell.isLink()) removeLink(cell);
+    if(cell.isLink()) diagram.removeLink(cell);
 }
