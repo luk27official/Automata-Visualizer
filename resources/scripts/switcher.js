@@ -21,7 +21,7 @@ function generateNewAutomaton(name) {
             return new NFA();
 
         case 'NFAE':
-            $('#convertDFA').hide();
+            $('#convertDFA').show();
             return new NFAE();
         
         default:

@@ -108,6 +108,7 @@ function convertToDFA() {
     automaton._alphabet = insertedAlphabet.split(" ");
     newStates = automaton.convertToDFA();
     console.log(newStates);
+    //Validar que newStates tenga los nuevos estados
     dataToSend = JSON.stringify({type: 'DFA', states: newStates});
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }

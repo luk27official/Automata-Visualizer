@@ -22,6 +22,7 @@ Automaton.prototype.getStateByName = getStateByName;
 Automaton.prototype.getStates = getStates;
 Automaton.prototype.getInitialState = getInitialState;
 Automaton.prototype.buildFromJSON = buildFromJSON;
+Automaton.prototype.toJSON = toJSON;
 
 //Protected
 Automaton.prototype._checkInitialState = checkInitialState;
@@ -187,4 +188,33 @@ function validateWord(word) {
     }
 
     return {valid: true};
+}
+
+function toJSON(states) {
+    let jsonStates = [];
+    let json = {};
+    let transitions = [];
+    let edge = {};
+
+    for(let state in states) {
+        json.name = states[state].getName();
+        json.internalName = states[state].getInternalName();
+        json.initial = states[state].isInitial();
+        json.final = states[state].isFinal();
+
+        transitions = states[state]._getTransitions();
+        json.transitions = [];
+        for(let transition in transitions) {
+            edge.source = transitions[transition].getSource().getInternalName();
+            edge.target = transitions[transition].getTarget().getInternalName();
+            edge.symbol = transitions[transition].getSymbol();
+            json.transitions.push(edge);
+            edge = {};
+        }
+
+        jsonStates.push(json);
+        json = {};
+    }
+
+    return jsonStates;
 }

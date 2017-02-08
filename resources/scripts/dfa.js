@@ -44,8 +44,8 @@ function runValidations(word) {
     let status = this._validateWord(word);
     if(!status.valid) return status;
 
-    status = this._validateStateTransitions();
-    if(!status.valid) return status;
+    // status = this._validateStateTransitions();
+    // if(!status.valid) return status;
 
     return this._checkInitialState();
 }

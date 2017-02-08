@@ -7,21 +7,19 @@ function NFA() {
     this.run = run;
     this.convertToDFA = convertToDFA;
 
-    //this._runValidations = runValidations;
     this._processWord = processWord;
     this._convert = convert;
     this._runPass = runPass;
-    this._getTargetNamesForNewState = getTargetNamesForNewState;
-    this._checkIfNewStateIsCurrentState = checkIfNewStateIsCurrentState;
-    this._checkIfNewStateExists = checkIfNewStateExists;
     this._createDFAState = createDFAState;
-    this._toJSON = toJSON;
 }
 
 NFA.prototype = Object.create(Automaton.prototype);
 NFA.prototype._consumeSymbol = consumeSymbol;
 NFA.prototype._isWordValid = isWordValid;
 NFA.prototype._runValidations = runValidations;
+NFA.prototype._getTargetNamesForNewState = getTargetNamesForNewState;
+NFA.prototype._checkIfNewStateIsCurrentState = checkIfNewStateIsCurrentState;
+NFA.prototype._checkIfNewStateExists = checkIfNewStateExists;
 NFA.prototype.constructor = NFA;
 
 function run(word) {
@@ -80,7 +78,7 @@ function convertToDFA() {
 
 function convert() {
     let initialState = this.getInitialState();
-    let currentState = new State('{' + initialState.getName() + '}', 0);
+    let currentState = new State(initialState.getName(), 0);
     currentState.setInternalName(initialState.getInternalName());
     currentState.setBehavior({initial: true});
     let newStates = [currentState];
@@ -92,7 +90,7 @@ function convert() {
     }
 
     console.log(newStates);
-    return this._toJSON(newStates);
+    return this.toJSON(newStates);
 }
 
 function runPass(newStates, pendingStates, currentState) {
@@ -107,8 +105,8 @@ function runPass(newStates, pendingStates, currentState) {
         constructedInternalName = newStateName.join();
         
         if(!constructedInternalName) continue;
-        if(checkIfNewStateIsCurrentState(currentState, constructedInternalName, this._alphabet[symbol])) continue;
-        if(checkIfNewStateExists(newStates, constructedInternalName, currentState, this._alphabet[symbol])) continue;
+        if(this._checkIfNewStateIsCurrentState(currentState, constructedInternalName, this._alphabet[symbol])) continue;
+        if(this._checkIfNewStateExists(newStates, constructedInternalName, currentState, this._alphabet[symbol])) continue;
 
         this._createDFAState(newStateName, constructedInternalName, pendingStates, this._alphabet[symbol], currentState, newStates);
     }
@@ -205,41 +203,12 @@ function createDFAState(newStateName, constructedInternalName, pendingStates, sy
         displayName.push(state.getName());
     }
     
-    newState = new State('{' + displayName.join() + '}', 0);
+    newState = new State(displayName.join(), 0);
     newState.setInternalName(constructedInternalName);
     newState.setBehavior({final: final});
     currentState.addTransition(newState, symbol, 0);
     newStates.push(newState);
     pendingStates.push(newState);
-}
-
-function toJSON(states) {
-    let jsonStates = [];
-    let json = {};
-    let transitions = [];
-    let edge = {};
-
-    for(let state in states) {
-        json.name = states[state].getName();
-        json.internalName = states[state].getInternalName();
-        json.initial = states[state].isInitial();
-        json.final = states[state].isFinal();
-
-        transitions = states[state]._getTransitions();
-        json.transitions = [];
-        for(let transition in transitions) {
-            edge.source = transitions[transition].getSource().getInternalName();
-            edge.target = transitions[transition].getTarget().getInternalName();
-            edge.symbol = transitions[transition].getSymbol();
-            json.transitions.push(edge);
-            edge = {};
-        }
-
-        jsonStates.push(json);
-        json = {};
-    }
-
-    return jsonStates;
 }
 
 return NFA;
