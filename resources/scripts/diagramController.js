@@ -1,6 +1,7 @@
 
 var automaton;
 var currentAutomaton;
+var diagram;
 var graph = new joint.dia.Graph;
 var toolbarAction = 'select';
 var selectedCell = null;
@@ -20,8 +21,6 @@ var paper = new joint.dia.Paper({
     linkPinning: false
 });
 
-var diagram = new Diagram(graph, paper, automaton);
-
 let data = window.location.search
 if(data) {
     constructAutomatonFromUrlParameter();
@@ -29,6 +28,7 @@ if(data) {
 else {
     automaton = new DFA();
     currentAutomaton = 'DFA';
+    diagram = new Diagram(graph, paper, automaton);
 }
 
 $('#toolbar').hide();
@@ -199,6 +199,7 @@ function constructAutomatonFromUrlParameter() {
     console.log(data);
     automaton = generateNewAutomaton(data.type);
     currentAutomaton = data.type;
+    diagram = new Diagram(graph, paper, automaton);
     automaton.buildFromJSON(data);
     console.log(automaton);
     renderAutomaton();
