@@ -2,32 +2,53 @@
 var Loader = (function() {
 
 function Loader() {
-    this.constructAutomatonFromUrl = constructAutomatonFromUrl;
+    this.checkSource = checkSource;
+
+    this._startNormal = startNormal;
+    this._renderAutomaton = renderAutomaton;
+    this._generateVisualStates = generateVisualStates;
+    this._generateVisualLinks = generateVisualLinks;
 }
 
-function constructAutomatonFromUrl(switcher, graph, paper) {
-    let data = null;
-    let automaton = null;
-    let diagram = null;
-    let currentAutomaton = '';
+function checkSource(options) {
+    let data = window.location.search;
+    let config = null;
 
-    data = window.location.search.slice(1).split('=')[1];
-    data = JSON.parse(decodeURIComponent(data));
-    console.log(data);
-    automaton = switcher.getNewAutomaton(data.type);
-    currentAutomaton = data.type;
-    diagram = new Diagram(graph, paper, automaton);
-    automaton.buildFromJSON(data);
-    console.log(automaton);
-    return renderAutomaton(diagram, automaton, currentAutomaton);
+    if(data) {
+        config = urlLoader.constructAutomatonFromUrl(options, this._renderAutomaton);
+        return this._renderAutomaton(config.diagram, config.automaton, config.currentAutomaton);
+    }
+
+    return this._startNormal(options);
+}
+
+function startNormal(options) {
+    let automaton = new DFA();
+    let currentAutomaton = 'DFA';
+    let diagram = new Diagram(graph, paper, automaton);
+
+    return {
+        automaton: automaton,
+        currentAutomaton: currentAutomaton,
+        diagram: diagram
+    }
 }
 
 function renderAutomaton(diagram, automaton, currentAutomaton) {
-    let states = automaton.getStates();
-    let transitions = [];
+    let states = automaton.getStates(); 
+
+    this._generateVisualStates(states, diagram);
+    this._generateVisualLinks(states, diagram);
+
+    return {
+        automaton: automaton,
+        diagram: diagram,
+        currentAutomaton: currentAutomaton
+    };
+}
+
+function generateVisualStates(states, diagram) {
     let element = null;
-    let link = null;
-    let sourceId = targetId = symbol = 0;
     let x = y = 100;
 
     for(let state in states) {
@@ -42,6 +63,12 @@ function renderAutomaton(diagram, automaton, currentAutomaton) {
         x += 100;
         if(x >= width - 200) { x = 100; y += 100; }
     }
+}
+
+function generateVisualLinks(states, diagram) {
+    let transitions = [];
+    let sourceId = targetId = symbol = 0;
+    let link = null;
 
     for(let state in states) {
         transitions = states[state]._getTransitions();
@@ -54,12 +81,6 @@ function renderAutomaton(diagram, automaton, currentAutomaton) {
             transitions[transition]._id = link.id;
         }
     }
-
-    return {
-        automaton: automaton,
-        diagram: diagram,
-        currentAutomaton: currentAutomaton
-    };
 }
 
 return Loader;

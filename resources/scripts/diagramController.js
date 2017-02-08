@@ -14,7 +14,7 @@ var width = 1920;
 var height = 1080;
 var paper = generateNewPaper();
 
-checkUrlParameter();
+setUp();
 
 $('#toolbar').hide();
 
@@ -23,25 +23,13 @@ $('#set-name').click(function() {
     setStateName();
 });
 
-registerEventHandlers(paper, graph);
-
-function checkUrlParameter() {
-    let data = window.location.search;
-    if(data) startSpecial();
-    else startNormal();
-}
-
-function startSpecial() {
-    let config = loader.constructAutomatonFromUrl(switcher, graph, paper);
+function setUp() {
+    let config = loader.checkSource({switcher: switcher, graph: graph, paper: paper});
     automaton = config.automaton;
     currentAutomaton = config.currentAutomaton;
     diagram = config.diagram;
-}
 
-function startNormal() {
-    automaton = new DFA();
-    currentAutomaton = 'DFA';
-    diagram = new Diagram(graph, paper, automaton);
+    registerEventHandlers(paper, graph);
 }
 
 function setStateName() {
