@@ -1,25 +1,17 @@
 
-var automaton;
-var currentAutomaton;
-var diagram;
-var graph = new joint.dia.Graph;
-var toolbarAction = 'select';
+var automaton = null;
+var currentAutomaton = null;
+var diagram = null;
 var selectedCell = null;
 var selectedState = null;
 var insertedAlphabet = null;
+
+var graph = new joint.dia.Graph;
+var switcher = new Switcher();
+var toolbarAction = 'select';
 var width = 1920;
 var height = 1080;
-
-var paper = new joint.dia.Paper({
-    el: $('#paper'),
-    width: width,
-    height: height,
-    gridSize: 1,
-    model: graph,
-    defaultLink: new joint.shapes.fsa.Arrow,
-    clickThreshold: 1,
-    linkPinning: false
-});
+var paper = generateNewPaper();
 
 let data = window.location.search
 if(data) {
@@ -140,47 +132,29 @@ function resetGraph(item) {
     selectedCell = null;
     insertedAlphabet = null;
     paper = null;
-    setNewAutomaton(item.id);
-}
 
-function setNewAutomaton(name) {
-    automaton = generateNewAutomaton(name);
-    
+    automaton = switcher.setNewAutomaton(item.id);
     let div = document.createElement('div');
     div.id = 'paper';
     document.body.appendChild(div);
-
-    paper = new joint.dia.Paper({
-    el: $('#paper'),
-    width: width,
-    height: height,
-    gridSize: 1,
-    model: graph,
-    defaultLink: new joint.shapes.fsa.Arrow,
-    clickThreshold: 1,
-    linkPinning: false
-    });
-
-    registerEventHandlers(paper, graph);    
+    paper = generateNewPaper();
+    diagram = new Diagram(graph, paper, automaton);
+    registerEventHandlers(paper, graph);   
 }
 
-function generateNewAutomaton(name) {
-    switch(name) {
-        case 'DFA':
-            $('#convertDFA').hide();
-            return new DFA();
-        
-        case 'NFA':
-            $('#convertDFA').show();
-            return new NFA();
+function generateNewPaper() {
+    let paper = new joint.dia.Paper({
+        el: $('#paper'),
+        width: width,
+        height: height,
+        gridSize: 1,
+        model: graph,
+        defaultLink: new joint.shapes.fsa.Arrow,
+        clickThreshold: 1,
+        linkPinning: false
+    });
 
-        case 'NFAE':
-            $('#convertDFA').hide();
-            return new NFAE();
-        
-        default:
-            return null;
-    }
+    return paper;
 }
 
 function registerEventHandlers(paper, graph) {
