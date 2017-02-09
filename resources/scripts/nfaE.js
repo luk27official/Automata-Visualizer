@@ -37,6 +37,8 @@ var NFAE = (function() {
         let names = [];
         let newStates = [];
         let pendingStates = [];
+        let states = [];
+        let final = false;
         let initialStateName = '';
 
         this._setEpsilonClosure(initialState);
@@ -46,7 +48,13 @@ var NFAE = (function() {
         initialStateName = names.join();
         initialState = new State(initialStateName, 0);
         initialState.setInternalName(initialStateName);
-        initialState.setBehavior({initial: true});
+        for(let name in names) {
+            states.push(this._getStateByInternalName(names[name]));
+        }
+        for(let state in states) {
+            if(states[state].isFinal()) {final = true; break;}
+        }
+        initialState.setBehavior({initial: true, final: final});
         newStates.push(initialState);
 
         this._runPass(newStates, pendingStates, initialState);
@@ -71,9 +79,6 @@ var NFAE = (function() {
             states = [];
             
             if(!newStateName.length) continue;
-            // states = newStateName.map.call(this, function(internalName) {
-            //     return this._getStateByInternalName(internalName);
-            // });
             for(let name in newStateName) {
                 states.push(this._getStateByInternalName(newStateName[name]));
             }

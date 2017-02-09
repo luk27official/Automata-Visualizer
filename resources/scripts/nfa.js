@@ -80,7 +80,7 @@ function convert() {
     let initialState = this.getInitialState();
     let currentState = new State(initialState.getName(), 0);
     currentState.setInternalName(initialState.getInternalName());
-    currentState.setBehavior({initial: true});
+    currentState.setBehavior({initial: true, final: initialState.isFinal()});
     let newStates = [currentState];
     let pendingStates = [];
 
