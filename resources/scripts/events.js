@@ -6,6 +6,7 @@ var events = {
     changeSourceChangeTarget:changeSourceChangeTarget,
     changeTarget: changeTarget,
     changeSource: changeSource,
+    changePosition: changePosition,
     remove: remove
 };
 
@@ -65,6 +66,28 @@ function changeSource(link) {
     if(link.get('source').id) {
         console.log('cambio');
     }
+}
+
+function changePosition(element) {
+    let links = graph.getConnectedLinks(element, {outbound: true});
+    let posX = element.get('position').x;
+    let posY = element.get('position').y;
+    let counterX = 20;
+    let counterY = 20;
+
+     _.each(links, function(link) {
+        if(link.hasLoop()) {
+            let vertices = link.get('vertices');
+            if (vertices && vertices.length) {
+                let newVertices = [];
+                _.each(vertices, function(vertex) {
+                    newVertices.push({ x: (posX-vertex.x)+vertex.x+counterX, y: posY-40 });
+                    counterX += 20;
+                });
+                link.set('vertices', newVertices);
+            }
+        }
+    });
 }
 
 function remove(cell) {

@@ -166,4 +166,5 @@ function registerEventHandlers(paper, graph) {
     graph.on('remove', events.remove);
     graph.on('change:target', events.changeTarget);
     graph.on('change:source', events.changeSource);
+    graph.on('change:position', events.changePosition);
 }
