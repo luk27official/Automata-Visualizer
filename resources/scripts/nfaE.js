@@ -40,6 +40,7 @@ var NFAE = (function() {
         let states = [];
         let final = false;
         let initialStateName = '';
+        let nfae = this;
 
         this._setEpsilonClosure(initialState);
         names = initialState.map(function(state) {
@@ -48,9 +49,9 @@ var NFAE = (function() {
         initialStateName = names.join();
         initialState = new State(initialStateName, 0);
         initialState.setInternalName(initialStateName);
-        for(let name in names) {
-            states.push(this._getStateByInternalName(names[name]));
-        }
+        states = names.map(function(name) {
+            return nfae._getStateByInternalName(name);
+        });
         for(let state in states) {
             if(states[state].isFinal()) {final = true; break;}
         }
