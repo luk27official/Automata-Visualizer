@@ -24,16 +24,20 @@ function run(word) {
 
 function processWord(word) {
     this._currentState = this.getInitialState();
+    let nextState = null;
     let transitions;
 
     for(symbol in word) {
+        nextState = null;
         transitions = this._currentState._getTransitions();
         for(transition in transitions) {
             if(transitions[transition].getSymbol() === word[symbol]) {
-                this._currentState = transitions[transition].getTarget();
+                nextState = transitions[transition].getTarget();
                 break;
             }
         }
+        if(!nextState) return {valid: false, msg: 'The inserted word is not accepted.'};
+        this._currentState = nextState;
     }
 
     if(this._currentState.isFinal()) return {valid: true, msg: 'Word accepted!'};
