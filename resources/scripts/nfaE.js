@@ -9,7 +9,6 @@ var NFAE = (function() {
 
         this._processWord = processWord;
         this._setEpsilonClosure = setEpsilonClosure;
-        this._checkIfStateAlreadyExists = checkIfStateAlreadyExists;
         this._convert = convert;
         this._runPass = runPass;
         this._createDFAState = createDFAState;
@@ -139,14 +138,6 @@ var NFAE = (function() {
                 currentStates.push(transitions[transition].getTarget());
             }
         }
-    }
-
-    function checkIfStateAlreadyExists(currentStates, state) {
-        for(let visited in currentStates) {
-            if(currentStates[visited].getId() === state.getId()) return true;
-        }
-
-        return false;
     }
 
     return NFAE;

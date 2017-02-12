@@ -15,6 +15,7 @@ function NFA() {
 
 NFA.prototype = Object.create(Automaton.prototype);
 NFA.prototype._consumeSymbol = consumeSymbol;
+NFA.prototype._checkIfStateAlreadyExists = checkIfStateAlreadyExists;
 NFA.prototype._isWordValid = isWordValid;
 NFA.prototype._runValidations = runValidations;
 NFA.prototype._getTargetNamesForNewState = getTargetNamesForNewState;
@@ -47,11 +48,20 @@ function consumeSymbol(currentStates, symbol) {
         transitions = currentStates[state]._getTransitions();
         for(let transition in transitions) {
             if(transitions[transition].getSymbol() !== symbol) continue;
+            if(this._checkIfStateAlreadyExists(nextStates, transitions[transition].getTarget())) continue;
             nextStates.push(transitions[transition].getTarget());
         }
     }
 
     return nextStates;
+}
+
+function checkIfStateAlreadyExists(currentStates, state) {
+    for(let visited in currentStates) {
+        if(currentStates[visited].getId() === state.getId()) return true;
+    }
+
+    return false;
 }
 
 function isWordValid(currentStates) {
