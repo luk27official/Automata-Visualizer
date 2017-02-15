@@ -9,6 +9,7 @@ function State(name, id) {
     this.setBehavior = setBehavior;
     this.addTransition = addTransition;
     this.removeTransition = removeTransition;
+    this.removeTransitionFromMe = removeTransitionFromMe;
     this.isInitial = isInitial;
     this.isFinal = isFinal;
     this.getId = getId;
@@ -17,6 +18,7 @@ function State(name, id) {
     this._internalName = name;
     this._id = id
     this._transitions = [];
+    this._me = [];
     this._initial = false;
     this._final = false;
     this.transitionY = 0;
@@ -55,12 +57,23 @@ function setBehavior(behavior) {
 function addTransition(target, symbol, id) {
     let transition = new Transition(this, target, symbol, id);
     this._transitions.push(transition);
+    target._me.push(transition);
 }
 
 function removeTransition(id) {
     for(let i = 0; i < this._transitions.length; i++) {
         if(this._transitions[i].getId() === id) {
+            this._transitions[i].getTarget().removeTransitionFromMe(id);
             this._transitions.splice(i, 1);
+            break;
+        }
+    }
+}
+
+function removeTransitionFromMe(id) {
+    for(let i = 0; i < this._me.length; i++) {
+        if(this._me[i].getId() === id) {
+            this._me.splice(i, 1);
             break;
         }
     }
