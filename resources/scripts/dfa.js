@@ -48,8 +48,8 @@ function runValidations(word) {
     let status = this._validateWord(word);
     if(!status.valid) return status;
 
-    // status = this._validateStateTransitions();
-    // if(!status.valid) return status;
+    status = this._validateStateTransitions();
+    if(!status.valid) return status;
 
     return this._checkInitialState();
 }
@@ -61,12 +61,6 @@ function validateStateTransitions() {
     for(let state in states) {
         let transitions = states[state]._getTransitions();
         let symbols = this._getTransitionSymbols(transitions);
-
-        status = this._checkTransitionForEachSymbolInAlphabet(symbols);
-        if(!status.valid) {
-            status.msg = 'The state ' + states[state].getName() + ' lacks a transition for the symbol ' + status.msg;
-            return status;
-        }
 
         status = this._checkSymbolDuplication(symbols);
         if(!status.valid) {

@@ -23,6 +23,7 @@ Automaton.prototype.getStates = getStates;
 Automaton.prototype.getInitialState = getInitialState;
 Automaton.prototype.buildFromJSON = buildFromJSON;
 Automaton.prototype.toJSON = toJSON;
+Automaton.prototype.clone = clone;
 
 //Protected
 Automaton.prototype._checkInitialState = checkInitialState;
@@ -217,4 +218,8 @@ function toJSON(states) {
     }
 
     return jsonStates;
+}
+
+function clone() {
+    
 }
