@@ -79,14 +79,10 @@ function setFinal(checkbox) {
 
 function evaluateWord() {
     let status;
-    if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
-    else {
-        insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
-    }
+    let word = '';
 
-    if(!insertedAlphabet) return
-    automaton._alphabet = insertedAlphabet.split(" ");
-    let word = prompt('Insert the word to evaluate:');
+    setAlphabet();
+    word = prompt('Insert the word to evaluate:');
     //if(!word) return;
 
     status = automaton.run(word);
@@ -100,6 +96,23 @@ function convertToDFA() {
     let dataToSend;
     let newStates = [];
 
+    setAlphabet();
+    newStates = automaton.convertToDFA();
+    console.log(newStates);
+    //Validar que newStates tenga los nuevos estados
+    dataToSend = JSON.stringify({type: 'DFA', states: newStates});
+    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
+}
+
+function convertToRegex() {
+    if(!automaton.getStates().length) return;
+
+    setAlphabet();
+    let clone = automaton.clone();
+    RegEx.convertToRegex(clone);
+}
+
+function setAlphabet() {
     if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
     else {
         insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
@@ -107,11 +120,6 @@ function convertToDFA() {
 
     if(!insertedAlphabet) return
     automaton._alphabet = insertedAlphabet.split(" ");
-    newStates = automaton.convertToDFA();
-    console.log(newStates);
-    //Validar que newStates tenga los nuevos estados
-    dataToSend = JSON.stringify({type: 'DFA', states: newStates});
-    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function saveAutomaton() {

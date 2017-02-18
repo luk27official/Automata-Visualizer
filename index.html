@@ -24,6 +24,7 @@
 		<script src="resources/scripts/diagram.js"></script>
 		<script src="resources/scripts/loader.js"></script>
 		<script src="resources/scripts/urlLoader.js"></script>
+		<script src="resources/scripts/regex.js"></script>
 		<script src="resources/scripts/events.js"></script>
 		<title>Automata Visualizer</title>
 	</head>
@@ -49,6 +50,7 @@
 			<button id="select" class="btn btn-info" onclick="toolbarAction = 'select'">Select state</button>
 			<button id="evaluate" class="btn btn-inverse" onclick="evaluateWord()">Evaluate</button>
 			<button class="btn btn-default btn-wide btn-success" onclick="saveAutomaton()">Save</button>
+			<button class="btn btn-default btn-wide btn-success" onclick="convertToRegex()">Convert to Regex</button>
 			<button id="convertDFA" class="btn btn-default btn-wide btn-success" style="display: none;" onclick="convertToDFA()">Convert to DFA</button>
 			<div id="toolbar">
 				<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)">Initial

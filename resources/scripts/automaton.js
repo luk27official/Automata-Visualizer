@@ -228,7 +228,7 @@ function toJSON(states) {
 function clone() {
     let automaton = new Automaton();
     let initialState = this.getInitialState();
-    let currentState = new State(initialState.getName(), 0);
+    let currentState = new State(initialState.getName(), initialState.getId());
     currentState.setInternalName(initialState.getInternalName());
     currentState.setBehavior({initial: true, final: initialState.isFinal()});
     let newStates = [currentState];
@@ -255,7 +255,7 @@ function runNextCloningIteration(newStates, pendingStates, currentState) {
         for(let state in states) {
             if(this._checkIfNewStateIsMe(currentState, states[state], this._alphabet[symbol])) continue;
             if(this._checkIfNewStateAlreadyExists(newStates, states[state], currentState, this._alphabet[symbol])) continue;
-            this._createState(states[state].getInternalName(), pendingStates, this._alphabet[symbol], currentState, newStates);
+            this._createState(states[state], pendingStates, this._alphabet[symbol], currentState, newStates);
         }
     }
 }
@@ -264,19 +264,21 @@ function getTargetsForCloning(currentStateInternalName, symbol) {
     let transitions = [];
     let newState = [];
     let target = null;
+    let transitionId = 0;
 
     transitions = this._getTransitionsBySymbol(this._getStateByInternalName(currentStateInternalName), symbol);
     for(let transition in transitions) {
         target = transitions[transition].getTarget();
-        newState.push(target);
+        transitionId = transitions[transition].getId();
+        newState.push({target: target, transitionId: transitionId});
     }
 
     return newState;
 }
 
 function checkIfNewStateIsMe(currentState, state, symbol) {
-    if(currentState.getInternalName() === state.getInternalName()) {
-         currentState.addTransition(currentState, symbol, 0);
+    if(currentState.getInternalName() === state.target.getInternalName()) {
+         currentState.addTransition(currentState, symbol, state.transitionId);
          return true;
     }
 
@@ -287,8 +289,8 @@ function checkIfNewStateAlreadyExists(newStates, newState, currentState, symbol)
     for(let state in newStates) {
         internalName = newStates[state].getInternalName();
 
-        if(internalName === newState.getInternalName()) {
-            currentState.addTransition(newStates[state], symbol, 0);
+        if(internalName === newState.target.getInternalName()) {
+            currentState.addTransition(newStates[state], symbol, newState.transitionId);
             return true;
         }
     }
@@ -296,16 +298,13 @@ function checkIfNewStateAlreadyExists(newStates, newState, currentState, symbol)
     return false;
 }
 
-function createState(newStateName, pendingStates, symbol, currentState, newStates) {
+function createState(state, pendingStates, symbol, currentState, newStates) {
     let newState = null;
-    let state = null;
-
-    state = this._getStateByInternalName(newStateName);
     
-    newState = new State(state.getName(), 0);
-    newState.setInternalName(newStateName);
-    newState.setBehavior({final: state.isFinal()});
-    currentState.addTransition(newState, symbol, 0);
+    newState = new State(state.target.getName(), state.target.getId());
+    newState.setInternalName(state.target.getInternalName());
+    newState.setBehavior({final: state.target.isFinal()});
+    currentState.addTransition(newState, symbol, state.transitionId);
     newStates.push(newState);
     pendingStates.push(newState);
 }
