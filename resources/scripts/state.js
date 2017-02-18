@@ -8,6 +8,8 @@ function State(name, id) {
     this.setInternalName = setInternalName;
     this.setBehavior = setBehavior;
     this.addTransition = addTransition;
+    this.addTransitionToMe = addTransitionToMe;
+    this.getIncomingTransitions = getIncomingTransitions;
     this.removeTransition = removeTransition;
     this.removeTransitionFromMe = removeTransitionFromMe;
     this.isInitial = isInitial;
@@ -58,6 +60,14 @@ function addTransition(target, symbol, id) {
     let transition = new Transition(this, target, symbol, id);
     this._transitions.push(transition);
     target._me.push(transition);
+}
+
+function addTransitionToMe(transition) {
+    this._me.push(transition);
+}
+
+function getIncomingTransitions() {
+    return this._me;
 }
 
 function removeTransition(id) {
