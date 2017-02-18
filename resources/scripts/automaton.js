@@ -32,6 +32,11 @@ Automaton.prototype._getTransitionSymbols = getTransitionSymbols;
 Automaton.prototype._getStateByInternalName = getStateByInternalName;
 Automaton.prototype._getTransitionsBySymbol = getTransitionsBySymbol;
 Automaton.prototype._validateWord = validateWord;
+Automaton.prototype._runNextCloningIteration = runNextCloningIteration;
+Automaton.prototype._checkIfNewStateIsMe = checkIfNewStateIsMe;
+Automaton.prototype._checkIfNewStateAlreadyExists = checkIfNewStateAlreadyExists;
+Automaton.prototype._getTargetsForCloning = getTargetsForCloning;
+Automaton.prototype._createState = createState;
 
 function insertState(id) {
     let state = new State('q' + this._counter, id);
@@ -221,5 +226,86 @@ function toJSON(states) {
 }
 
 function clone() {
+    let automaton = new Automaton();
+    let initialState = this.getInitialState();
+    let currentState = new State(initialState.getName(), 0);
+    currentState.setInternalName(initialState.getInternalName());
+    currentState.setBehavior({initial: true, final: initialState.isFinal()});
+    let newStates = [currentState];
+    let pendingStates = [];
+
+    this._runNextCloningIteration(newStates, pendingStates, currentState);
+    for(let i = 0; i < pendingStates.length; i++) {
+        this._runNextCloningIteration(newStates, pendingStates, pendingStates[i]);
+    }
+
+    automaton._counter = newStates.length;
+    automaton._states = newStates;
+    automaton._initialState = newStates[0];
+
+    return automaton;
+}
+
+function runNextCloningIteration(newStates, pendingStates, currentState) {
+    let states = [];
+
+    for(let symbol in this._alphabet) {
+        states = this._getTargetsForCloning(currentState.getInternalName(), this._alphabet[symbol]);
+
+        for(let state in states) {
+            if(this._checkIfNewStateIsMe(currentState, states[state], this._alphabet[symbol])) continue;
+            if(this._checkIfNewStateAlreadyExists(newStates, states[state], currentState, this._alphabet[symbol])) continue;
+            this._createState(states[state].getInternalName(), pendingStates, this._alphabet[symbol], currentState, newStates);
+        }
+    }
+}
+
+function getTargetsForCloning(currentStateInternalName, symbol) {
+    let transitions = [];
+    let newState = [];
+    let target = null;
+
+    transitions = this._getTransitionsBySymbol(this._getStateByInternalName(currentStateInternalName), symbol);
+    for(let transition in transitions) {
+        target = transitions[transition].getTarget();
+        newState.push(target);
+    }
+
+    return newState;
+}
+
+function checkIfNewStateIsMe(currentState, state, symbol) {
+    if(currentState.getInternalName() === state.getInternalName()) {
+         currentState.addTransition(currentState, symbol, 0);
+         return true;
+    }
+
+    return false;
+}
+
+function checkIfNewStateAlreadyExists(newStates, newState, currentState, symbol) {
+    for(let state in newStates) {
+        internalName = newStates[state].getInternalName();
+
+        if(internalName === newState.getInternalName()) {
+            currentState.addTransition(newStates[state], symbol, 0);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function createState(newStateName, pendingStates, symbol, currentState, newStates) {
+    let newState = null;
+    let state = null;
+
+    state = this._getStateByInternalName(newStateName);
     
+    newState = new State(state.getName(), 0);
+    newState.setInternalName(newStateName);
+    newState.setBehavior({final: state.isFinal()});
+    currentState.addTransition(newState, symbol, 0);
+    newStates.push(newState);
+    pendingStates.push(newState);
 }
