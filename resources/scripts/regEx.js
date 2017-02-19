@@ -35,15 +35,33 @@ function collapseTransitions(states) {
 
 function reduceStates(states) {
     let newTransitionId = 1;
+    let finals = 0;
+    let regex = '';
 
     for(let i = 0; i < states.length; i++) {
-        if(states[i].isFinal() || states[i].isInitial()) continue;
+        if(states[i].isFinal() || states[i].isInitial()) {
+            if(states[i].isFinal()) finals++;
+            continue;
+        }
 
         newTransitionId = removeState(states[i], newTransitionId);
         states.splice(i, 1);
         i--;
     }
 
+    if(states[0].isFinal()) {
+        regex = getRegexWhereInitialStateIsFinalState(states, finals);
+    }
+    else {
+        regex = getRegexWhereInitialStateIsNotFinalState(states, finals);
+    }   
+}
+
+function getRegexWhereInitialStateIsFinalState(states, finals) {
+
+}
+
+function getRegexWhereInitialStateIsNotFinalState(states, finals) {
     
 }
 

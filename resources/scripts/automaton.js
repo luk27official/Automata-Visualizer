@@ -247,50 +247,49 @@ function clone() {
 }
 
 function runNextCloningIteration(newStates, pendingStates, currentState) {
-    let states = [];
+    let states = this._getTargetsForCloning(currentState.getInternalName());
 
-    for(let symbol in this._alphabet) {
-        states = this._getTargetsForCloning(currentState.getInternalName(), this._alphabet[symbol]);
-
-        for(let state in states) {
-            if(this._checkIfNewStateIsMe(currentState, states[state], this._alphabet[symbol])) continue;
-            if(this._checkIfNewStateAlreadyExists(newStates, states[state], currentState, this._alphabet[symbol])) continue;
-            this._createState(states[state], pendingStates, this._alphabet[symbol], currentState, newStates);
-        }
+    for(let state in states) {
+        if(this._checkIfNewStateIsMe(currentState, states[state])) continue;
+        if(this._checkIfNewStateAlreadyExists(newStates, states[state], currentState)) continue;
+        this._createState(states[state], pendingStates, currentState, newStates);
     }
 }
 
-function getTargetsForCloning(currentStateInternalName, symbol) {
-    let transitions = [];
+function getTargetsForCloning(currentStateInternalName) {
+    let transitions = this._getStateByInternalName(currentStateInternalName)._getTransitions();
     let newState = [];
     let target = null;
     let transitionId = 0;
+    let symbol = '';
 
-    transitions = this._getTransitionsBySymbol(this._getStateByInternalName(currentStateInternalName), symbol);
     for(let transition in transitions) {
         target = transitions[transition].getTarget();
         transitionId = transitions[transition].getId();
-        newState.push({target: target, transitionId: transitionId});
+        symbol = transitions[transition].getSymbol();
+        newState.push({target: target, transitionId: transitionId, transitionSymbol: symbol});
     }
 
     return newState;
 }
 
-function checkIfNewStateIsMe(currentState, state, symbol) {
+function checkIfNewStateIsMe(currentState, state) {
     if(currentState.getInternalName() === state.target.getInternalName()) {
-         currentState.addTransition(currentState, symbol, state.transitionId);
+         currentState.addTransition(currentState, state.transitionSymbol, state.transitionId);
          return true;
     }
 
     return false;
 }
 
-function checkIfNewStateAlreadyExists(newStates, newState, currentState, symbol) {
+function checkIfNewStateAlreadyExists(newStates, newState, currentState) {
+    let internalName = '';
+    
     for(let state in newStates) {
         internalName = newStates[state].getInternalName();
 
         if(internalName === newState.target.getInternalName()) {
-            currentState.addTransition(newStates[state], symbol, newState.transitionId);
+            currentState.addTransition(newStates[state], newState.transitionSymbol, newState.transitionId);
             return true;
         }
     }
@@ -298,13 +297,13 @@ function checkIfNewStateAlreadyExists(newStates, newState, currentState, symbol)
     return false;
 }
 
-function createState(state, pendingStates, symbol, currentState, newStates) {
+function createState(state, pendingStates, currentState, newStates) {
     let newState = null;
     
     newState = new State(state.target.getName(), state.target.getId());
     newState.setInternalName(state.target.getInternalName());
     newState.setBehavior({final: state.target.isFinal()});
-    currentState.addTransition(newState, symbol, state.transitionId);
+    currentState.addTransition(newState, state.transitionSymbol, state.transitionId);
     newStates.push(newState);
     pendingStates.push(newState);
 }
