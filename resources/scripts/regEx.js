@@ -62,16 +62,12 @@ function reduceStates(automaton) {
 }
 
 function getRegexWhereInitialStateIsFinalState(automaton, finals, newTransitionId) {
-
+    if(finals === 1) return constructLoopRegex(automaton.getStates()[0]._getTransitions()[0].getSymbol());
 }
 
 function getRegexWhereInitialStateIsNotFinalState(automaton, finals, newTransitionId) {
-    if(finals === 1) {
-        return buildTwoStatesRegex(automaton.getStates());
-    }
-    else {
-        return buildMultipleFinalStatesRegex(automaton, newTransitionId);
-    }
+    if(finals === 1) return buildTwoStatesRegex(automaton.getStates());
+    else return buildMultipleFinalStatesRegex(automaton, newTransitionId);
 }
 
 function buildMultipleFinalStatesRegex(automaton, newTransitionId) {
@@ -126,8 +122,9 @@ function buildTwoStatesRegex(states) {
 }
 
 function removeState(state, newTransitionId) {
-    let incomingTransitions = [];
     let counter = 0;
+    let incomingTransitions = [];
+    let symbolCopy = '';
     let outgoingTransitions = state._getTransitions();
     let loopbackTransition = checkForLoopbackTransition(outgoingTransitions);
     let loopRegEx = loopbackTransition ? constructLoopRegex(loopbackTransition.getSymbol()) : '';
@@ -136,10 +133,11 @@ function removeState(state, newTransitionId) {
     incomingTransitions = state.getIncomingTransitions();
 
     for(let i = 0; i < incomingTransitions.length; i++) {
+        symbolCopy = incomingTransitions[i].getSymbol();
         for(let x = 0; x < outgoingTransitions.length; x++) {
             if(loopbackTransition && outgoingTransitions[x].getId() === loopbackTransition.getId()) continue;
             if(counter === 0) updateIncomingTransition(incomingTransitions[i], loopRegEx, outgoingTransitions[x]);
-            else { newTransitionId = createNewTransition(incomingTransitions[i], loopRegEx, outgoingTransitions[x], newTransitionId); }
+            else { newTransitionId = createNewTransition(incomingTransitions[i], symbolCopy, loopRegEx, outgoingTransitions[x], newTransitionId); }
 
             counter++;
         }
@@ -182,8 +180,8 @@ function updateIncomingTransition(incomingTransition, loopRegEx, outgoingTransit
     incomingTransition.getTarget().addTransitionToMe(incomingTransition);
 }
 
-function createNewTransition(incomingTransition, loopRegEx, outgoingTransition, newTransitionId) {
-    let regEx = constructRegEx(incomingTransition.getSymbol(), loopRegEx, outgoingTransition.getSymbol());
+function createNewTransition(incomingTransition, incomingTransitionSymbolCopy, loopRegEx, outgoingTransition, newTransitionId) {
+    let regEx = constructRegEx(incomingTransitionSymbolCopy, loopRegEx, outgoingTransition.getSymbol());
     let source = incomingTransition.getSource();
     let target = outgoingTransition.getTarget();
 
