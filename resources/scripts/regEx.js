@@ -3,8 +3,8 @@ var RegEx = (function() {
 
 function convertToRegex(automaton) {
     collapseTransitions(automaton.getStates());
-    reduceStates(automaton.getStates());
-    console.log(automaton);
+    let regex = reduceStates(automaton);
+    console.log(regex);
 }
 
 function collapseTransitions(states) {
@@ -26,14 +26,17 @@ function collapseTransitions(states) {
                 }
             }
             symbols.map(function(symbol) {
-                currentTransition._symbol += '+' + symbol;
+                //currentTransition._symbol += '+' + symbol;
+                currentTransition._symbol = constructRegEx(currentTransition._symbol, '', symbol, '+');
             });
             symbols = [];
         }
     }
 }
 
-function reduceStates(states) {
+function reduceStates(automaton) {
+    let states = automaton.getStates();
+    let copy = null;
     let newTransitionId = 1;
     let finals = 0;
     let regex = '';
@@ -49,20 +52,43 @@ function reduceStates(states) {
         i--;
     }
 
+    copy = automaton.clone();
     if(states[0].isFinal()) {
-        regex = getRegexWhereInitialStateIsFinalState(states, finals);
+        regex = getRegexWhereInitialStateIsFinalState(copy, finals);
     }
     else {
-        regex = getRegexWhereInitialStateIsNotFinalState(states, finals);
-    }   
+        regex = getRegexWhereInitialStateIsNotFinalState(copy, finals);
+    }
+
+    return regex;
 }
 
-function getRegexWhereInitialStateIsFinalState(states, finals) {
+function getRegexWhereInitialStateIsFinalState(automaton, finals) {
 
 }
 
-function getRegexWhereInitialStateIsNotFinalState(states, finals) {
-    
+function getRegexWhereInitialStateIsNotFinalState(automaton, finals) {
+    if(finals === 1) {
+        return buildTwoStatesRegex(automaton.getStates());
+    }
+}
+
+function buildTwoStatesRegex(states) {
+    let regex = '';
+    let initialLoopBack = checkForLoopbackTransition(states[0]._getTransitions());
+    let finalLoopBack = checkForLoopbackTransition(states[1]._getTransitions());
+    let transitionToInitialState = getTransition(states[1], states[0]);
+
+    regex = initialLoopBack ? constructLoopRegex(initialLoopBack.getSymbol()) : '';
+    regex += getTransition(states[0], states[1]).getSymbol();
+    regex = finalLoopBack ? regex + constructLoopRegex(finalLoopBack.getSymbol()) : regex;
+
+    if(transitionToInitialState) {
+        let loopExpression = '(' + transitionToInitialState.getSymbol() + ')' + regex;
+        regex += constructLoopRegex(loopExpression);
+    }
+
+    return regex;
 }
 
 function removeState(state, newTransitionId) {
@@ -77,7 +103,7 @@ function removeState(state, newTransitionId) {
 
     for(let i = 0; i < incomingTransitions.length; i++) {
         for(let x = 0; x < outgoingTransitions.length; x++) {
-            if(loopbackTransition && outgoingTransitions[x].getId() === loopbackTransition.getId) continue;
+            if(loopbackTransition && outgoingTransitions[x].getId() === loopbackTransition.getId()) continue;
             if(counter === 0) updateIncomingTransition(incomingTransitions[i], loopRegEx, outgoingTransitions[x]);
             else { newTransitionId = createNewTransition(incomingTransitions[i], loopRegEx, outgoingTransitions[x], newTransitionId); }
 
@@ -92,7 +118,9 @@ function removeState(state, newTransitionId) {
 }
 
 function constructLoopRegex(regEx) {
-    return '(' + regEx + ')*';
+    if(regEx.length > 1) return '(' + regEx + ')*';
+
+    return regEx + '*';
 }
 
 function checkForLoopbackTransition(transitions) {
@@ -129,16 +157,28 @@ function createNewTransition(incomingTransition, loopRegEx, outgoingTransition, 
     return ++newTransitionId;
 }
 
-function constructRegEx(incomingRegEx, loopRegEx, outgoingRegex) {
-    if(outgoingRegex.length > 1) returnincomingRegEx + loopRegEx + '(' + outgoingRegex + ')';
+function constructRegEx(incomingRegEx, loopRegEx, outgoingRegex, operator) {
+    if(outgoingRegex.length > 1) outgoingRegex = '(' + outgoingRegex + ')';
+    if(incomingRegEx.length > 1) incomingRegEx = '(' + incomingRegEx + ')';
 
-    return incomingRegEx + loopRegEx + outgoingRegex;
+    if(!operator) return incomingRegEx + loopRegEx + outgoingRegex;
+    else return incomingRegEx + operator + outgoingRegex;
 }
 
 function getIncomingStates(incomingTransitions) {
     return incomingTransitions.map(function(transition) {
         return transition.getSource();
     });
+}
+
+function getTransition(source, target) {
+    let transitions = source._getTransitions();
+
+    for(let transition in transitions) {
+        if(transitions[transition].getTarget().getId() === target.getId()) return transitions[transition];
+    }
+
+    return null;
 }
 
 return {
