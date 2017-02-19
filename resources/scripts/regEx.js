@@ -5,6 +5,7 @@ function convertToRegex(automaton) {
     collapseTransitions(automaton.getStates());
     let regex = reduceStates(automaton);
     console.log(regex);
+    return regex;
 }
 
 function collapseTransitions(states) {
@@ -26,7 +27,6 @@ function collapseTransitions(states) {
                 }
             }
             symbols.map(function(symbol) {
-                //currentTransition._symbol += '+' + symbol;
                 currentTransition._symbol = constructRegEx(currentTransition._symbol, '', symbol, '+');
             });
             symbols = [];
@@ -63,6 +63,7 @@ function reduceStates(automaton) {
 
 function getRegexWhereInitialStateIsFinalState(automaton, finals, newTransitionId) {
     if(finals === 1) return constructLoopRegex(automaton.getStates()[0]._getTransitions()[0].getSymbol());
+    else return buildMultipleFinalStatesRegex(automaton, newTransitionId);
 }
 
 function getRegexWhereInitialStateIsNotFinalState(automaton, finals, newTransitionId) {
@@ -91,6 +92,11 @@ function buildMultipleFinalStatesRegex(automaton, newTransitionId) {
             newTransitionId = removeState(otherStates[x], newTransitionId);
             otherStates.splice(x, 1);
             x--;
+        }
+
+        if(otherStates.length === 1) {
+            expressions.push(constructLoopRegex(otherStates[0]._getTransitions()[0].getSymbol()));
+            continue;
         }
 
         expressions.push(buildTwoStatesRegex(otherStates));

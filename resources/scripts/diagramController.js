@@ -109,7 +109,7 @@ function convertToRegex() {
 
     setAlphabet();
     let clone = automaton.clone();
-    RegEx.convertToRegex(clone);
+    alert('Your regular expression is: ' + RegEx.convertToRegex(clone) + '. Sorry for the presentation.');
 }
 
 function setAlphabet() {
