@@ -36,7 +36,6 @@ function collapseTransitions(states) {
 
 function reduceStates(automaton) {
     let states = automaton.getStates();
-    let copy = null;
     let newTransitionId = 1;
     let finals = 0;
     let regex = '';
@@ -51,26 +50,61 @@ function reduceStates(automaton) {
         states.splice(i, 1);
         i--;
     }
-
-    copy = automaton.clone();
+    
     if(states[0].isFinal()) {
-        regex = getRegexWhereInitialStateIsFinalState(copy, finals);
+        regex = getRegexWhereInitialStateIsFinalState(automaton, finals, newTransitionId);
     }
     else {
-        regex = getRegexWhereInitialStateIsNotFinalState(copy, finals);
+        regex = getRegexWhereInitialStateIsNotFinalState(automaton, finals, newTransitionId);
     }
 
     return regex;
 }
 
-function getRegexWhereInitialStateIsFinalState(automaton, finals) {
+function getRegexWhereInitialStateIsFinalState(automaton, finals, newTransitionId) {
 
 }
 
-function getRegexWhereInitialStateIsNotFinalState(automaton, finals) {
+function getRegexWhereInitialStateIsNotFinalState(automaton, finals, newTransitionId) {
     if(finals === 1) {
         return buildTwoStatesRegex(automaton.getStates());
     }
+    else {
+        return buildMultipleFinalStatesRegex(automaton, newTransitionId);
+    }
+}
+
+function buildMultipleFinalStatesRegex(automaton, newTransitionId) {
+    let states = automaton.getStates();
+    let expressions = [];
+    let otherStates = [];
+    let finalStates = [];
+    let regex = '';
+    let counter = 0;
+
+    for(let state in states) {
+        if(states[state].isFinal()) finalStates.push(states[state]);
+    }
+
+    for(let i = 0; i < finalStates.length; i++) {
+        otherStates = automaton.getStates();
+        automaton = automaton.clone();
+
+        for(let x = 1; x < otherStates.length; x++) {
+            if(otherStates[x].getId() === finalStates[i].getId()) continue;
+            newTransitionId = removeState(otherStates[x], newTransitionId);
+            otherStates.splice(x, 1);
+            x--;
+        }
+
+        expressions.push(buildTwoStatesRegex(otherStates));
+    }
+
+    for(let expression in expressions) {
+        regex = regex ? regex + '+' + expressions[expression] : expressions[expression];
+    }
+
+    return regex;
 }
 
 function buildTwoStatesRegex(states) {
