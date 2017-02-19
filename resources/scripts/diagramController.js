@@ -89,6 +89,9 @@ function evaluateWord() {
     console.log(automaton.clone());
     console.log(status.msg);
     alert(status.msg);
+
+    // let output = Parser.parse('(0+1)*.1.(0+1)');
+    // console.log(output);
 }
 
 function convertToDFA() {
@@ -110,6 +113,13 @@ function convertToRegex() {
     setAlphabet();
     let clone = automaton.clone();
     alert('Your regular expression is: ' + RegEx.convertToRegex(clone) + '. Sorry for the presentation.');
+}
+
+function convertRegexToNFAE() {
+    let expression = prompt('Insert regex:');
+    if(!expression) return;
+
+    RegEx.toNFAE(expression);
 }
 
 function setAlphabet() {

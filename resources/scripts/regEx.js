@@ -8,6 +8,10 @@ function convertToRegex(automaton) {
     return regex;
 }
 
+function toNFAE(regex) {
+    regexConverter.convertToNFAE(regex);
+}
+
 function collapseTransitions(states) {
     let transitions = [];
     let symbols = [];
@@ -220,7 +224,8 @@ function getTransition(source, target) {
 }
 
 return {
-    convertToRegex: convertToRegex
+    convertToRegex: convertToRegex,
+    toNFAE: toNFAE
 }
 
 })();
