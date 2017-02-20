@@ -200,8 +200,18 @@ function createNewTransition(incomingTransition, incomingTransitionSymbolCopy, l
 }
 
 function constructRegEx(incomingRegEx, loopRegEx, outgoingRegex, operator) {
-    if(outgoingRegex.length > 1) outgoingRegex = '(' + outgoingRegex + ')';
-    if(incomingRegEx.length > 1) incomingRegEx = '(' + incomingRegEx + ')';
+    for(let symbol in outgoingRegex) {
+        if(outgoingRegex[symbol] === '+') {
+            outgoingRegex = '(' + outgoingRegex + ')';
+            break;
+        }
+    }
+    for(let symbol in incomingRegEx) {
+        if(incomingRegEx[symbol] === '+') {
+            incomingRegEx = '(' + incomingRegEx + ')';
+            break;
+        }
+    }
 
     if(!operator) return incomingRegEx + loopRegEx + outgoingRegex;
     else return incomingRegEx + operator + outgoingRegex;
