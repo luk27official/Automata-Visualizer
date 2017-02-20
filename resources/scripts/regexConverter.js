@@ -4,7 +4,10 @@ var regexConverter = (function() {
     let counter = 0;
 
 function convertToNFAE(regex) {
-    let output = Parser.parse(regex);
+    let newRegex = setupRegexFormat(regex);
+    console.log(regex);
+    console.log(newRegex);
+    let output = Parser.parse(newRegex);
     let automaton = buildNFAE(output);
     counter =  0;
 
@@ -14,6 +17,41 @@ function convertToNFAE(regex) {
     console.log(automaton);
     return automaton;
 }
+
+function setupRegexFormat(regex) {
+    let newRegex = '';
+
+    for(let i = 0; i < regex.length; i++) {
+        newRegex = newRegex.concat(regex[i]);
+        if(i === regex.length-1) break;
+        if(checkRegexRules(regex[i], regex[i+1])) newRegex = newRegex.concat('.');
+    }
+
+    return newRegex;
+}
+
+function checkRegexRules(leftCharacter, rightCharacter) {
+    if(leftCharacter === ')' && rightCharacter === '(') return true;
+    if(leftCharacter === ')' && isASymbol(rightCharacter)) return true;
+    if(leftCharacter === '*' && isASymbol(rightCharacter)) return true;
+    if(leftCharacter === '*' && rightCharacter === '(') return true;
+    if(isASymbol(leftCharacter) && rightCharacter === '(') return true;
+    if(isASymbol(leftCharacter) && isASymbol(rightCharacter)) return true;
+
+    return false;
+}
+
+function isASymbol(character) {
+    if(character !== ')' && character !== '(' && character !== '+' && character !== '*') return true;
+    return false;
+}
+
+// Dos caracteres seguidos en el que el de la izquierda sea ')' y el de la derecha sea '('
+// Dos caracteres seguidos en el que el de la izquierda sea ')' y el el de la derecha un simbolo
+// Dos caracteres seguidos en el que el de la izquierda sea '*' y el de la derecha un simbolo
+// Dos caracteres seguidos en el que el de la izquierda sea '*' y el el de la derecha sea '('
+// Dos caracteres seguidos en el que el de la izquierda sea un simbolo y el el de la derecha sea '('
+// Dos caracteres seguidos en el que ambos sean simbolos
 
 function buildNFAE(regex) {
     let left = right = expression = null;
