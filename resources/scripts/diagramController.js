@@ -29,6 +29,9 @@ function setUp() {
     currentAutomaton = config.currentAutomaton;
     diagram = config.diagram;
 
+    $('#' + 'DFA').removeClass('active');
+    document.getElementById(currentAutomaton).className = 'active';
+
     registerEventHandlers(paper, graph);
 }
 
@@ -117,9 +120,16 @@ function convertToRegex() {
 
 function convertRegexToNFAE() {
     let expression = prompt('Insert regex:');
+    let generatedAutomaton = null;
+    let json = {};
+
     if(!expression) return;
 
-    RegEx.toNFAE(expression);
+    generatedAutomaton = RegEx.toNFAE(expression);
+    json = automaton.toJSON(generatedAutomaton.getStates());
+    console.log(json);
+    dataToSend = JSON.stringify({type: 'NFAE', states: json});
+    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function setAlphabet() {

@@ -9,7 +9,7 @@ function convertToRegex(automaton) {
 }
 
 function toNFAE(regex) {
-    regexConverter.convertToNFAE(regex);
+    return regexConverter.convertToNFAE(regex);
 }
 
 function collapseTransitions(states) {

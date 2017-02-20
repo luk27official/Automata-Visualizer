@@ -4,10 +4,15 @@ var regexConverter = (function() {
     let counter = 0;
 
 function convertToNFAE(regex) {
-    counter = 0;
     let output = Parser.parse(regex);
+    let automaton = buildNFAE(output);
+    counter =  0;
+
+    automaton.getStates()[0].setBehavior({initial: true});
+    automaton.getStates()[automaton.getStates().length-1].setBehavior({final: true});
     console.log(output);
-    console.log(buildNFAE(output));
+    console.log(automaton);
+    return automaton;
 }
 
 function buildNFAE(regex) {
