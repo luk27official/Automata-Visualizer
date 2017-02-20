@@ -226,6 +226,9 @@ function toJSON(states) {
 }
 
 function clone() {
+    let status = this._checkInitialState();
+    if(!status.valid) return null;
+
     let automaton = new Automaton();
     let initialState = this.getInitialState();
     let currentState = new State(initialState.getName(), initialState.getId());

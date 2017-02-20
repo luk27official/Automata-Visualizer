@@ -115,6 +115,10 @@ function convertToRegex() {
 
     setAlphabet();
     let clone = automaton.clone();
+    if(!clone) {
+        alert('No initial state has been set!');
+        return;
+    }
     alert('Your regular expression is: ' + RegEx.convertToRegex(clone) + '. Sorry for the presentation.');
 }
 
