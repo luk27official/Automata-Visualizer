@@ -100,9 +100,6 @@ function evaluateWord() {
     console.log(automaton.clone());
     console.log(status.msg);
     alert(status.msg);
-
-    // let output = Parser.parse('(0+1)*.1.(0+1)');
-    // console.log(output);
 }
 
 function convertToDFA() {
@@ -127,11 +124,12 @@ function convertToRegex() {
         alert('No initial state has been set!');
         return;
     }
-    alert('Your regular expression is: ' + RegEx.convertToRegex(clone) + '. Sorry for the presentation.');
+    let regex = RegEx.convertToRegex(clone);
+    $('#regexText').val(regex)
 }
 
 function convertRegexToNFAE() {
-    let expression = prompt('Insert regex:');
+    let expression = $('#regexText').val();
     let generatedAutomaton = null;
     let json = {};
 
