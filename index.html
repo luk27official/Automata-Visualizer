@@ -4,10 +4,13 @@
 		<link rel="stylesheet" href="resources/css/joint.min.css" />
 		<link href="resources/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="resources/css/flat-ui.min.css" rel="stylesheet">
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="resources/css/materialize.min.css"  media="screen,projection"/>
 		<link rel="shortcut icon" href="resources/img/favicon.ico">
 
 		<script src="resources/scripts/libs/regular-expression.js"></script>
 		<script src="resources/scripts/libs/jquery.js"></script>
+		<script src="resources/scripts/libs/materialize.min.js"></script>
 		<script src="resources/scripts/libs/vendor/video.js"></script>
     	<script src="resources/scripts/libs/flat-ui.min.js"></script>
 		<script src="resources/scripts/libs/lodash.js"></script>
@@ -29,6 +32,7 @@
 		<script src="resources/scripts/regex.js"></script>
 		<script src="resources/scripts/events.js"></script>
 		<title>Automata Visualizer</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	</head>
 	<body>
 		<nav class="navbar navbar-inverse navbar-embossed" role="navigation">
@@ -46,7 +50,8 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="toolbar">
+		
+		<!--<div class="toolbar">
 			<button id="insert" class="btn btn-primary" onclick="toolbarAction = 'insert'">Insert state</button>
 			<button id="remove" class="btn btn-danger" onclick="toolbarAction = 'remove'">Remove state</button>
 			<button id="select" class="btn btn-info" onclick="toolbarAction = 'select'">Select state</button>
@@ -60,7 +65,26 @@
 				<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)">Final
 				<input id="set-name" type="button" value="set name">
 			</div>
-		</div>
+		</div>-->
+	<div id="toolbar">
+		<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)"><label for="initialCheckbox">Initial</label>
+		<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)"><label for="finalCheckbox">Final</label>
+		<input id="set-name" type="button" value="set name">
+	</div>
+	<ul id="slide-out" class="side-nav">
+		<li><div class="toolbar">
+				<button id="insert" style="width: 90%;" class="btn btn-primary" onclick="toolbarAction = 'insert'; $('.button-collapse').sideNav('hide');">Insert state</button>
+				<button id="remove" style="width: 90%;" class="btn btn-danger" onclick="toolbarAction = 'remove';$('.button-collapse').sideNav('hide');">Remove state</button>
+				<button id="select" style="width: 90%;" class="btn btn-info" onclick="toolbarAction = 'select';$('.button-collapse').sideNav('hide');">Select state</button>
+				<button id="evaluate" style="width: 90%;" class="btn btn-inverse" onclick="evaluateWord();$('.button-collapse').sideNav('hide');">Evaluate</button>
+				<button style="width: 90%;" class="btn btn-default btn-wide btn-success" onclick="saveAutomaton()">Save</button>
+				<button style="width: 90%;" class="btn btn-default btn-wide btn-success" onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex</button>
+				<button id="convertDFA" class="btn btn-default btn-wide btn-success" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
+				<input type="text" placeholder="Generated Regex">
+				<button style="width: 90%;" class="btn btn-default btn-wide btn-success" onclick="convertToRegex();$('.button-collapse').sideNav('hide');">Convert to Regex</button>
+		</div></li>
+  </ul>
+  <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
 		<div id="paper"></div>
 		<script src="resources/scripts/diagramController.js"></script>
 	</body>
