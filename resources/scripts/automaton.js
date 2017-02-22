@@ -165,7 +165,7 @@ function buildStates(states) {
     let newState = null;
 
     for(let state in states) {
-        newState = new State(states[state].name, 0);
+        newState = new State(states[state].name, states[state].id);
         newState.setBehavior({initial: states[state].initial, final: states[state].final});
         newState.setInternalName(states[state].internalName);
         
@@ -183,7 +183,7 @@ function buildTransitions(states) {
     for(let i = 0; i < this._states.length; i++) {
         for(let transition in states[i].transitions) {
             edge = states[i].transitions[transition];
-            this._states[i].addTransition(this._getStateByInternalName(edge.target), edge.symbol, 0);
+            this._states[i].addTransition(this._getStateByInternalName(edge.target), edge.symbol, edge.id);
         }
     }
 }
@@ -209,6 +209,7 @@ function toJSON(states) {
         json.internalName = states[state].getInternalName();
         json.initial = states[state].isInitial();
         json.final = states[state].isFinal();
+        json.id = states[state].getId();
 
         transitions = states[state]._getTransitions();
         json.transitions = [];
@@ -216,6 +217,7 @@ function toJSON(states) {
             edge.source = transitions[transition].getSource().getInternalName();
             edge.target = transitions[transition].getTarget().getInternalName();
             edge.symbol = transitions[transition].getSymbol();
+            edge.id = transitions[transition].getId();
             json.transitions.push(edge);
             edge = {};
         }

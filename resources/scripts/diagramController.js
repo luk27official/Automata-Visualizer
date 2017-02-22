@@ -109,7 +109,7 @@ function convertToDFA() {
 
     setAlphabet();
     newAutomaton = automaton.convertToDFA();
-    newAutomaton.type = currentAutomaton;
+    newAutomaton.type = 'DFA';
     console.log(newAutomaton);
     //Validar que newAutomaton tenga los nuevos estados
     dataToSend = JSON.stringify(newAutomaton);
@@ -138,8 +138,9 @@ function convertRegexToNFAE() {
 
     generatedAutomaton = RegEx.toNFAE(expression);
     json = automaton.toJSON(generatedAutomaton.getStates());
+    json.type = 'NFAE';
     console.log(json);
-    dataToSend = JSON.stringify({type: 'NFAE', states: json});
+    dataToSend = JSON.stringify(json);
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
@@ -169,10 +170,19 @@ function importAutomaton(event) {
     let json = '';
 
     reader.onload = function() {
-      json = reader.result;
-      graph.fromJSON(JSON.parse(json))
+      processImportedGraph(reader.result);
     };
     reader.readAsText(input.files[0])
+}
+
+function processImportedGraph(json) {
+    let newAutomaton = JSON.parse(json);
+    let logic = newAutomaton[0];
+    let visuals = newAutomaton[1];
+    changeAutomaton(document.getElementById(logic.type));
+    automaton.buildFromJSON(logic);
+    graph.fromJSON(visuals);
+    console.log(automaton);
 }
 
 function changeAutomaton(item) {
