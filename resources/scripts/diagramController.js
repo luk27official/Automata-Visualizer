@@ -152,8 +152,25 @@ function setAlphabet() {
     automaton._alphabet = insertedAlphabet.split(" ");
 }
 
-function saveAutomaton() {
-    let json = JSON.stringify(automaton.toJson());
+function saveAutomaton(item) {
+    let jsons = [];
+    let automaton_json = automaton.toJSON();
+    let automaton_visuals = graph.toJSON();
+    jsons.push(automaton_json);
+    jsons.push(automaton_visuals);
+    $(item).attr("href", "data:application/octet-stream," + encodeURIComponent(JSON.stringify(jsons))).attr("download", "automaton.json");
+}
+
+function importAutomaton(event) {
+    let input = event.target;
+    let reader = new FileReader();
+    let json = '';
+
+    reader.onload = function() {
+      json = reader.result;
+      graph.fromJSON(JSON.parse(json))
+    };
+    reader.readAsText(input.files[0])
 }
 
 function changeAutomaton(item) {

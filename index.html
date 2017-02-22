@@ -63,7 +63,9 @@
 					<button id="remove" class="btn btn-danger toolbar-button" onclick="toolbarAction = 'remove';$('.button-collapse').sideNav('hide');">Remove state</button>
 					<button id="select" class="btn btn-info toolbar-button" onclick="toolbarAction = 'select';$('.button-collapse').sideNav('hide');">Select state</button>
 					<button id="evaluate" class="btn btn-inverse toolbar-button" onclick="evaluateWord()">Evaluate</button>
-					<!--<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="saveAutomaton()">Save</button>-->
+					<a onclick="saveAutomaton(this)"><button class="btn btn-default btn-wide btn-success toolbar-button">Export Automaton</button></a>
+					<input type="file" id="file" onchange="importAutomaton(event)" style="display: none;">
+					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="$('#file').click()">Import Automaton</button>
 					<button id="convertDFA" class="btn btn-default btn-wide btn-success toolbar-button" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
 					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex</button>
 					<input id="regexText" type="text" class="toolbar-text" placeholder="Regular Expression">

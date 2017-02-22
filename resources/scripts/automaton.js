@@ -202,6 +202,8 @@ function toJSON(states) {
     let transitions = [];
     let edge = {};
 
+    states = !states ? this._states : states;
+
     for(let state in states) {
         json.name = states[state].getName();
         json.internalName = states[state].getInternalName();
