@@ -40,6 +40,7 @@ function setUp() {
     $('#' + 'DFA').removeClass('active');
     document.getElementById(currentAutomaton).className = 'active';
 
+    joint.layout.DirectedGraph.layout(graph, { setLinkVertices: false });
     registerEventHandlers(paper, graph);
 }
 
