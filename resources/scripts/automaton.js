@@ -224,7 +224,9 @@ function toJSON(states) {
         json = {};
     }
 
-    return jsonStates;
+    return {
+        states: jsonStates
+    };
 }
 
 function clone() {

@@ -105,13 +105,14 @@ function evaluateWord() {
 function convertToDFA() {
     let status;
     let dataToSend;
-    let newStates = [];
+    let newAutomaton = {};
 
     setAlphabet();
-    newStates = automaton.convertToDFA();
-    console.log(newStates);
-    //Validar que newStates tenga los nuevos estados
-    dataToSend = JSON.stringify({type: 'DFA', states: newStates});
+    newAutomaton = automaton.convertToDFA();
+    newAutomaton.type = currentAutomaton;
+    console.log(newAutomaton);
+    //Validar que newAutomaton tenga los nuevos estados
+    dataToSend = JSON.stringify(newAutomaton);
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
@@ -156,6 +157,7 @@ function saveAutomaton(item) {
     let jsons = [];
     let automaton_json = automaton.toJSON();
     let automaton_visuals = graph.toJSON();
+    automaton_json.type = currentAutomaton;
     jsons.push(automaton_json);
     jsons.push(automaton_visuals);
     $(item).attr("href", "data:application/octet-stream," + encodeURIComponent(JSON.stringify(jsons))).attr("download", "automaton.json");
