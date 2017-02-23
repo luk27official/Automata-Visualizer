@@ -17,8 +17,36 @@ function unite(alphabet) {
     return startPolymerization(alphabet, 'union');
 }
 
-function complement() {
+function complement(alphabet) {
+    let operand = operands[0];
+    let states = [];
+    let transitions = [];
+    let sumidero = new State('sumidero', 0);
+    sumidero.setInternalName('q99');
 
+    if(operand.type !== 'DFA') operand = convertOperandtoDFA(operand.operand, alphabet);
+    else operand = operand.operand;
+
+    states = operand.getStates();
+
+    for(let state in states) {
+        states[state].setBehavior({final: !states[state].isFinal()});
+        for(let symbol in alphabet) {
+            transitions = operand._getTransitionsBySymbol(states[state], alphabet[symbol]);
+            if(transitions.length) continue;
+            states[state].addTransition(sumidero, alphabet[symbol], 0);
+        }
+    }
+
+    if(!sumidero.getIncomingTransitions().length) return operand;
+
+    sumidero.setBehavior({final: true});
+    for(let symbol in alphabet) {
+        sumidero.addTransition(sumidero, alphabet[symbol], 0);
+    }
+    states.push(sumidero);
+
+    return operand;
 }
 
 function startPolymerization(alphabet, operation) {

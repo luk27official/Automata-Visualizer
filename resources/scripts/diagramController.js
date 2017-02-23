@@ -172,14 +172,25 @@ function addAutomatonToOperandsList() {
 }
 
 function intersectAutomata() {
-    execureRegularOperation(regularLanguaje.properties.intersect);
+    executeRegularOperation(regularLanguaje.properties.intersect);
 }
 
 function combineAutomata() {
-    execureRegularOperation(regularLanguaje.properties.unite);
+    executeRegularOperation(regularLanguaje.properties.unite);
 }
 
-function execureRegularOperation(operationCallback) {
+function complementAutomata() {
+    let result = null;
+
+    setAlphabet();
+    result = regularLanguaje.properties.complement(insertedAlphabet.split(" "));
+    changeAutomaton(document.getElementById('DFA'));
+    diagram.automaton = automaton = result;
+    loader._renderAutomaton(diagram, automaton, 'DFA');
+    console.log(automaton);
+}
+
+function executeRegularOperation(operationCallback) {
     let result = null;
     if(!regularLanguaje.operands.length) { alert('You must add at least two operands to continue.'); return; }
     
@@ -189,10 +200,6 @@ function execureRegularOperation(operationCallback) {
     diagram.automaton = automaton = result;
     loader._renderAutomaton(diagram, automaton, 'DFA');
     console.log(automaton);
-}
-
-function complementAutomata() {
-
 }
 
 function saveAutomaton(item) {
