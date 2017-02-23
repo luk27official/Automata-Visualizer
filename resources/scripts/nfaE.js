@@ -25,10 +25,16 @@ var NFAE = (function() {
     }
 
     function convertToDFA() {
+        let dfa = null;
         let status = this._checkInitialState();
         if(!status.valid) return status;
 
-        return this._convert();
+        dfa = new DFA();
+        dfa._states =  this._convert();
+        dfa._initialState = dfa._states[0];
+        dfa._counter = dfa._states.length;
+
+        return dfa;
     }
 
     function convert() {
@@ -63,7 +69,8 @@ var NFAE = (function() {
         }
 
         console.log(newStates);
-        return this.toJSON(newStates);
+        return newStates;
+        //return this.toJSON(newStates);
     }
 
     function runPass(newStates, pendingStates, currentState) {

@@ -174,7 +174,12 @@ function buildStates(states) {
         newState = null;
     }
 
-    this._initialState = this._states[0];
+    //this._initialState = this._states[0];
+    for(let state in this._states) {
+        if(!this._states[state].isInitial()) continue;
+        this._initialState = this._states[state];
+        break;
+    }
 }
 
 function buildTransitions(states) {

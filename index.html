@@ -67,9 +67,9 @@
 					<h5 class="collection-header">Fast Run</h5>
 					<button id="evaluate" class="btn btn-inverse toolbar-button last-button" onclick="evaluateWord()">Evaluate Word</button>
 					<h5 class="collection-header">Save/Open</h5>
-					<a onclick="saveAutomaton(this)"><button class="btn btn-default btn-wide btn-success toolbar-button">Export Automaton</button></a>
 					<input type="file" id="file" onchange="importAutomaton(event)" style="display: none;">
-					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="$('#file').click()">Import Automaton</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="$('#file').click()">Import Automaton</button>
+					<a onclick="saveAutomaton(this)"><button class="btn btn-default btn-wide btn-success toolbar-button last-button">Export Automaton</button></a>
 					<h5 class="collection-header">Regex Operations</h5>
 					<button class="btn btn-default btn-wide btn-success toolbar-button" last-button onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex to NFA-E</button>
 					<input id="regexText" type="text" class="toolbar-text" placeholder="Regular Expression">

@@ -80,10 +80,16 @@ function runValidations(word) {
 }
 
 function convertToDFA() {
+    let dfa = null;
     let status = this._checkInitialState();
     if(!status.valid) return status;
 
-    return this._convert();
+    dfa = new DFA();
+    dfa._states = this._convert();
+    dfa._initialState = dfa._states[0];
+    dfa._counter = dfa._states.length;
+
+    return dfa;
 }
 
 function convert() {
@@ -100,7 +106,8 @@ function convert() {
     }
 
     console.log(newStates);
-    return this.toJSON(newStates);
+    //return this.toJSON(newStates);
+    return newStates;
 }
 
 function runPass(newStates, pendingStates, currentState) {

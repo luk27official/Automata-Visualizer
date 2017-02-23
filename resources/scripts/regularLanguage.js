@@ -11,17 +11,42 @@ let properties = {
 
 function intersect(alphabet) {
     let result = null;
+    let firstOperand = null;
+    let secondOperand = null;
 
     for(let i = 0; i < operands.length; i++) {
         if(i+1 === operands.length) return result;
-        //Convertir a DFA aquellos operandos que no lo sean
-        result = !result ? combine(operands[i].operand, operands[i+1].operand, alphabet, 'intersection') : combine(result, operands[i+1], alphabet, 'intersection');
-        //Setear el nombre de cada estado en el automata 'result' como la concatenacion de 'q' y un contador.
+        if(!result) {
+            firstOperand = operands[i].type === 'DFA' ? operands[i].operand : convertOperandtoDFA(operands[i].operand, alphabet);
+            secondOperand = operands[i+1].type === 'DFA' ? operands[i+1].operand : convertOperandtoDFA(operands[i+1].operand, alphabet);
+            result = combine(firstOperand, secondOperand, alphabet, 'intersection')
+        }
+        else {
+            secondOperand = operands[i+1].type === 'DFA' ? operands[i+1].operand : convertOperandtoDFA(operands[i+1].operand, alphabet);
+            result = combine(result, secondOperand, alphabet, 'intersection');
+        }
+        setStateNames(result);
     }
 }
 
-function convertOperandstoDFA(operand) {
+function convertOperandtoDFA(operand, alphabet) {
+    let dfa = null;
 
+    operand._alphabet = alphabet;
+    dfa = operand.convertToDFA();
+    setStateNames(dfa);
+
+    return dfa;
+}
+
+function setStateNames(automaton) {
+    let states = automaton.getStates();
+    let counter = 0;
+
+    for(let state in states) {
+        states[state].setName('q' + counter);
+        states[state].setInternalName('q' + counter++);
+    }
 }
 
 function combine(firstOperand, secondOperand, alphabet, operation) {
@@ -44,7 +69,7 @@ function combine(firstOperand, secondOperand, alphabet, operation) {
 
     setFinalStates(operation, newStates, firstOperand, secondOperand);
 
-    result = new Automaton();
+    result = new DFA();
     result._states = newStates;
     result._initialState = newStates[0];
     result._counter = newStates.length;

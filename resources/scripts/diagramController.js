@@ -105,14 +105,16 @@ function evaluateWord() {
 function convertToDFA() {
     let status;
     let dataToSend;
-    let newAutomaton = {};
+    let newAutomaton = null;
+    let automatonJson = {};
 
     setAlphabet();
     newAutomaton = automaton.convertToDFA();
-    newAutomaton.type = 'DFA';
-    console.log(newAutomaton);
+    automatonJson = newAutomaton.toJSON();
+    automatonJson.type = 'DFA';
+    console.log(automatonJson);
     //Validar que newAutomaton tenga los nuevos estados
-    dataToSend = JSON.stringify(newAutomaton);
+    dataToSend = JSON.stringify(automatonJson);
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
@@ -174,8 +176,11 @@ function intersectAutomata() {
     if(!regularLanguaje.operands.length) { alert('You must add at least two operands to continue.'); return; }
     
     setAlphabet();
-    result = regularLanguaje.properties.intersect(insertedAlphabet);
-    console.log(result);
+    result = regularLanguaje.properties.intersect(insertedAlphabet.split(" "));
+    changeAutomaton(document.getElementById('DFA'));
+    diagram.automaton = automaton = result;
+    loader._renderAutomaton(diagram, automaton, 'DFA');
+    console.log(automaton);
 }
 
 function combineAutomata() {
