@@ -19,7 +19,7 @@ setUp();
 $('#toolbar').hide();
 $(".button-collapse").sideNav();
 $('.button-collapse').sideNav({
-      menuWidth: 400, // Default is 300
+      menuWidth: 450, // Default is 300
       edge: 'left', // Choose the horizontal origin
       closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
       draggable: true // Choose whether you can drag to open on touch screens
@@ -155,11 +155,27 @@ function setAlphabet() {
 }
 
 function addAutomatonToOperandsList() {
-    
+    let operandName = '';
+    let clone = null;
+    let renderJson = {};
+
+    operandName = prompt('Name for the automaton:');
+    if(!operandName) return;
+    clone = automaton.clone();
+    if(!clone) { alert('No initial state has been set.'); return; }
+    renderJson = graph.toJSON();
+    regularLanguaje.operands.push({operand: clone, name: operandName, type: currentAutomaton, renderJson: renderJson});
+    $('#operands').append('<a href="#!" class="collection-item">' + operandName + '</a>');
+    console.log(regularLanguaje.operands);
 }
 
 function intersectAutomata() {
+    let result = null;
+    if(!regularLanguaje.operands.length) { alert('You must add at least two operands to continue.'); return; }
     
+    setAlphabet();
+    result = regularLanguaje.properties.intersect(insertedAlphabet);
+    console.log(result);
 }
 
 function combineAutomata() {

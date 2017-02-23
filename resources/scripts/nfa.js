@@ -86,7 +86,7 @@ function convertToDFA() {
     return this._convert();
 }
 
-function convert(automatonType) {
+function convert() {
     let initialState = this.getInitialState();
     let currentState = new State(initialState.getName(), 0);
     currentState.setInternalName(initialState.getInternalName());

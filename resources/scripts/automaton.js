@@ -235,7 +235,7 @@ function clone() {
     let status = this._checkInitialState();
     if(!status.valid) return null;
 
-    let automaton = new Automaton();
+    let automaton = chooseRightAutomaton(this);
     let initialState = this.getInitialState();
     let currentState = new State(initialState.getName(), initialState.getId());
     currentState.setInternalName(initialState.getInternalName());
@@ -253,6 +253,12 @@ function clone() {
     automaton._initialState = newStates[0];
 
     return automaton;
+}
+
+function chooseRightAutomaton(automaton) {
+    if(automaton instanceof DFA) return new DFA();
+    if(automaton instanceof NFA) return new NFA();
+    if(automaton instanceof NFAE) return new NFAE();
 }
 
 function runNextCloningIteration(newStates, pendingStates, currentState) {

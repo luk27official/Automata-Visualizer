@@ -5,6 +5,7 @@ function DFA() {
     Automaton.call(this);
 
     this.run = run;
+    this.getStateTargetForSymbol = getStateTargetForSymbol;
     this._runValidations = runValidations;
     this._processWord = processWord;
     this._validateStateTransitions = validateStateTransitions;
@@ -14,6 +15,17 @@ function DFA() {
 
 DFA.prototype = Object.create(Automaton.prototype);
 DFA.prototype.constructor = DFA;
+
+function getStateTargetForSymbol(internalName, symbol) {
+    let state = null;
+    let transitions = [];
+
+    state = this._getStateByInternalName(internalName);
+    transitions = this._getTransitionsBySymbol(state, symbol);
+
+    if(!transitions.length) return '';
+    return transitions[0].getTarget().getInternalName();
+}
 
 function run(word) {
     let status = this._runValidations(word);
