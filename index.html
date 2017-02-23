@@ -54,22 +54,34 @@
 		<div id="toolbar">
 			<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)"><label for="initialCheckbox">Initial</label>
 			<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)"><label for="finalCheckbox">Final</label>
-			<input id="set-name" type="button" value="set name">
+			<button id="set-name" class="btn btn-default">Set Name</button>
 		</div>
 		<ul id="slide-out" class="side-nav">
 			<li>
 				<div class="toolbar">
+					<h5 class="collection-header">State Operations</h5>
 					<button id="insert" class="btn btn-primary toolbar-button" onclick="toolbarAction = 'insert'; $('.button-collapse').sideNav('hide');">Insert state</button>
 					<button id="remove" class="btn btn-danger toolbar-button" onclick="toolbarAction = 'remove';$('.button-collapse').sideNav('hide');">Remove state</button>
-					<button id="select" class="btn btn-info toolbar-button" onclick="toolbarAction = 'select';$('.button-collapse').sideNav('hide');">Select state</button>
-					<button id="evaluate" class="btn btn-inverse toolbar-button" onclick="evaluateWord()">Evaluate Word</button>
+					<button id="select" class="btn btn-info toolbar-button last-button" onclick="toolbarAction = 'select';$('.button-collapse').sideNav('hide');">Select state</button>
+					<h5 class="collection-header">Fast Run</h5>
+					<button id="evaluate" class="btn btn-inverse toolbar-button last-button" onclick="evaluateWord()">Evaluate Word</button>
+					<h5 class="collection-header">Save/Open</h5>
 					<a onclick="saveAutomaton(this)"><button class="btn btn-default btn-wide btn-success toolbar-button">Export Automaton</button></a>
 					<input type="file" id="file" onchange="importAutomaton(event)" style="display: none;">
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="$('#file').click()">Import Automaton</button>
-					<button id="convertDFA" class="btn btn-default btn-wide btn-success toolbar-button" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex to NFA-E</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="$('#file').click()">Import Automaton</button>
+					<h5 class="collection-header">Regex Operations</h5>
+					<button class="btn btn-default btn-wide btn-success toolbar-button" last-button onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex to NFA-E</button>
 					<input id="regexText" type="text" class="toolbar-text" placeholder="Regular Expression">
 					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="convertToRegex()">Convert to Regex</button>
+					<button id="convertDFA" class="btn btn-default btn-wide btn-success toolbar-button last-button" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
+					<h5 class="collection-header">Regular Language Operations</h5>
+					<ul class="collection">
+						<li class="collection-item">Jack</li>
+					</ul>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="addAutomaton()">Add Automaton as Operand</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="intersectAutomata()">Intersect Automata</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="combineAutomata()">Combine Automata</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="complementAutomata()">Complement Automata</button>
 				</div>
 			</li>
 		</ul>

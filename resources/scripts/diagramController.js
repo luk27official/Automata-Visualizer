@@ -154,6 +154,22 @@ function setAlphabet() {
     automaton._alphabet = insertedAlphabet.split(" ");
 }
 
+function addAutomatonToOperandsList() {
+    
+}
+
+function intersectAutomata() {
+    
+}
+
+function combineAutomata() {
+
+}
+
+function complementAutomata() {
+
+}
+
 function saveAutomaton(item) {
     let jsons = [];
     let automaton_json = automaton.toJSON();
