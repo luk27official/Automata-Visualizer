@@ -10,6 +10,18 @@ let properties = {
 };
 
 function intersect(alphabet) {
+    return startPolymerization(alphabet, 'intersection');
+}
+
+function unite(alphabet) {
+    return startPolymerization(alphabet, 'union');
+}
+
+function complement() {
+
+}
+
+function startPolymerization(alphabet, operation) {
     let result = null;
     let firstOperand = null;
     let secondOperand = null;
@@ -19,11 +31,11 @@ function intersect(alphabet) {
         if(!result) {
             firstOperand = operands[i].type === 'DFA' ? operands[i].operand : convertOperandtoDFA(operands[i].operand, alphabet);
             secondOperand = operands[i+1].type === 'DFA' ? operands[i+1].operand : convertOperandtoDFA(operands[i+1].operand, alphabet);
-            result = combine(firstOperand, secondOperand, alphabet, 'intersection')
+            result = combine(firstOperand, secondOperand, alphabet, operation)
         }
         else {
             secondOperand = operands[i+1].type === 'DFA' ? operands[i+1].operand : convertOperandtoDFA(operands[i+1].operand, alphabet);
-            result = combine(result, secondOperand, alphabet, 'intersection');
+            result = combine(result, secondOperand, alphabet, operation);
         }
         setStateNames(result);
     }
@@ -84,7 +96,7 @@ function setFinalStates(operation, states, firstOperand, secondOperand) {
             break;
 
         case 'union':
-            setUnionFinalStates(states);
+            setUnionFinalStates(states, firstOperand, secondOperand);
             break;
         
         case 'complement':
@@ -112,6 +124,25 @@ function setIntersectionFinalStates(newStates, firstOperand, secondOperand) {
 
         if(candidate && counter === 2) newStates[newState].setBehavior({final: true});
         counter = 0;
+    }
+}
+
+function setUnionFinalStates(newStates, firstOperand, secondOperand) {
+    let names = [];
+    let automaton = null;
+    let state = null;
+    let candidate = false;
+
+    for(let newState in newStates) {
+        candidate = false;
+        names = newStates[newState].getInternalName().split(',');
+        for(let internalName in names) {
+            automaton = selectAutomatonOwner(names[internalName], firstOperand, secondOperand);
+            state = automaton._getStateByInternalName(names[internalName]);
+            if(state.isFinal()) { candidate = true; break;}
+        }
+
+        if(candidate) newStates[newState].setBehavior({final: true});
     }
 }
 
@@ -228,26 +259,12 @@ function createDFAState(newStateName, constructedInternalName, pendingStates, sy
     let newState = null;
     let final = false;
     let state = null;
-
-    // for(let name in newStateName) {
-    //     state = this._getStateByInternalName(newStateName[name]);
-    //     if(!final) final = state.isFinal();
-    //     displayName.push(state.getName());
-    // }
     
     newState = new State(constructedInternalName, 0);
     newState.setInternalName(constructedInternalName);
     currentState.addTransition(newState, symbol, 0);
     newStates.push(newState);
     pendingStates.push(newState);
-}
-
-function unite() {
-
-}
-
-function complement() {
-
 }
 
 return {

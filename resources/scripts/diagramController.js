@@ -172,19 +172,23 @@ function addAutomatonToOperandsList() {
 }
 
 function intersectAutomata() {
+    execureRegularOperation(regularLanguaje.properties.intersect);
+}
+
+function combineAutomata() {
+    execureRegularOperation(regularLanguaje.properties.unite);
+}
+
+function execureRegularOperation(operationCallback) {
     let result = null;
     if(!regularLanguaje.operands.length) { alert('You must add at least two operands to continue.'); return; }
     
     setAlphabet();
-    result = regularLanguaje.properties.intersect(insertedAlphabet.split(" "));
+    result = operationCallback(insertedAlphabet.split(" "));
     changeAutomaton(document.getElementById('DFA'));
     diagram.automaton = automaton = result;
     loader._renderAutomaton(diagram, automaton, 'DFA');
     console.log(automaton);
-}
-
-function combineAutomata() {
-
 }
 
 function complementAutomata() {
