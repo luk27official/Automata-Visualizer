@@ -181,6 +181,7 @@ function combineAutomata() {
 
 function complementAutomata() {
     let result = null;
+    if(!regularLanguaje.operands.length) { alert('You must add at least one operand to continue.'); return; }
 
     setAlphabet();
     result = regularLanguaje.properties.complement(insertedAlphabet.split(" "));
