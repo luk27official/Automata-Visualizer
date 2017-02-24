@@ -49,9 +49,11 @@ function renderAutomaton(diagram, automaton, currentAutomaton) {
 
 function generateVisualStates(states, diagram) {
     let element = null;
-    let x = y = 100;
+    let x = y = 0;
 
     for(let state in states) {
+        x = Math.floor((Math.random() * 1900) + 1);
+        y = Math.floor((Math.random() * 900) + 1);
         element = diagram.generateVisualElement(x, y, states[state].getName());
         states[state]._id = element.id;
         if(states[state].isInitial()) {
@@ -60,8 +62,8 @@ function generateVisualStates(states, diagram) {
         
         if(states[state].isFinal()) element.attr({circle: {'stroke-width': 4}});
 
-        x += 100;
-        if(x >= width - 200) { x = 100; y += 100; }
+        // x += 100;
+        // if(x >= width - 200) { x = 100; y += 100; }
     }
 }
 
