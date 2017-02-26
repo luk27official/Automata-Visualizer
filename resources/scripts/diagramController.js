@@ -234,6 +234,11 @@ function processImportedGraph(json) {
     console.log(automaton);
 }
 
+function minimize() {
+    setAlphabet();
+    automaton.minimize();
+}
+
 function changeAutomaton(item) {
     if(!confirm('Changing the type of Automaton will erase the current graph. Are you sure about this?')) return;
     $('#' + currentAutomaton).removeClass('active');

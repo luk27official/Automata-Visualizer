@@ -32,6 +32,7 @@
 		<script src="resources/scripts/regexConverter.js"></script>
 		<script src="resources/scripts/regex.js"></script>
 		<script src="resources/scripts/regularLanguage.js"></script>
+		<script src="resources/scripts/minimize.js"></script>
 		<script src="resources/scripts/events.js"></script>
 		<title>Automata Visualizer</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -61,27 +62,31 @@
 			<li>
 				<div class="toolbar">
 					<h5 class="collection-header">State Operations</h5>
-					<button id="insert" class="btn btn-primary toolbar-button" onclick="toolbarAction = 'insert'; $('.button-collapse').sideNav('hide');">Insert state</button>
-					<button id="remove" class="btn btn-danger toolbar-button" onclick="toolbarAction = 'remove';$('.button-collapse').sideNav('hide');">Remove state</button>
+					<button id="insert" class="btn btn-primary toolbar-button last-button" onclick="toolbarAction = 'insert'; $('.button-collapse').sideNav('hide');">Insert state</button>
+					<button id="remove" class="btn btn-danger toolbar-button last-button" onclick="toolbarAction = 'remove';$('.button-collapse').sideNav('hide');">Remove state</button>
 					<button id="select" class="btn btn-info toolbar-button last-button" onclick="toolbarAction = 'select';$('.button-collapse').sideNav('hide');">Select state</button>
-					<h5 class="collection-header">Fast Run</h5>
+
+					<h5 class="collection-header">Automaton Operations</h5>
 					<button id="evaluate" class="btn btn-inverse toolbar-button last-button" onclick="evaluateWord()">Evaluate Word</button>
+					<button id="convertDFA" class="btn btn-default btn-wide btn-success toolbar-button last-button" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
+					<button id="evaluate" class="btn btn-inverse toolbar-button last-button" onclick="minimize()">Minimize</button>
+
 					<h5 class="collection-header">Save/Open</h5>
 					<input type="file" id="file" onchange="importAutomaton(event)" style="display: none;">
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="$('#file').click()">Import Automaton</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="$('#file').click()">Import Automaton</button>
 					<a onclick="saveAutomaton(this)"><button class="btn btn-default btn-wide btn-success toolbar-button last-button">Export Automaton</button></a>
+					
 					<h5 class="collection-header">Regex Operations</h5>
-					<button class="btn btn-default btn-wide btn-success toolbar-button" last-button onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex to NFA-E</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="convertRegexToNFAE();$('.button-collapse').sideNav('hide');">Convert Regex to NFA-E</button>
 					<input id="regexText" type="text" class="toolbar-text" placeholder="Regular Expression">
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="convertToRegex()">Convert to Regex</button>
-					<button id="convertDFA" class="btn btn-default btn-wide btn-success toolbar-button last-button" style="display: none;" onclick="convertToDFA();$('.button-collapse').sideNav('hide');">Convert to DFA</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="convertToRegex()">Convert to Regex</button>
+					
 					<h5 class="collection-header">Regular Language Operations</h5>
 					<div id="operands" class="collection">
-
 					</div>
 					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="addAutomatonToOperandsList()">Add Automaton as Operand</button>
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="intersectAutomata()">Intersect Automata</button>
-					<button class="btn btn-default btn-wide btn-success toolbar-button" onclick="combineAutomata()">Combine Automata</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="intersectAutomata()">Intersect Automata</button>
+					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="combineAutomata()">Combine Automata</button>
 					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="complementAutomata()">Complement Automata</button>
 				</div>
 			</li>

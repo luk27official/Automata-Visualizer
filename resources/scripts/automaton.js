@@ -24,6 +24,7 @@ Automaton.prototype.getInitialState = getInitialState;
 Automaton.prototype.buildFromJSON = buildFromJSON;
 Automaton.prototype.toJSON = toJSON;
 Automaton.prototype.clone = clone;
+Automaton.prototype.minimize = minimize;
 
 //Protected
 Automaton.prototype._checkInitialState = checkInitialState;
@@ -326,4 +327,8 @@ function createState(state, pendingStates, currentState, newStates) {
     currentState.addTransition(newState, state.transitionSymbol, state.transitionId);
     newStates.push(newState);
     pendingStates.push(newState);
+}
+
+function minimize() {
+    return Minimize(this, this._alphabet);
 }
