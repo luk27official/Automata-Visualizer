@@ -40,6 +40,7 @@ function buildEquivalencyTable(states) {
 function setupStateBlocks() {
     let blocks = [];
     let currentBlock = [];
+    let states = [];
 
     for(let key in mainBlock) {
         currentBlock.push(key);
@@ -50,6 +51,10 @@ function setupStateBlocks() {
         blocks.push(currentBlock);
         currentBlock = [];
     }
+
+    states = originalAutomaton.getStates();
+    currentBlock.push(states[states.length - 1].getInternalName());
+    blocks.push(currentBlock);
 
     return blocks;
 }
