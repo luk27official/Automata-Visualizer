@@ -10,11 +10,22 @@ function Minimize(automaton, symbols) {
     originalAutomaton = automaton;
     mainBlock = createMainBlock(automaton.getStates());
 
-    runMinimization(automaton.getStates());
-    console.log(mainBlock);
+    return runMinimization(automaton.getStates());
 }
 
 function runMinimization(states) {
+    let stateBlocks = [];
+    let newAutomaton = null;
+
+    buildEquivalencyTable(states);
+    stateBlocks = setupStateBlocks();
+    removeStateDuplicationInBlocks(stateBlocks);
+    newAutomaton = buildNewAutomaton(stateBlocks);
+    console.log(newAutomaton);
+    return newAutomaton;
+}
+
+function buildEquivalencyTable(states) {
     let currentState = null;
 
     for(let i = 0; i < states.length - 1; i++) {
@@ -24,6 +35,100 @@ function runMinimization(states) {
                 runInDepthDifferenceCheck(currentState, states[x]);
         }
     }
+}
+
+function setupStateBlocks() {
+    let blocks = [];
+    let currentBlock = [];
+
+    for(let key in mainBlock) {
+        currentBlock.push(key);
+        for(let innerKey in mainBlock[key]) {
+            if(mainBlock[key][innerKey].equivalent === null) currentBlock.push(innerKey);
+        }
+
+        blocks.push(currentBlock);
+        currentBlock = [];
+    }
+
+    return blocks;
+}
+
+function removeStateDuplicationInBlocks(blocks) {
+    let currentBlock = null;
+
+    for(let i = 0; i < blocks.length - 1; i++) {
+        currentBlock = blocks[i];
+
+        for(let x = i + 1; x < blocks.length; x++) {
+            if(!checkStateDuplication(currentBlock, blocks[x])) continue;
+            blocks.splice(x, 1);
+            x--;
+        }
+    }
+
+    console.log(blocks);
+}
+
+function buildNewAutomaton(blocks) {
+    let newStates = [];
+    let pendingStates = [];
+    let displayName = '';
+    let oldState = null;
+    let newState = null;
+    let target = null;
+    let newAutomaton = null;
+    let initialState = null;
+    let final = false;
+    let initial = false;
+    let targetInternalName = '';
+
+    for(let block in blocks) {
+        for(let internalName in blocks[block]) {
+            oldState = originalAutomaton._getStateByInternalName(blocks[block][internalName]);
+            if(!final) final = oldState.isFinal();
+            if(!initial) initial = oldState.isInitial();
+            displayName = !displayName ? oldState.getName() : displayName + ',' + oldState.getName();
+        }
+
+        newState = new State(displayName, 0);
+        newState.setInternalName(blocks[block].join());
+        newState.setBehavior({initial: initial, final: final});
+        newStates.push(newState);
+        displayName = '';
+        initial = final = false;
+        if(newState.isInitial()) initialState = newState;
+    }
+
+    for(let i = 0; i < newStates.length; i++) {
+        oldState = originalAutomaton._getStateByInternalName(newStates[i].getInternalName().split(',')[0]);
+
+        for(let symbol in alphabet) {
+            targetInternalName = originalAutomaton._getTransitionsBySymbol(oldState, alphabet[symbol])[0].getTarget().getInternalName();
+
+            for(let x = 0; x < newStates.length; x++) {
+                if(!newStates[x].getInternalName().split(',').includes(targetInternalName)) continue;
+
+                newStates[i].addTransition(newStates[x], alphabet[symbol], 0);
+                break;
+            }
+        }
+    }
+
+    newAutomaton = new Automaton();
+    newAutomaton._states = newStates;
+    newAutomaton._counter = newStates.length;
+    newAutomaton._initialState = initialState;
+
+    return newAutomaton;
+}
+
+function checkStateDuplication(currentBlock, nextBlock) {
+    for(let internalName in currentBlock) {
+        if(nextBlock.includes(currentBlock[internalName])) return true;
+    }
+
+    return false;
 }
 
 function createMainBlock(states) {

@@ -235,8 +235,19 @@ function processImportedGraph(json) {
 }
 
 function minimize() {
+    let newAutomaton = null;
+
     setAlphabet();
-    automaton.minimize();
+    newAutomaton = automaton.minimize();
+    loadAutomatonInNewTab(newAutomaton);
+}
+
+function loadAutomatonInNewTab(newAutomaton) {
+    automatonJson = newAutomaton.toJSON();
+    automatonJson.type = 'DFA';
+    //Validar que newAutomaton tenga los nuevos estados
+    dataToSend = JSON.stringify(automatonJson);
+    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function changeAutomaton(item) {
