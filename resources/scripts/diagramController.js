@@ -241,6 +241,10 @@ function loadAutomatonInNewTab(newAutomaton, type) {
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
+function clearGraph() {
+    changeAutomaton(document.getElementById(currentAutomaton));
+}
+
 function changeAutomaton(item) {
     if(!confirm('Changing the type of Automaton will erase the current graph. Are you sure about this?')) return;
     $('#' + currentAutomaton).removeClass('active');

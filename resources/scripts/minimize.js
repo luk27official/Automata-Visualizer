@@ -8,25 +8,55 @@ let originalAutomaton = null;
 function Minimize(automaton, symbols) {
     alphabet = symbols;
     originalAutomaton = automaton;
-    mainBlock = createMainBlock(automaton.getStates());
+    originalAutomaton._states = originalAutomaton._states.sort(function(a, b) {
+        if (a._internalName < b._internalName) {
+            return -1;
+        }
+        if (a._internalName > b._internalName) {
+            return 1;
+        }
 
-    return runMinimization(automaton.getStates());
+        return 0;
+    });
+
+    removeUnreachableStates();
+    mainBlock = createMainBlock(originalAutomaton.getStates());
+
+    return runMinimization();
 }
 
-function runMinimization(states) {
+function runMinimization() {
     let stateBlocks = [];
     let newAutomaton = null;
 
-    buildEquivalencyTable(states);
+    buildEquivalencyTable();
     stateBlocks = setupStateBlocks();
     removeStateDuplicationInBlocks(stateBlocks);
     newAutomaton = buildNewAutomaton(stateBlocks);
     console.log(newAutomaton);
+    originalAutomaton = mainBlock = alphabet = null;
     return newAutomaton;
 }
 
-function buildEquivalencyTable(states) {
+function removeUnreachableStates() {
+    let states = originalAutomaton.getStates();
+    let transitions = [];
+
+    for(let i = 0; i < states.length; i++) {
+        if(states[i].isInitial()) continue;
+        if(states[i].getIncomingTransitions().length !== 0) continue;
+        transitions = states[i]._getTransitions();
+        for(let x = 0; x < transitions.length; x++) {
+            states[i].removeTransition(transitions[x--].getId());
+        }
+
+        states.splice(i--, 1);
+    }
+}
+
+function buildEquivalencyTable() {
     let currentState = null;
+    let states = originalAutomaton.getStates();
 
     for(let i = 0; i < states.length - 1; i++) {
         currentState = states[i];
