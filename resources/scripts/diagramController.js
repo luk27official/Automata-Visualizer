@@ -110,12 +110,13 @@ function convertToDFA() {
 
     setAlphabet();
     newAutomaton = automaton.convertToDFA();
-    automatonJson = newAutomaton.toJSON();
-    automatonJson.type = 'DFA';
-    console.log(automatonJson);
-    //Validar que newAutomaton tenga los nuevos estados
-    dataToSend = JSON.stringify(automatonJson);
-    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
+    loadAutomatonInNewTab(newAutomaton, 'DFA');
+    // automatonJson = newAutomaton.toJSON();
+    // automatonJson.type = 'DFA';
+    // console.log(automatonJson);
+    // //Validar que newAutomaton tenga los nuevos estados
+    // dataToSend = JSON.stringify(automatonJson);
+    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function convertToRegex() {
@@ -139,11 +140,12 @@ function convertRegexToNFAE() {
     if(!expression) return;
 
     generatedAutomaton = RegEx.toNFAE(expression);
-    json = automaton.toJSON(generatedAutomaton.getStates());
-    json.type = 'NFAE';
-    console.log(json);
-    dataToSend = JSON.stringify(json);
-    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
+    loadAutomatonInNewTab(generatedAutomaton, 'NFAE');
+    // json = automaton.toJSON(generatedAutomaton.getStates());
+    // json.type = 'NFAE';
+    // console.log(json);
+    // dataToSend = JSON.stringify(json);
+    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function setAlphabet() {
@@ -239,12 +241,12 @@ function minimize() {
 
     setAlphabet();
     newAutomaton = automaton.minimize();
-    loadAutomatonInNewTab(newAutomaton);
+    loadAutomatonInNewTab(newAutomaton, 'DFA');
 }
 
-function loadAutomatonInNewTab(newAutomaton) {
+function loadAutomatonInNewTab(newAutomaton, type) {
     automatonJson = newAutomaton.toJSON();
-    automatonJson.type = 'DFA';
+    automatonJson.type = type;
     //Validar que newAutomaton tenga los nuevos estados
     dataToSend = JSON.stringify(automatonJson);
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));

@@ -330,5 +330,22 @@ function createState(state, pendingStates, currentState, newStates) {
 }
 
 function minimize() {
-    return Minimize(this, this._alphabet);
+    let dfa = null;
+
+    if((this instanceof DFA)) return Minimize(this, this._alphabet);
+    else {
+        dfa = this.convertToDFA();
+        setStateDefaultNames(dfa);
+        return Minimize(dfa, this._alphabet);
+    }
+}
+
+function setStateDefaultNames(automaton) {
+    let states = automaton.getStates();
+    let counter = 0;
+
+    for(let state in states) {
+        states[state].setName('q' + counter);
+        states[state].setInternalName('q' + counter++);
+    }
 }
