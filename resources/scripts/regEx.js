@@ -142,6 +142,11 @@ function removeState(state, newTransitionId) {
     removeIncomingTransitionsFromTargets(outgoingTransitions);
     incomingTransitions = state.getIncomingTransitions();
 
+    if(loopbackTransition && outgoingTransitions.length === 1) {
+        removeTransitionToStateWithNoOutgoingTransitions(incomingTransitions);
+        return newTransitionId;
+    }
+
     for(let i = 0; i < incomingTransitions.length; i++) {
         symbolCopy = incomingTransitions[i].getSymbol();
         for(let x = 0; x < outgoingTransitions.length; x++) {
@@ -157,6 +162,21 @@ function removeState(state, newTransitionId) {
     collapseTransitions(getIncomingStates(incomingTransitions));
 
     return newTransitionId;
+}
+
+function removeTransitionToStateWithNoOutgoingTransitions(incomingTransitions) {
+    let source = null;
+    let sourceTransitions = [];
+
+    for(let transition in incomingTransitions) {
+        source = incomingTransitions[transition].getSource();
+        sourceTransitions = source._getTransitions();
+        for(let i = 0; i < sourceTransitions.length; i++) {
+            if(sourceTransitions[i].getId() !== incomingTransitions[transition].getId()) continue;
+            sourceTransitions.splice(i, 1);
+            break;
+        }
+    }
 }
 
 function constructLoopRegex(regEx) {
