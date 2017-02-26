@@ -87,7 +87,7 @@ function convertToDFA() {
     dfa = new DFA();
     dfa._states = this._convert();
     dfa._initialState = dfa._states[0];
-    dfa._counter = dfa._states.length;
+    dfa.resetStateInternalNames();
 
     return dfa;
 }

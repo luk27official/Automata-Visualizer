@@ -52,7 +52,7 @@ function generateVisualStates(states, diagram) {
     let x = y = 0;
 
     for(let state in states) {
-        x = Math.floor((Math.random() * 1900) + 1);
+        x = Math.floor((Math.random() * 1600) + 1);
         y = Math.floor((Math.random() * 900) + 1);
         element = diagram.generateVisualElement(x, y, states[state].getName());
         states[state]._id = element.id;

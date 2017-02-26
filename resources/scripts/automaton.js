@@ -25,6 +25,7 @@ Automaton.prototype.buildFromJSON = buildFromJSON;
 Automaton.prototype.toJSON = toJSON;
 Automaton.prototype.clone = clone;
 Automaton.prototype.minimize = minimize;
+Automaton.prototype.resetStateInternalNames = resetStateInternalNames;
 
 //Protected
 Automaton.prototype._checkInitialState = checkInitialState;
@@ -335,17 +336,17 @@ function minimize() {
     if((this instanceof DFA)) return Minimize(this, this._alphabet);
     else {
         dfa = this.convertToDFA();
-        setStateDefaultNames(dfa);
+        //dfa.resetStateInternalNames();
         return Minimize(dfa, this._alphabet);
     }
 }
 
-function setStateDefaultNames(automaton) {
-    let states = automaton.getStates();
-    let counter = 0;
+function resetStateInternalNames() {
+    let states = this.getStates();
+    this._counter = 0;
 
     for(let state in states) {
-        states[state].setName('q' + counter);
-        states[state].setInternalName('q' + counter++);
+        //states[state].setName('q' + this._counter);
+        states[state].setInternalName('q' + this._counter++);
     }
 }

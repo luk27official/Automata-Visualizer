@@ -111,12 +111,6 @@ function convertToDFA() {
     setAlphabet();
     newAutomaton = automaton.convertToDFA();
     loadAutomatonInNewTab(newAutomaton, 'DFA');
-    // automatonJson = newAutomaton.toJSON();
-    // automatonJson.type = 'DFA';
-    // console.log(automatonJson);
-    // //Validar que newAutomaton tenga los nuevos estados
-    // dataToSend = JSON.stringify(automatonJson);
-    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function convertToRegex() {
@@ -141,11 +135,6 @@ function convertRegexToNFAE() {
 
     generatedAutomaton = RegEx.toNFAE(expression);
     loadAutomatonInNewTab(generatedAutomaton, 'NFAE');
-    // json = automaton.toJSON(generatedAutomaton.getStates());
-    // json.type = 'NFAE';
-    // console.log(json);
-    // dataToSend = JSON.stringify(json);
-    // window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function setAlphabet() {

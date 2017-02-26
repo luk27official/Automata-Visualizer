@@ -120,9 +120,10 @@ function buildNewAutomaton(blocks) {
         }
     }
 
-    newAutomaton = new Automaton();
+    newAutomaton = new DFA();
     newAutomaton._states = newStates;
-    newAutomaton._counter = newStates.length;
+    newAutomaton.resetStateInternalNames();
+    //newAutomaton._counter = newStates.length;
     newAutomaton._initialState = initialState;
 
     return newAutomaton;

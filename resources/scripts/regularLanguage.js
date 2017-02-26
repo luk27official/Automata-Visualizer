@@ -65,7 +65,7 @@ function startPolymerization(alphabet, operation) {
             secondOperand = operands[i+1].type === 'DFA' ? operands[i+1].operand : convertOperandtoDFA(operands[i+1].operand, alphabet);
             result = combine(result, secondOperand, alphabet, operation);
         }
-        setStateNames(result);
+        //setStateNames(result);
     }
 }
 
@@ -74,20 +74,20 @@ function convertOperandtoDFA(operand, alphabet) {
 
     operand._alphabet = alphabet;
     dfa = operand.convertToDFA();
-    setStateNames(dfa);
+    //setStateNames(dfa);
 
     return dfa;
 }
 
-function setStateNames(automaton) {
-    let states = automaton.getStates();
-    let counter = 0;
+// function setStateNames(automaton) {
+//     let states = automaton.getStates();
+//     let counter = 0;
 
-    for(let state in states) {
-        states[state].setName('q' + counter);
-        states[state].setInternalName('q' + counter++);
-    }
-}
+//     for(let state in states) {
+//         states[state].setName('q' + counter);
+//         states[state].setInternalName('q' + counter++);
+//     }
+// }
 
 function combine(firstOperand, secondOperand, alphabet, operation) {
     let result = null;
@@ -112,7 +112,8 @@ function combine(firstOperand, secondOperand, alphabet, operation) {
     result = new DFA();
     result._states = newStates;
     result._initialState = newStates[0];
-    result._counter = newStates.length;
+    result.resetStateInternalNames();
+    //result._counter = newStates.length;
 
     return result;
 }
