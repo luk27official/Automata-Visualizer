@@ -260,16 +260,21 @@ function checkRedundancyInDependentsArray(dependents, dependentPairInternalName)
 
     for(let dependent in dependents) {
         resident = dependents[dependent].split(',');
+        counter = 0;
 
         for(let i = 0; i < resident.length; i++) {
             for(let x = 0; x < visitor.length; x++) {
                 if(resident[i] === visitor[x]) { counter++; break; }
             }
         }
+
+        if(counter === 2) return true;
     }
 
-    if(counter === 2) return true;
     return false;
+
+    // if(counter === 2) return true;
+    // return false;
 }
 
 function checkEquivalence(firstState, secondState) {
