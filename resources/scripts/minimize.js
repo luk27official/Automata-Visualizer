@@ -272,9 +272,6 @@ function checkRedundancyInDependentsArray(dependents, dependentPairInternalName)
     }
 
     return false;
-
-    // if(counter === 2) return true;
-    // return false;
 }
 
 function checkEquivalence(firstState, secondState) {
@@ -310,7 +307,10 @@ function setDependentsEquivalence(dependents, equivalence) {
 
         if(pair.equivalent === null) {
             pair.equivalent = equivalence;
-            if(pair.dependents.length) setDependentsEquivalence(pair.dependents, equivalence);
+            if(pair.dependents.length) {
+                setDependentsEquivalence(pair.dependents, equivalence);
+                pair.dependents = [];
+            }
         }
     }
 }
