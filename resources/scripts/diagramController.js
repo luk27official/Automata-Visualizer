@@ -97,7 +97,6 @@ function evaluateWord() {
     //if(!word) return;
 
     status = automaton.run(word);
-    console.log(automaton.clone());
     console.log(status.msg);
     alert(status.msg);
 }

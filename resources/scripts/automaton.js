@@ -333,7 +333,7 @@ function createState(state, pendingStates, currentState, newStates) {
 function minimize() {
     let dfa = null;
 
-    if((this instanceof DFA)) return Minimize(this.clone(), this._alphabet);
+    if((this instanceof DFA)) return Minimize(this, this._alphabet);
     else {
         dfa = this.convertToDFA();
         return Minimize(dfa, this._alphabet);

@@ -8,16 +8,16 @@ let originalAutomaton = null;
 function Minimize(automaton, symbols) {
     alphabet = symbols;
     originalAutomaton = automaton;
-    originalAutomaton._states = originalAutomaton._states.sort(function(a, b) {
-        if (a._internalName < b._internalName) {
-            return -1;
-        }
-        if (a._internalName > b._internalName) {
-            return 1;
-        }
+    // originalAutomaton._states = originalAutomaton._states.sort(function(a, b) {
+    //     if (a._internalName < b._internalName) {
+    //         return -1;
+    //     }
+    //     if (a._internalName > b._internalName) {
+    //         return 1;
+    //     }
 
-        return 0;
-    });
+    //     return 0;
+    // });
 
     removeUnreachableStates();
     mainBlock = createMainBlock(originalAutomaton.getStates());
@@ -131,7 +131,8 @@ function buildNewAutomaton(blocks) {
         newState.setBehavior({initial: initial, final: final});
         newStates.push(newState);
         displayName = '';
-        initial = final = false;
+        initial = false;
+        final = false;
         if(newState.isInitial()) initialState = newState;
     }
 
@@ -153,7 +154,6 @@ function buildNewAutomaton(blocks) {
     newAutomaton = new DFA();
     newAutomaton._states = newStates;
     newAutomaton.resetStateInternalNames();
-    //newAutomaton._counter = newStates.length;
     newAutomaton._initialState = initialState;
 
     return newAutomaton;
@@ -210,8 +210,10 @@ function runQuickDifferenceCheck(currentState, nextState) {
 }
 
 function runInDepthDifferenceCheck(currentState, nextState) {
-    let currentStateTransitions = nextStateTransitions = [];
-    let currentStateTarget = nextStateTarget = null;
+    let currentStateTransitions = [];
+    let nextStateTransitions = [];
+    let currentStateTarget = null;
+    let nextStateTarget = null;
     let equivalence = null;
 
     for(let symbol in alphabet) {
@@ -278,10 +280,11 @@ function checkEquivalence(firstState, secondState) {
 }
 
 function checkInternalNameFormat(firstStateInternalName, secondStateInternalName) {
-    let name = firstStateInternalName + ',' + secondStateInternalName;
-    let sortedName = name.split(',').sort().join();
+    let firstName = parseInt(firstStateInternalName.substring(1));
+    let secondName = parseInt(secondStateInternalName.substring(1));
 
-    return name === sortedName;
+    if(firstName < secondName) return true;
+    return false;
 }
 
 function setEquivalence(currentState, nextState, value) {
@@ -300,7 +303,10 @@ function setDependentsEquivalence(dependents, equivalence) {
         internalNames = dependents[dependent].split(',');
         pair = mainBlock[internalNames[0]][internalNames[1]];
 
-        if(pair.equivalent === null) pair.equivalent = equivalence;
+        if(pair.equivalent === null) {
+            pair.equivalent = equivalence;
+            if(pair.dependents.length) setDependentsEquivalence(pair.dependents, equivalence);
+        }
     }
 }
 
