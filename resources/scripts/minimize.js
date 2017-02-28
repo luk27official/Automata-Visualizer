@@ -5,6 +5,7 @@ let mainBlock = {};
 let alphabet = [];
 let originalAutomaton = null;
 let sinkFlag = false;
+let sinkStateInternalName = 'q9999';
 
 function Minimize(automaton, symbols) {
     alphabet = symbols;
@@ -20,7 +21,7 @@ function Minimize(automaton, symbols) {
 
 function checkTransitionForEachSymbol() {
     let sink = new State('sink', 9999);
-    sink.setInternalName('q9999');
+    sink.setInternalName(sinkStateInternalName);
     let states = originalAutomaton.getStates();
 
     for(let state in states) {
@@ -166,6 +167,7 @@ function buildNewAutomaton(blocks) {
 
     for(let i = 0; i < newStates.length; i++) {
         oldState = originalAutomaton._getStateByInternalName(newStates[i].getInternalName().split(',')[0]);
+        if(isSinkState(oldState)) continue;
 
         for(let symbol in alphabet) {
             targetInternalName = originalAutomaton._getTransitionsBySymbol(oldState, alphabet[symbol])[0].getTarget().getInternalName();
@@ -185,6 +187,11 @@ function buildNewAutomaton(blocks) {
     newAutomaton._initialState = initialState;
 
     return newAutomaton;
+}
+
+function isSinkState(state) {
+    if(state.getInternalName() === sinkStateInternalName) return true;
+    return false;
 }
 
 function checkStateDuplication(currentBlock, nextBlock) {

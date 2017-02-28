@@ -332,10 +332,12 @@ function createState(state, pendingStates, currentState, newStates) {
 
 function minimize() {
     let dfa = null;
+    let clone = this.clone();
+    clone.resetStateInternalNames();
 
-    if((this instanceof DFA)) return Minimize(this, this._alphabet);
+    if((clone instanceof DFA)) return Minimize(clone, this._alphabet);
     else {
-        dfa = this.convertToDFA();
+        dfa = clone.convertToDFA();
         return Minimize(dfa, this._alphabet);
     }
 }
