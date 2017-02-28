@@ -8,6 +8,19 @@ let originalAutomaton = null;
 function Minimize(automaton, symbols) {
     alphabet = symbols;
     originalAutomaton = automaton;
+
+    let sumidero = new State('q99', 0);
+    originalAutomaton._states.push(sumidero);
+    let states = originalAutomaton.getStates();
+
+    for(let state in states) {
+        for(let symbol in alphabet) {
+            if(!originalAutomaton._getTransitionsBySymbol(states[state], alphabet[symbol]).length) {
+                states[state].addTransition(sumidero, alphabet[symbol], 0);
+            }
+        }
+    }
+
     // originalAutomaton._states = originalAutomaton._states.sort(function(a, b) {
     //     if (a._internalName < b._internalName) {
     //         return -1;
@@ -35,6 +48,17 @@ function runMinimization() {
     newAutomaton = buildNewAutomaton(stateBlocks);
     console.log(newAutomaton);
     originalAutomaton = mainBlock = alphabet = null;
+    let deleteTransition = false;
+    
+    let sumidero = newAutomaton.getStateByName('q99');
+    let incomingTransitions = sumidero.getIncomingTransitions();
+    for(let x = 0; x < incomingTransitions.length; x++) {
+        let state = incomingTransitions[x].getSource();
+        state.removeTransition(incomingTransitions[x].getId());
+        x--;
+    }
+    newAutomaton.removeState('q99');
+
     return newAutomaton;
 }
 
@@ -117,6 +141,7 @@ function buildNewAutomaton(blocks) {
     let final = false;
     let initial = false;
     let targetInternalName = '';
+    let transitionCounter = 0;
 
     for(let block in blocks) {
         for(let internalName in blocks[block]) {
@@ -145,7 +170,7 @@ function buildNewAutomaton(blocks) {
             for(let x = 0; x < newStates.length; x++) {
                 if(!newStates[x].getInternalName().split(',').includes(targetInternalName)) continue;
 
-                newStates[i].addTransition(newStates[x], alphabet[symbol], 0);
+                newStates[i].addTransition(newStates[x], alphabet[symbol], transitionCounter++);
                 break;
             }
         }
@@ -219,6 +244,7 @@ function runInDepthDifferenceCheck(currentState, nextState) {
     for(let symbol in alphabet) {
         currentStateTransitions = originalAutomaton._getTransitionsBySymbol(currentState, alphabet[symbol]);
         nextStateTransitions = originalAutomaton._getTransitionsBySymbol(nextState, alphabet[symbol]);
+
         currentStateTarget = currentStateTransitions[0].getTarget();
         nextStateTarget = nextStateTransitions[0].getTarget();
 
