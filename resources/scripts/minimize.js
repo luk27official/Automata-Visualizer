@@ -4,6 +4,7 @@ var Minimize = (function() {
 let mainBlock = {};
 let alphabet = [];
 let originalAutomaton = null;
+let sinkFlag = false;
 
 function Minimize(automaton, symbols) {
     alphabet = symbols;
@@ -21,9 +22,6 @@ function checkTransitionForEachSymbol() {
     let sink = new State('sink', 9999);
     sink.setInternalName('q9999');
     let states = originalAutomaton.getStates();
-    let sinkFlag = false;
-
-    states.push(sink);
 
     for(let state in states) {
         for(let symbol in alphabet) {
@@ -34,7 +32,7 @@ function checkTransitionForEachSymbol() {
         }
     }
 
-    if(!sinkFlag) states.splice(states.length-1, 1);
+    if(sinkFlag) states.push(sink);
 }
 
 function runMinimization() {
@@ -45,9 +43,10 @@ function runMinimization() {
     stateBlocks = setupStateBlocks();
     removeStateDuplicationInBlocks(stateBlocks);
     newAutomaton = buildNewAutomaton(stateBlocks);
-    removeSinkState(newAutomaton);
+    if(sinkFlag) removeSinkState(newAutomaton);
 
     originalAutomaton = mainBlock = alphabet = null;
+    sinkFlag = false;
     
     return newAutomaton;
 }
