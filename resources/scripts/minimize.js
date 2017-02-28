@@ -9,33 +9,32 @@ function Minimize(automaton, symbols) {
     alphabet = symbols;
     originalAutomaton = automaton;
 
-    let sumidero = new State('q99', 0);
-    originalAutomaton._states.push(sumidero);
-    let states = originalAutomaton.getStates();
-
-    for(let state in states) {
-        for(let symbol in alphabet) {
-            if(!originalAutomaton._getTransitionsBySymbol(states[state], alphabet[symbol]).length) {
-                states[state].addTransition(sumidero, alphabet[symbol], 0);
-            }
-        }
-    }
-
-    // originalAutomaton._states = originalAutomaton._states.sort(function(a, b) {
-    //     if (a._internalName < b._internalName) {
-    //         return -1;
-    //     }
-    //     if (a._internalName > b._internalName) {
-    //         return 1;
-    //     }
-
-    //     return 0;
-    // });
+    checkTransitionForEachSymbol();
 
     removeUnreachableStates();
     mainBlock = createMainBlock(originalAutomaton.getStates());
 
     return runMinimization();
+}
+
+function checkTransitionForEachSymbol() {
+    let sink = new State('sink', 9999);
+    sink.setInternalName('q9999');
+    let states = originalAutomaton.getStates();
+    let sinkFlag = false;
+
+    states.push(sink);
+
+    for(let state in states) {
+        for(let symbol in alphabet) {
+            if(!originalAutomaton._getTransitionsBySymbol(states[state], alphabet[symbol]).length) {
+                states[state].addTransition(sink, alphabet[symbol], 0);
+                sinkFlag = true;
+            }
+        }
+    }
+
+    if(!sinkFlag) states.splice(states.length-1, 1);
 }
 
 function runMinimization() {
@@ -46,20 +45,25 @@ function runMinimization() {
     stateBlocks = setupStateBlocks();
     removeStateDuplicationInBlocks(stateBlocks);
     newAutomaton = buildNewAutomaton(stateBlocks);
-    console.log(newAutomaton);
+    removeSinkState(newAutomaton);
+
     originalAutomaton = mainBlock = alphabet = null;
-    let deleteTransition = false;
     
-    let sumidero = newAutomaton.getStateByName('q99');
-    let incomingTransitions = sumidero.getIncomingTransitions();
+    return newAutomaton;
+}
+
+function removeSinkState(newAutomaton) {
+    let sink = newAutomaton.getStateByName('sink');
+    let incomingTransitions = sink.getIncomingTransitions();
+    let state = null;
+
     for(let x = 0; x < incomingTransitions.length; x++) {
-        let state = incomingTransitions[x].getSource();
+        state = incomingTransitions[x].getSource();
         state.removeTransition(incomingTransitions[x].getId());
         x--;
     }
-    newAutomaton.removeState('q99');
 
-    return newAutomaton;
+    newAutomaton.removeState('sink');
 }
 
 function removeUnreachableStates() {
