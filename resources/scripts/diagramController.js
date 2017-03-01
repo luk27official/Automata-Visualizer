@@ -176,10 +176,6 @@ function complementAutomata() {
     setAlphabet();
     result = regularLanguaje.properties.complement(insertedAlphabet.split(" "));
     loadAutomatonInNewTab(result, 'DFA');
-    // changeAutomaton(document.getElementById('DFA'));
-    // diagram.automaton = automaton = result;
-    // loader._renderAutomaton(diagram, automaton, 'DFA');
-    // console.log(automaton);
 }
 
 function executeRegularOperation(operationCallback) {
@@ -189,10 +185,6 @@ function executeRegularOperation(operationCallback) {
     setAlphabet();
     result = operationCallback(insertedAlphabet.split(" "));
     loadAutomatonInNewTab(result, 'DFA');
-    // changeAutomaton(document.getElementById('DFA'));
-    // diagram.automaton = automaton = result;
-    // loader._renderAutomaton(diagram, automaton, 'DFA');
-    // console.log(automaton);
 }
 
 function saveAutomaton(item) {
