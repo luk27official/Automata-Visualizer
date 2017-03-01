@@ -175,10 +175,11 @@ function complementAutomata() {
 
     setAlphabet();
     result = regularLanguaje.properties.complement(insertedAlphabet.split(" "));
-    changeAutomaton(document.getElementById('DFA'));
-    diagram.automaton = automaton = result;
-    loader._renderAutomaton(diagram, automaton, 'DFA');
-    console.log(automaton);
+    loadAutomatonInNewTab(result, 'DFA');
+    // changeAutomaton(document.getElementById('DFA'));
+    // diagram.automaton = automaton = result;
+    // loader._renderAutomaton(diagram, automaton, 'DFA');
+    // console.log(automaton);
 }
 
 function executeRegularOperation(operationCallback) {
@@ -187,10 +188,11 @@ function executeRegularOperation(operationCallback) {
     
     setAlphabet();
     result = operationCallback(insertedAlphabet.split(" "));
-    changeAutomaton(document.getElementById('DFA'));
-    diagram.automaton = automaton = result;
-    loader._renderAutomaton(diagram, automaton, 'DFA');
-    console.log(automaton);
+    loadAutomatonInNewTab(result, 'DFA');
+    // changeAutomaton(document.getElementById('DFA'));
+    // diagram.automaton = automaton = result;
+    // loader._renderAutomaton(diagram, automaton, 'DFA');
+    // console.log(automaton);
 }
 
 function saveAutomaton(item) {
@@ -229,6 +231,7 @@ function minimize() {
 
     setAlphabet();
     newAutomaton = automaton.minimize();
+    if(!newAutomaton) { alert('No initial state has been set!'); return; }
     loadAutomatonInNewTab(newAutomaton, 'DFA');
 }
 
