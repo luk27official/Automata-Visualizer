@@ -25,7 +25,13 @@ $('.button-collapse').sideNav({
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-
+// $('.modal').modal({
+//     dismissible: true, // Modal can be dismissed by clicking outside of the modal
+//     opacity: .5, // Opacity of modal background
+//     inDuration: 200, // Transition in duration
+//     outDuration: 200, // Transition out duration
+// }
+// );
 $('#set-name').click(function() {
     if(!selectedCell) return;
     setStateName();
@@ -99,7 +105,15 @@ function evaluateWord() {
     status = automaton.run(word);
     console.log(status.msg);
     alert(status.msg);
+    //$('#modal1').modal('open');
 }
+
+// function evaluatePDA() {
+//     console.log('hola');
+//     $('#symbol-input').val('');
+//     $('#pop-input').val('');
+//     $('#push-input').val('');
+// }
 
 function convertToDFA() {
     let status;

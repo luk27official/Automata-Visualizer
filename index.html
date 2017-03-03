@@ -12,8 +12,8 @@
 		<script src="resources/scripts/libs/regular-expression.js"></script>
 		<script src="resources/scripts/libs/jquery.js"></script>
 		<script src="resources/scripts/libs/materialize.min.js"></script>
-		<script src="resources/scripts/libs/vendor/video.js"></script>
-    	<script src="resources/scripts/libs/flat-ui.min.js"></script>
+		<!--<script src="resources/scripts/libs/vendor/video.js"></script>
+    	<script src="resources/scripts/libs/flat-ui.min.js"></script>-->
 		<script src="resources/scripts/libs/lodash.js"></script>
 		<script src="resources/scripts/libs/backbone.js"></script>
 		<script src="resources/scripts/libs/joint.min.js"></script>
@@ -50,9 +50,28 @@
 					<li class="active" style="cursor: pointer" id="DFA" onclick="changeAutomaton(this)"><a>DFA</a></li>
 					<li id="NFA" style="cursor: pointer" onclick="changeAutomaton(this)"><a>NFA</a></li>
 					<li id="NFAE" style="cursor: pointer" onclick="changeAutomaton(this)"><a>NFAE</a></li>
+					<li id="PDA" style="cursor: pointer" onclick="changeAutomaton(this)"><a>PDA</a></li>
 				</ul>
 			</div>
 		</nav>
+		<!-- Modal Structure -->
+		<!--<div id="modal1" class="modal">
+			<div class="modal-content">
+				<div class="input-field inline">
+					<input id="symbol-input" placeholder="alphabet symbol" type="text">
+				</div>				
+				<div class="input-field inline">
+					<input id="pop-input" placeholder="Pop stack symbol" type="text">
+				</div>				
+				<div class="input-field inline">
+					<input id="push-input" placeholder="Push stack symbol" type="text">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="evaluatePDA()">Agree</a>
+			</div>
+		</div>-->
+
 		<div id="toolbar">
 			<input id="initialCheckbox" type="checkbox" onclick="setInitial(this)"><label for="initialCheckbox">Initial</label>
 			<input id="finalCheckbox" type="checkbox" onclick="setFinal(this)"><label for="finalCheckbox">Final</label>
