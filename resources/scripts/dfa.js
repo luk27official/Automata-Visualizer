@@ -4,7 +4,6 @@ var DFA = (function() {
 function DFA() {
     Automaton.call(this);
 
-    this.run = run;
     this.getStateTargetForSymbol = getStateTargetForSymbol;
     this._runValidations = runValidations;
     this._processWord = processWord;
@@ -25,13 +24,6 @@ function getStateTargetForSymbol(internalName, symbol) {
 
     if(!transitions.length) return '';
     return transitions[0].getTarget().getInternalName();
-}
-
-function run(word) {
-    let status = this._runValidations(word);
-    if(!status.valid) return status;
-
-    return this._processWord(word);
 }
 
 function processWord(word) {

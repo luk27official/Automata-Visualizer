@@ -4,7 +4,6 @@ var NFA = (function () {
 function NFA() {
     Automaton.call(this);
 
-    this.run = run;
     this.convertToDFA = convertToDFA;
 
     this._processWord = processWord;
@@ -22,13 +21,6 @@ NFA.prototype._getTargetNamesForNewState = getTargetNamesForNewState;
 NFA.prototype._checkIfNewStateIsCurrentState = checkIfNewStateIsCurrentState;
 NFA.prototype._checkIfNewStateExists = checkIfNewStateExists;
 NFA.prototype.constructor = NFA;
-
-function run(word) {
-    let status = this._runValidations(word);
-    if(!status.valid) return status;
-
-    return this._processWord(word);
-}
 
 function processWord(word) {
     let currentStates = [this.getInitialState()];

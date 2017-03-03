@@ -4,11 +4,10 @@ var NFAE = (function() {
     function NFAE() {
         NFA.call(this);
 
-        this.run = run;
         this.convertToDFA = convertToDFA;
 
         this._processWord = processWord;
-        this._setEpsilonClosure = setEpsilonClosure;
+        this._getEpsilonClosure = getEpsilonClosure;
         this._convert = convert;
         this._runPass = runPass;
         this._createDFAState = createDFAState;
@@ -16,13 +15,6 @@ var NFAE = (function() {
 
     NFAE.prototype = Object.create(NFA.prototype);
     NFAE.prototype.constructor = NFAE;
-
-    function run(word) {
-        let status = this._runValidations(word);
-        if(!status.valid) return status;
-
-        return this._processWord(word);
-    }
 
     function convertToDFA() {
         let dfa = null;
@@ -33,7 +25,6 @@ var NFAE = (function() {
         dfa._states =  this._convert();
         dfa._initialState = dfa._states[0];
         dfa.resetStateInternalNames();
-        //dfa._counter = dfa._states.length;
 
         return dfa;
     }
@@ -48,7 +39,7 @@ var NFAE = (function() {
         let initialStateName = '';
         let nfae = this;
 
-        this._setEpsilonClosure(initialState);
+        this._getEpsilonClosure(initialState);
         names = initialState.map(function(state) {
             return state.getInternalName(); 
         });
@@ -91,7 +82,7 @@ var NFAE = (function() {
                 states.push(this._getStateByInternalName(newStateName[name]));
             }
 
-            this._setEpsilonClosure(states);
+            this._getEpsilonClosure(states);
             constructedInternalName = states.map(function(state) {
                 return state.getInternalName(); 
             });
@@ -127,15 +118,15 @@ var NFAE = (function() {
         let currentStates = [this._initialState];
 
         for(let symbol in word) {
-            this._setEpsilonClosure(currentStates);
+            this._getEpsilonClosure(currentStates);
             currentStates = this._consumeSymbol(currentStates, word[symbol]);
         }
         
-        this._setEpsilonClosure(currentStates);
+        this._getEpsilonClosure(currentStates);
         return this._isWordValid(currentStates);
     }
 
-    function setEpsilonClosure(currentStates) {
+    function getEpsilonClosure(currentStates) {
         let transitions = [];
 
         for(let i = 0; i < currentStates.length; i++) {

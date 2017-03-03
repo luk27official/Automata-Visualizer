@@ -12,6 +12,7 @@ function Automaton() {
 }
 
 //Public
+Automaton.prototype.run = run;
 Automaton.prototype.insertState = insertState;
 Automaton.prototype.removeState = removeState;
 Automaton.prototype.updateStateName = updateStateName;
@@ -39,6 +40,13 @@ Automaton.prototype._checkIfNewStateIsMe = checkIfNewStateIsMe;
 Automaton.prototype._checkIfNewStateAlreadyExists = checkIfNewStateAlreadyExists;
 Automaton.prototype._getTargetsForCloning = getTargetsForCloning;
 Automaton.prototype._createState = createState;
+
+function run(word) {
+    let status = this._runValidations(word);
+    if(!status.valid) return status;
+
+    return this._processWord(word);
+}
 
 function insertState(id) {
     let state = new State('q' + this._counter, id);
