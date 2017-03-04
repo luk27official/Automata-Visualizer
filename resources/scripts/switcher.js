@@ -23,6 +23,10 @@ function generateNewAutomaton(name) {
         case 'NFAE':
             $('#convertDFA').show();
             return new NFAE();
+
+        case 'PDA':
+            $('#convertDFA').hide();
+            return new PDA();
         
         default:
             return null;

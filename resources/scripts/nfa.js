@@ -58,7 +58,7 @@ function checkIfStateAlreadyExists(currentStates, state) {
 
 function isWordValid(currentStates) {
     for(let state in currentStates) {
-        if(currentStates[state].isFinal()) return {valid: true, msg: 'Valid!!'};
+        if(currentStates[state].isFinal()) return {valid: true, msg: 'Word accepted!!'};
     }
 
     return {valid: false, msg: 'Word not accepted!!'};
