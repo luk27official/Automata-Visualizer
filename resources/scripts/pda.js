@@ -27,7 +27,7 @@ PDA.prototype = Object.create(NFAE.prototype);
 PDA.prototype.constructor = PDA;
 
 function processWord(word) {
-    let runners = [{state: this.getInitialState(), word: word, stack: [this.initialSymbolStackP]}];
+    let runners = [{state: this.getInitialState(), word: word, stack: [this.initialSymbolStack]}];
     let runnersLength = 0;
     let verdict = true;
 
@@ -120,8 +120,11 @@ function travelEpsilonTransitions(runners, currentRunner, transitions) {
 }
 
 function applyStackOperation(stack, values) {
-    if(values.pop !== 'E') stack.pop();
-    if(values.push !== 'E') stack.push(values.push);
+    // if(values.pop !== 'E') stack.pop();
+    // if(values.push !== 'E') stack.push(values.push);
+
+    if(values.pop !== 'E') for(let i = 0; i < values.pop.length; i++) stack.pop();
+    if(values.push !== 'E') for(let i = values.push.length - 1; i >= 0; i--) stack.push(values.push[i]);
 }
 
 function parseTransitionSymbol(transitionSymbol) {
@@ -173,7 +176,14 @@ function getInitialSymbolStack() {
 }
 
 function comparePopSymbolWithStackSymbol(popValue, stack) {
-    return popValue === stack[stack.length - 1] || popValue === 'E';
+    //return popValue === stack[stack.length - 1] || popValue === 'E';
+    if(popValue === 'E') return true;
+
+    for(let i = 0; i < popValue.length; i++) {
+        if(popValue[i] !== stack[stack.length - (i + 1)]) return false;
+    }
+
+    return true;
 }
 
 function createNewRunner(state, word, stack) {
