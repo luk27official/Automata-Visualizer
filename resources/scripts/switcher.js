@@ -14,19 +14,23 @@ function generateNewAutomaton(name) {
     switch(name) {
         case 'DFA':
             $('#convertDFA').hide();
-            return new DFA();
+            return {automaton: new DFA(), controller: new dfaCtrl()}
+            //return new DFA();
         
         case 'NFA':
             $('#convertDFA').show();
-            return new NFA();
+            return {automaton: new NFA(), controller: new nfaCtrl()}
+            //return new NFA();
 
         case 'NFAE':
             $('#convertDFA').show();
-            return new NFAE();
+            return {automaton: new NFAE(), controller: new nfaCtrl()}
+            //return new NFAE();
 
         case 'PDA':
             $('#convertDFA').hide();
-            return new PDA();
+            return {automaton: new PDA(), controller: new pdaCtrl()}
+            //return new PDA();
         
         default:
             return null;

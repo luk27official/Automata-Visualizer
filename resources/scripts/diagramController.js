@@ -5,6 +5,8 @@ var diagram = null;
 var selectedCell = null;
 var selectedState = null;
 var insertedAlphabet = null;
+var newTransition = null;
+var controller = null;
 
 var graph = new joint.dia.Graph;
 var switcher = new Switcher();
@@ -25,13 +27,13 @@ $('.button-collapse').sideNav({
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
-// $('.modal').modal({
-//     dismissible: true, // Modal can be dismissed by clicking outside of the modal
-//     opacity: .5, // Opacity of modal background
-//     inDuration: 200, // Transition in duration
-//     outDuration: 200, // Transition out duration
-// }
-// );
+$('.modal').modal({
+    dismissible: true, // Modal can be dismissed by clicking outside of the modal
+    opacity: .5, // Opacity of modal background
+    inDuration: 200, // Transition in duration
+    outDuration: 200, // Transition out duration
+}
+);
 $('#set-name').click(function() {
     if(!selectedCell) return;
     setStateName();
@@ -40,6 +42,7 @@ $('#set-name').click(function() {
 function setUp() {
     let config = loader.checkSource({switcher: switcher, graph: graph, paper: paper});
     automaton = config.automaton;
+    controller = config.controller;
     currentAutomaton = config.currentAutomaton;
     diagram = config.diagram;
 
@@ -58,26 +61,8 @@ function setStateName() {
     console.log(automaton);
 }
 
-function setTransition(link) {
-    let source = link.getSourceElement();
-    let target = link.getTargetElement();
-    let name = prompt('Symbol:');
-    if(!name) {
-        link.remove();
-        return;
-    }
-    link.label(0, {
-        position: 0.5,
-        attrs: {
-            //rect: {fill: 'white'},
-            text: {fill: 'blue', text: name}
-        }
-    });
-
-    let state = automaton.getState(source.id);
-    diagram.curveTransition(source.id, target.id, link, state);
-    state.addTransition(automaton.getState(target.id), name, link.id);
-    console.log(automaton);
+ function setTransition() {
+     controller.setTransition(newTransition, automaton, diagram);
 }
 
 function setInitial(checkbox) {
@@ -98,66 +83,32 @@ function evaluateWord() {
     let status;
     let word = '';
 
-    setAlphabet();
+    if(!controller.setAlphabet(automaton)) return;
     word = prompt('Insert the word to evaluate:');
     //if(!word) return;
 
     status = automaton.run(word);
     console.log(status.msg);
     alert(status.msg);
-    //$('#modal1').modal('open');
 }
 
-// function evaluatePDA() {
-//     console.log('hola');
-//     $('#symbol-input').val('');
-//     $('#pop-input').val('');
-//     $('#push-input').val('');
-// }
-
 function convertToDFA() {
-    let status;
-    let dataToSend;
-    let newAutomaton = null;
-    let automatonJson = {};
+     let newAutomaton = controller.convertToDFA(automaton);
+     if(!newAutomaton) return;
 
-    setAlphabet();
-    newAutomaton = automaton.convertToDFA();
-    loadAutomatonInNewTab(newAutomaton, 'DFA');
+     loadAutomatonInNewTab(newAutomaton, 'DFA');
 }
 
 function convertToRegex() {
-    if(!automaton.getStates().length) return;
-
-    setAlphabet();
-    let clone = automaton.clone();
-    if(!clone) {
-        alert('No initial state has been set!');
-        return;
-    }
-    let regex = RegEx.convertToRegex(clone);
-    $('#regexText').val(regex)
+    controller.convertToRegex(automaton);
 }
 
 function convertRegexToNFAE() {
-    let expression = $('#regexText').val();
-    let generatedAutomaton = null;
-    let json = {};
+    let generatedAutomaton = controller.convertRegexToNFAE();
 
-    if(!expression) return;
+    if(!generatedAutomaton) return;
 
-    generatedAutomaton = RegEx.toNFAE(expression);
     loadAutomatonInNewTab(generatedAutomaton, 'NFAE');
-}
-
-function setAlphabet() {
-    if(!insertedAlphabet) insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
-    else {
-        insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', insertedAlphabet);
-    }
-
-    if(!insertedAlphabet) return
-    automaton._alphabet = insertedAlphabet.split(" ");
 }
 
 function addAutomatonToOperandsList() {
@@ -176,28 +127,23 @@ function addAutomatonToOperandsList() {
 }
 
 function intersectAutomata() {
-    executeRegularOperation(regularLanguaje.properties.intersect);
-}
+    let result = controller.executeRegularOperation(automaton, regularLanguaje.properties.intersect);
+    if(!result) return;
 
-function combineAutomata() {
-    executeRegularOperation(regularLanguaje.properties.unite);
-}
-
-function complementAutomata() {
-    let result = null;
-    if(!regularLanguaje.operands.length) { alert('You must add at least one operand to continue.'); return; }
-
-    setAlphabet();
-    result = regularLanguaje.properties.complement(insertedAlphabet.split(" "));
     loadAutomatonInNewTab(result, 'DFA');
 }
 
-function executeRegularOperation(operationCallback) {
-    let result = null;
-    if(!regularLanguaje.operands.length) { alert('You must add at least two operands to continue.'); return; }
-    
-    setAlphabet();
-    result = operationCallback(insertedAlphabet.split(" "));
+function combineAutomata() {
+    let result = controller.executeRegularOperation(automaton, regularLanguaje.properties.unite, automaton);
+    if(!result) return;
+
+    loadAutomatonInNewTab(result, 'DFA');
+}
+
+function complementAutomata() {
+     let result = controller.complementAutomata(automaton);
+     if(!result) return;
+
     loadAutomatonInNewTab(result, 'DFA');
 }
 
@@ -233,11 +179,10 @@ function processImportedGraph(json) {
 }
 
 function minimize() {
-    let newAutomaton = null;
+     let newAutomaton = controller.minimize(automaton);
 
-    setAlphabet();
-    newAutomaton = automaton.minimize();
-    if(!newAutomaton) { alert('No initial state has been set!'); return; }
+    if(!newAutomaton) return;
+
     loadAutomatonInNewTab(newAutomaton, 'DFA');
 }
 
@@ -262,6 +207,9 @@ function changeAutomaton(item) {
 }
 
 function resetGraph(item) {
+    let bundle = null;
+    let div = '';
+
     $('#toolbar').hide();
     graph.clear();
     paper.remove();
@@ -270,8 +218,10 @@ function resetGraph(item) {
     insertedAlphabet = null;
     paper = null;
 
-    automaton = switcher.getNewAutomaton(item.id);
-    let div = document.createElement('div');
+    bundle = switcher.getNewAutomaton(item.id);
+    automaton = bundle.automaton;
+    controller = bundle.controller;
+    div = document.createElement('div');
     div.id = 'paper';
     document.body.appendChild(div);
     paper = generateNewPaper();

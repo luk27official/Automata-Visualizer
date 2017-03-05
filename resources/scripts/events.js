@@ -52,7 +52,9 @@ function cellPointerClick(cellView, evt, x, y) {
 
 function changeSourceChangeTarget(link) {
     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
-        setTransition(link);
+        newTransition = link;
+        if(currentAutomaton === 'PDA') $('#modal-pda').modal('open');
+        else setTransition();
     }
 }
 
