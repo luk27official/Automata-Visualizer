@@ -24,6 +24,7 @@ function State(name, id) {
     this._initial = false;
     this._final = false;
     this.transitionY = 0;
+    this.transitionX = 0;
     this._getTransitions = getTransitions;
     
 }

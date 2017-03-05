@@ -238,7 +238,13 @@ function generateNewPaper() {
         model: graph,
         defaultLink: new joint.shapes.fsa.Arrow,
         clickThreshold: 1,
-        linkPinning: false
+        linkPinning: false,
+        interactive: function(cellView) {
+        if (cellView.model.isLink() && cellView.model.hasLoop()) {
+            return { vertexAdd: false, vertexMove: false, vertexRemove: false };
+        }
+        return true;
+    }
     });
 
     return paper;

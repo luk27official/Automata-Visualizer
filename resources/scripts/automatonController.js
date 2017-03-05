@@ -85,7 +85,7 @@ function minimize(automaton) {
         position: 0.5,
         attrs: {
             //rect: {fill: 'white'},
-            text: {fill: 'blue', text: name}
+            text: {fill: 'black', text: name}
         }
     });
 
