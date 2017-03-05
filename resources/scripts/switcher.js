@@ -14,23 +14,31 @@ function generateNewAutomaton(name) {
     switch(name) {
         case 'DFA':
             $('#convertDFA').hide();
+            $('#automata-operations').show();
+            $('#regex-operations').show();
+            $('#regular-language-operations').show();
             return {automaton: new DFA(), controller: new dfaCtrl()}
-            //return new DFA();
         
         case 'NFA':
             $('#convertDFA').show();
+            $('#automata-operations').show();
+            $('#regex-operations').show();
+            $('#regular-language-operations').show();
             return {automaton: new NFA(), controller: new nfaCtrl()}
-            //return new NFA();
 
         case 'NFAE':
             $('#convertDFA').show();
+            $('#automata-operations').show();
+            $('#regex-operations').show();
+            $('#regular-language-operations').show();
             return {automaton: new NFAE(), controller: new nfaCtrl()}
-            //return new NFAE();
 
         case 'PDA':
             $('#convertDFA').hide();
+            $('#automata-operations').hide();
+            $('#regex-operations').hide();
+            $('#regular-language-operations').hide();
             return {automaton: new PDA(), controller: new pdaCtrl()}
-            //return new PDA();
         
         default:
             return null;

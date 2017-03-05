@@ -176,7 +176,6 @@ function getInitialSymbolStack() {
 }
 
 function comparePopSymbolWithStackSymbol(popValue, stack) {
-    //return popValue === stack[stack.length - 1] || popValue === 'E';
     if(popValue === 'E') return true;
 
     for(let i = 0; i < popValue.length; i++) {
