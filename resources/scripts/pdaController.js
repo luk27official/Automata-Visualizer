@@ -5,6 +5,7 @@ function pdaCtrl() {
     this.insertedAlphabet = null;
 
     this.setTransition = setTransition;
+    this.removeNewTransition = removeNewTransition;
     this.resetTransitionInputs = resetTransitionInputs;
     this.getTransitionValues = getTransitionValues;
     this.setAlphabet = setAlphabet;
@@ -30,6 +31,10 @@ function setTransition(newTransition, automaton, diagram) {
 
     this.resetTransitionInputs();
     console.log(automaton);
+}
+
+function removeNewTransition(newTransition) {
+    newTransition.remove();
 }
 
 function resetTransitionInputs() {

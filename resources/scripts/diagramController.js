@@ -28,10 +28,10 @@ $('.button-collapse').sideNav({
     }
   );
 $('.modal').modal({
-    dismissible: true, // Modal can be dismissed by clicking outside of the modal
+    dismissible: false, // Modal can be dismissed by clicking outside of the modal
     opacity: .5, // Opacity of modal background
     inDuration: 200, // Transition in duration
-    outDuration: 200, // Transition out duration
+    outDuration: 200 // Transition out duration
 }
 );
 $('#set-name').click(function() {
