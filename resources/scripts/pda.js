@@ -21,6 +21,7 @@ function PDA() {
     this.applyStackOperation = applyStackOperation;
     this.createNewRunner = createNewRunner;
     this.getTransitionsBySymbol = getTransitionsBySymbol;
+    this.checkIfNewRunnerAlreadyExists = checkIfNewRunnerAlreadyExists;
 }
 
 PDA.prototype = Object.create(NFAE.prototype);
@@ -115,8 +116,28 @@ function travelEpsilonTransitions(runners, currentRunner, transitions) {
         transitionValues = this.parseTransitionSymbol(currentTransition.getSymbol());
         this.applyStackOperation(newRunner.stack, transitionValues);
         //Considerar hacer un chequeo en busca de runners duplicados en la lista. Para esto comparar el estado y la pila de cada uno.
-        runners.push(newRunner);
+        if(!this.checkIfNewRunnerAlreadyExists(newRunner, runners)) runners.push(newRunner);
     }
+}
+
+function checkIfNewRunnerAlreadyExists(newRunner, runners) {
+    let currentRunner = null;
+    let match = 0;
+
+    for(let runner in runners) {
+        match = 0;
+        currentRunner = runners[runner];
+        if(currentRunner.state.getInternalName() !== newRunner.state.getInternalName() || currentRunner.word !== newRunner.word) continue;
+        if(currentRunner.stack.length !== newRunner.stack.length) continue;
+
+        for(let i = 0; i < currentRunner.stack.length; i++) {
+            if(currentRunner.stack[i] === newRunner.stack[i]) match++;
+        }
+
+        if(match === currentRunner.stack.length) return true;
+    }
+
+    return false;
 }
 
 function applyStackOperation(stack, values) {
