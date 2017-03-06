@@ -74,38 +74,23 @@ function changePosition(element) {
     let links = graph.getConnectedLinks(element, {outbound: true});
     let posX = element.get('position').x;
     let posY = element.get('position').y;
+    let vertices = null;
+    let newVertices = null;
     let counterX = 20;
-    let counterY = 20;
-    let vertexPosX = 0;
-    let vertexPosY = 0;
-    let calculators = [calculateLeftX, calculateRightX];
-    let i = 0;
 
      _.each(links, function(link) {
         if(link.hasLoop()) {
-            i = 0;
-            let vertices = link.get('vertices');
+            vertices = link.get('vertices');
             if (vertices && vertices.length) {
-                let newVertices = [];
+                newVertices = [];
                 _.each(vertices, function(vertex) {
-                    // newVertices.push({ x: (posX-vertex.x)+vertex.x+counterX, y: posY-40 });
-                    // counterX += 20;  
-                    vertexPosX = calculators[i++](vertex.deltaX);   
-                    vertexPosY = Math.abs(posY - vertex.deltaY);   
-                    newVertices.push({ x: vertexPosX, y: vertexPosY, deltaX: Math.abs(posX - vertexPosX), deltaY: posY - vertexPosY});
+                    newVertices.push({ x: (posX-vertex.x)+vertex.x+counterX, y: posY-40 });
+                    counterX += 20;
                 });
                 link.set('vertices', newVertices);
             }
         }
     });
-
-    function calculateLeftX(delta) {
-        return posX - delta;
-    }
-
-    function calculateRightX(delta) {
-        return posX + delta;
-    }
 }
 
 function remove(cell) {

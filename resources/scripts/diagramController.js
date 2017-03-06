@@ -31,7 +31,10 @@ $('.modal').modal({
     dismissible: false, // Modal can be dismissed by clicking outside of the modal
     opacity: .5, // Opacity of modal background
     inDuration: 200, // Transition in duration
-    outDuration: 200 // Transition out duration
+    outDuration: 200, // Transition out duration
+    ready: function(modal, trigger) {
+        $('#symbol-input').focus();
+    }
 }
 );
 $('#set-name').click(function() {
@@ -238,13 +241,7 @@ function generateNewPaper() {
         model: graph,
         defaultLink: new joint.shapes.fsa.Arrow,
         clickThreshold: 1,
-        linkPinning: false,
-        interactive: function(cellView) {
-        if (cellView.model.isLink() && cellView.model.hasLoop()) {
-            return { vertexAdd: false, vertexMove: false, vertexRemove: false };
-        }
-        return true;
-    }
+        linkPinning: false
     });
 
     return paper;

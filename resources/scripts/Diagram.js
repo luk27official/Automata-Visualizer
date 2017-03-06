@@ -71,12 +71,13 @@ function curveTransition(sourceId, targetId, link, state) {
         let vertexY = 0;
         let posX = link.getSourceElement().get('position').x;
         let posY = link.getSourceElement().get('position').y;
+        
         state.transitionY += 30;
         state.transitionX += 30;
         leftX = posX-state.transitionX;
         rightX = posX+(state.transitionX*2);
         vertexY = posY-state.transitionY;
-        link.set('vertices', (link.get('vertices') || []).concat([{ x: leftX, y: vertexY, deltaX: posX-leftX, deltaY: state.transitionY}, {x: rightX, y: vertexY, deltaX: rightX - posX, deltaY: state.transitionY}]));
+        link.set('vertices', (link.get('vertices') || []).concat([{ x: leftX, y: vertexY}, {x: rightX, y: vertexY}]));
     }
 }
 
