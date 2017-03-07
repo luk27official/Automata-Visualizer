@@ -339,16 +339,11 @@ function createState(state, pendingStates, currentState, newStates) {
 }
 
 function minimize() {
-    let dfa = null;
     let clone = this.clone();
     if(!clone) return null;
     clone.resetStateInternalNames();
-
-    if((clone instanceof DFA)) return Minimize(clone, this._alphabet);
-    else {
-        dfa = clone.convertToDFA();
-        return Minimize(dfa, this._alphabet);
-    }
+    
+    return Minimize(clone, this._alphabet);
 }
 
 function resetStateInternalNames() {

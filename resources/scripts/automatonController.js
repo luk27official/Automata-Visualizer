@@ -65,8 +65,12 @@ function minimize(automaton) {
     let newAutomaton = null;
 
     if(!this.setAlphabet(automaton)) return null;
+    if(!(automaton instanceof DFA)) { alert("First convert it into a DFA. You just have to press the button above."); return null; }
+    
     newAutomaton = automaton.minimize();
+
     if(!newAutomaton) { alert('No initial state has been set!'); return null; }
+
     return newAutomaton;
 }
 
