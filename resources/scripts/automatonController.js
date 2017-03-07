@@ -39,12 +39,9 @@ function convertRegexToNFAE() {
 }
 
 function setAlphabet(automaton) {
-    if(!this.insertedAlphabet) this.insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.');
-    else {
-        this.insertedAlphabet = prompt('Insert the alphabet supported by the automaton. Separate each symbol with a space.', this.insertedAlphabet);
-    }
+    this.insertedAlphabet = $('#alphabet').val();
+    if(!this.insertedAlphabet) { alert('Define the alphabet to use!'); return null;}
 
-    if(!this.insertedAlphabet) return null;
     automaton._alphabet = this.insertedAlphabet.split(" ");
 
     return true;
