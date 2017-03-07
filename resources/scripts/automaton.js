@@ -356,7 +356,7 @@ function resetStateInternalNames() {
     this._counter = 0;
 
     for(let state in states) {
-        //states[state].setName('q' + this._counter);
+        states[state].setName('q' + this._counter);
         states[state].setInternalName('q' + this._counter++);
     }
 }
