@@ -9,12 +9,33 @@ function addNewRule(e) {
     if(!tr.find('input').val()) return;
 
 
-    $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="terminal" placeholder="Terminal" type="text"></div></td></tr>');
-    $('.terminal').keypress(addNewGrammarRule);
+    $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
+    $('.rhs').keypress(addNewGrammarRule);
+}
+
+function parseGrammarFromModal() {
+    let rows = $('#grammar-rules tbody tr');
+    let productions = [];
+    let production = {};
+    let flag = true;
+
+    rows.each(function(index) {
+        production = {};
+        production.left = $(this).find($('.lhs')).val();
+        production.right = $(this).find($('.rhs')).val();
+
+        if(!production.left) { flag = false; return false; }
+        if(!production.right) production.right = epsilon;
+        productions.push(production);
+    });
+
+    if(!flag) console.log('You must fill every production.');
+    else console.log(productions);
 }
 
 return {
-    addNewRule: addNewRule
+    addNewRule: addNewRule,
+    parseGrammarFromModal: parseGrammarFromModal
 }
 
 })();

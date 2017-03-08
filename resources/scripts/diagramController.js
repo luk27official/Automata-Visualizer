@@ -7,6 +7,7 @@ var selectedState = null;
 var insertedAlphabet = null;
 var newTransition = null;
 var controller = null;
+var epsilon = 'ε';
 
 var graph = new joint.dia.Graph;
 var switcher = new Switcher();
@@ -57,7 +58,7 @@ function jQueryInit() {
         setStateName();
     });
 
-    $('.terminal').keypress(addNewGrammarRule);
+    $('.rhs').keypress(addNewGrammarRule);
 }
 
 function setStateName() {
@@ -196,6 +197,10 @@ function minimize() {
 
 function addNewGrammarRule(e) {
     grammarCtrl.addNewRule(e);
+}
+
+function parseGrammarFromModal() {
+    grammarCtrl.parseGrammarFromModal();
 }
 
 function loadAutomatonInNewTab(newAutomaton, type) {

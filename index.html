@@ -75,7 +75,7 @@
 						<tr>
 							<td>
 								<div class="input-field inline">
-									<input placeholder="Production" type="text" autofocus>
+									<input class="lhs" placeholder="Production" type="text" autofocus>
 								</div>
 							</td>
 							<td>
@@ -85,7 +85,7 @@
 							</td>
 							<td>
 								<div class="input-field inline">
-									<input class="terminal" placeholder="Terminal" type="text">
+									<input class="rhs" placeholder="Terminal" type="text">
 								</div>
 							</td>
 						</tr>
@@ -93,8 +93,9 @@
 				</table>
 			</div>
 			<div class="modal-footer">
-				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Accept</a>
-				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+				<a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="parseGrammarFromModal()">Convert</a>
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Save</a>
 			</div>
 		</div>
 
