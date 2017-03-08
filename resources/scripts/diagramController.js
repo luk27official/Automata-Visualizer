@@ -163,7 +163,11 @@ function saveAutomaton(item) {
     automaton_json.type = currentAutomaton;
     jsons.push(automaton_json);
     jsons.push(automaton_visuals);
-    $(item).attr("href", "data:application/octet-stream," + encodeURIComponent(JSON.stringify(jsons))).attr("download", "automaton.json");
+    saveToDisk(item, jsons, "automaton.json");
+}
+
+function saveToDisk(item, valueToSave, fileName) {
+    $(item).attr("href", "data:application/octet-stream," + encodeURIComponent(JSON.stringify(valueToSave))).attr("download", fileName);
 }
 
 function importAutomaton(event) {
