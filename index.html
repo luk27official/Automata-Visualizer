@@ -47,7 +47,7 @@
 			</div>
 		</nav>
 
-		<!-- Modal Structure -->
+		<!-- PDA Transition Modal Structure -->
 		<div id="modal-pda" class="modal">
 			<div class="modal-content">
 				<div class="input-field inline">
@@ -63,6 +63,38 @@
 			<div class="modal-footer">
 				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="setTransition()">Accept</a>
 				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="controller.removeNewTransition(newTransition)">Cancel</a>
+			</div>
+		</div>
+
+		<!-- Grammar Modal Structure -->
+		<div id="modal-grammar" class="modal">
+			<div class="modal-content">
+				<h4>Context Free Grammar</h4>
+				<table id="grammar-rules">
+					<tbody>
+						<tr>
+							<td>
+								<div class="input-field inline">
+									<input placeholder="Production" type="text" autofocus>
+								</div>
+							</td>
+							<td>
+								<div class="input-field inline">
+									<input type="text" value="&#x2192" disabled>
+								</div>
+							</td>
+							<td>
+								<div class="input-field inline">
+									<input class="terminal" placeholder="Terminal" type="text">
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Accept</a>
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
 			</div>
 		</div>
 
@@ -109,6 +141,11 @@
 						<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="complementAutomata()">Complement Automata</button>
 					</div>
 
+					<div id="grammar-operations">
+						<h5 class="collection-header">Grammar Operations</h5>
+						<button class="btn btn-default btn-wide btn-success toolbar-button last-button" data-target="modal-grammar">Convert to PDA</button>
+					</div>
+
 					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" style="margin-top: 25px;" onclick="clearGraph()">Clear All</button>
 				</div>
 			</li>
@@ -119,6 +156,7 @@
 		<script src="resources/scripts/pdaController.js"></script>
 		<script src="resources/scripts/dfaController.js"></script>
 		<script src="resources/scripts/nfaController.js"></script>
+		<script src="resources/scripts/grammarController.js"></script>
 		<script src="resources/scripts/diagramController.js"></script>
 	</body>
 </html>

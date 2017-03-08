@@ -18,30 +18,6 @@ var paper = generateNewPaper();
 
 setUp();
 
-$('#toolbar').hide();
-$(".button-collapse").sideNav();
-$('.button-collapse').sideNav({
-      menuWidth: 450, // Default is 300
-      edge: 'left', // Choose the horizontal origin
-      closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      draggable: true // Choose whether you can drag to open on touch screens
-    }
-  );
-$('.modal').modal({
-    dismissible: false, // Modal can be dismissed by clicking outside of the modal
-    opacity: .5, // Opacity of modal background
-    inDuration: 200, // Transition in duration
-    outDuration: 200, // Transition out duration
-    ready: function(modal, trigger) {
-        $('#symbol-input').focus();
-    }
-}
-);
-$('#set-name').click(function() {
-    if(!selectedCell) return;
-    setStateName();
-});
-
 function setUp() {
     let config = loader.checkSource({switcher: switcher, graph: graph, paper: paper});
     automaton = config.automaton;
@@ -53,6 +29,35 @@ function setUp() {
     document.getElementById(currentAutomaton).className = 'active';
 
     registerEventHandlers(paper, graph);
+    jQueryInit();
+}
+
+function jQueryInit() {
+    $('#toolbar').hide();
+    //$(".button-collapse").sideNav();
+    $('.button-collapse').sideNav({
+        menuWidth: 450, // Default is 300
+        edge: 'left', // Choose the horizontal origin
+        closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        draggable: true // Choose whether you can drag to open on touch screens
+        }
+    );
+    $('.modal').modal({
+        dismissible: false, // Modal can be dismissed by clicking outside of the modal
+        opacity: .5, // Opacity of modal background
+        inDuration: 200, // Transition in duration
+        outDuration: 200, // Transition out duration
+        ready: function(modal, trigger) {
+            $('#symbol-input').focus();
+        }
+    }
+    );
+    $('#set-name').click(function() {
+        if(!selectedCell) return;
+        setStateName();
+    });
+
+    $('.terminal').keypress(addNewGrammarRule);
 }
 
 function setStateName() {
@@ -187,6 +192,18 @@ function minimize() {
     if(!newAutomaton) return;
 
     loadAutomatonInNewTab(newAutomaton, 'DFA');
+}
+
+function addNewGrammarRule(e) {
+    let tr = null;
+
+    if(e.which != 13) return;
+    tr = $('#grammar-rules tbody tr:last-child td:last-child');
+    if(!tr.find('input').val()) return;
+
+
+    $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="terminal" placeholder="Terminal" type="text"></div></td></tr>');
+    $('.terminal').keypress(addNewGrammarRule);
 }
 
 function loadAutomatonInNewTab(newAutomaton, type) {
