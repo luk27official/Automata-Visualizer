@@ -145,6 +145,8 @@
 					<div id="grammar-operations">
 						<h5 class="collection-header">Grammar Operations</h5>
 						<button class="btn btn-default btn-wide btn-success toolbar-button last-button" data-target="modal-grammar">Convert to PDA</button>
+						<input type="file" id="open-grammar" onchange="importGrammar(event)" style="display: none;">
+						<button class="btn btn-default btn-wide btn-success toolbar-button last-button" onclick="$('#open-grammar').click()">Import Grammar</button>
 					</div>
 
 					<button class="btn btn-default btn-wide btn-success toolbar-button last-button" style="margin-top: 25px;" onclick="clearGraph()">Clear All</button>

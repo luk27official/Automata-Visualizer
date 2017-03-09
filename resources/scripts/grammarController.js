@@ -39,10 +39,28 @@ function saveGrammar(item) {
     saveToDisk(item, grammar, 'grammar.json');
 }
 
+function processImportedGrammar(json) {
+    let productions = JSON.parse(json);
+    console.log(productions);
+
+    $('.lhs').val(productions[0].left);
+    $('.rhs').val(productions[0].right);
+
+    for(let i = 1; i < productions.length; i++) {
+        $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
+
+        $('#grammar-rules tbody tr:last-child').find('.lhs').val(productions[i].left);
+        $('#grammar-rules tbody tr:last-child').find('.rhs').val(productions[i].right);
+    }
+
+    $('#modal-grammar').modal('open');
+}
+
 return {
     addNewRule: addNewRule,
     parseGrammarFromModal: parseGrammarFromModal,
-    saveGrammar: saveGrammar
+    saveGrammar: saveGrammar,
+    processImportedGrammar: processImportedGrammar
 }
 
 })();

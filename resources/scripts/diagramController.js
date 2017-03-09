@@ -175,24 +175,22 @@ function saveToDisk(item, valueToSave, fileName) {
 }
 
 function importAutomaton(event) {
+    importFile(event, controller.processImportedGraph);
+}
+
+function importGrammar(event) {
+    importFile(event, grammarCtrl.processImportedGrammar);
+}
+
+function importFile(event, importCallback) {
     let input = event.target;
     let reader = new FileReader();
     let json = '';
 
     reader.onload = function() {
-      processImportedGraph(reader.result);
+      importCallback(reader.result);
     };
-    reader.readAsText(input.files[0])
-}
-
-function processImportedGraph(json) {
-    let newAutomaton = JSON.parse(json);
-    let logic = newAutomaton[0];
-    let visuals = newAutomaton[1];
-    changeAutomaton(document.getElementById(logic.type));
-    automaton.buildFromJSON(logic);
-    graph.fromJSON(visuals);
-    console.log(automaton);
+    reader.readAsText(input.files[0]);
 }
 
 function minimize() {

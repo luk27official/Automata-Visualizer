@@ -12,6 +12,7 @@ automatonCtrl.prototype.executeRegularOperation = executeRegularOperation;
 automatonCtrl.prototype.complementAutomata = complementAutomata;
 automatonCtrl.prototype.minimize = minimize;
 automatonCtrl.prototype.setTransition = setTransition;
+automatonCtrl.prototype.processImportedGraph = processImportedGraph;
 
 function convertToRegex(automaton) {
     let clone = null;
@@ -94,6 +95,15 @@ function minimize(automaton) {
     diagram.curveTransition(source.id, target.id, newTransition, state);
     state.addTransition(automaton.getState(target.id), name, newTransition.id);
     console.log(automaton);
+}
+
+function processImportedGraph(json) {
+    let newAutomaton = JSON.parse(json);
+    let logic = newAutomaton[0];
+    let visuals = newAutomaton[1];
+    changeAutomaton(document.getElementById(logic.type));
+    automaton.buildFromJSON(logic);
+    graph.fromJSON(visuals);
 }
 
 return automatonCtrl;
