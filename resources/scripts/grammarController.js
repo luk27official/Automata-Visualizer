@@ -33,8 +33,13 @@ function parseGrammarFromModal() {
     });
 
     if(!flag) { alert('You must specify a production variable!'); return null;}
-    console.log(productions);
     return productions;
+}
+
+function convertToPDA() {
+    let productions = parseGrammarFromModal();
+
+    grammarConverter.convertGrammartoEmptyStackPDA(productions);
 }
 
 function saveGrammar(item) {
@@ -77,7 +82,8 @@ return {
     parseGrammarFromModal: parseGrammarFromModal,
     saveGrammar: saveGrammar,
     processImportedGrammar: processImportedGrammar,
-    clearGrammar: clearGrammar
+    clearGrammar: clearGrammar,
+    convertToPDA: convertToPDA
 }
 
 })();

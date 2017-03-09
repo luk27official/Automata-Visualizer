@@ -210,8 +210,8 @@ function addNewGrammarRule(e) {
     if(e.which == 13) grammarCtrl.addNewRule();    
 }
 
-function parseGrammarFromModal() {
-    grammarCtrl.parseGrammarFromModal();
+function convertGrammarToPDA() {
+    grammarCtrl.convertToPDA();
 }
 
 function loadAutomatonInNewTab(newAutomaton, type) {

@@ -64,9 +64,6 @@ function generateVisualStates(states, diagram) {
         }
         
         if(states[state].isFinal()) element.attr({circle: {'stroke-width': 4}});
-
-        // x += 100;
-        // if(x >= width - 200) { x = 100; y += 100; }
     }
 }
 

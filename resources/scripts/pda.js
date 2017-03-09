@@ -141,9 +141,6 @@ function checkIfNewRunnerAlreadyExists(newRunner, runners) {
 }
 
 function applyStackOperation(stack, values) {
-    // if(values.pop !== 'E') stack.pop();
-    // if(values.push !== 'E') stack.push(values.push);
-
     if(values.pop !== 'E') for(let i = 0; i < values.pop.length; i++) stack.pop();
     if(values.push !== 'E') for(let i = values.push.length - 1; i >= 0; i--) stack.push(values.push[i]);
 }
