@@ -211,7 +211,8 @@ function addNewGrammarRule(e) {
 }
 
 function convertGrammarToPDA() {
-    grammarCtrl.convertToPDA();
+    let pda = grammarCtrl.convertToPDA();
+    loadAutomatonInNewTab(pda, 'PDA');
 }
 
 function loadAutomatonInNewTab(newAutomaton, type) {

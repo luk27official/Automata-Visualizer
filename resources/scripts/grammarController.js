@@ -38,8 +38,10 @@ function parseGrammarFromModal() {
 
 function convertToPDA() {
     let productions = parseGrammarFromModal();
+    let result = grammarConverter.convertGrammartoEmptyStackPDA(productions);
+    result.pda.convertToFinalState(result.grammarInitialSymbol);
 
-    grammarConverter.convertGrammartoEmptyStackPDA(productions);
+    return result.pda;
 }
 
 function saveGrammar(item) {

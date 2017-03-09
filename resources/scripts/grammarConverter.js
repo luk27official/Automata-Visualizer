@@ -4,11 +4,20 @@ var grammarConverter = (function() {
 function convertGrammartoEmptyStackPDA(productions) {
     let productionVariables = [];
     let state = new State('q0', 0);
+    let pda = new PDA();
 
     productionVariables = buildTransitionsForProductionVariables(state, productions);
     buildTransitionsForTerminalSymbols(state, productions, productionVariables);
-    console.log(productionVariables);
-    console.log(state);
+
+    state.setBehavior({initial: true});
+    pda._initialState = state;
+    pda._states.push(state);
+    pda._counter++;
+
+    return {
+        grammarInitialSymbol: productionVariables[0], 
+        pda: pda
+    };
 }
 
 function buildTransitionsForProductionVariables(state, productions) {

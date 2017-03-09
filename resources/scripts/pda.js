@@ -8,6 +8,7 @@ function PDA() {
 
     this.initialSymbolStack = 'Z';
     this._processWord = processWord;
+    this.convertToFinalState = convertToFinalState;
     this.getEpsilonClosure = getEpsilonClosure;
     this.consumeSymbol = consumeSymbol;
     this.checkWordAcceptance = checkWordAcceptance;
@@ -22,6 +23,7 @@ function PDA() {
     this.createNewRunner = createNewRunner;
     this.getTransitionsBySymbol = getTransitionsBySymbol;
     this.checkIfNewRunnerAlreadyExists = checkIfNewRunnerAlreadyExists;
+    this.buildPDATransitionSymbol = buildPDATransitionSymbol;
 }
 
 PDA.prototype = Object.create(NFAE.prototype);
@@ -44,6 +46,30 @@ function processWord(word) {
 
     this.getEpsilonClosure(runners);
     return this.checkWordAcceptance(runners);
+}
+
+function convertToFinalState(initialSymbolStack) {
+    this._initialState.setBehavior({initial: false});
+    let initialState = new State('q' + this._counter++);
+    let finalState = new State('q' + this._counter++);
+    let popValue = '';
+
+    initialState.setBehavior({initial: true});
+    finalState.setBehavior({final: true});
+
+    popValue = this.buildPDATransitionSymbol(epsilon, this.initialSymbolStack, initialSymbolStack + this.initialSymbolStack);
+    initialState.addTransition(this._initialState, popValue, 0);
+
+    popValue = this.buildPDATransitionSymbol(epsilon, this.initialSymbolStack, epsilon);
+    for(let state in this._states) {
+        this._states[state].addTransition(finalState, popValue, 0);
+    }
+
+    this._initialState = initialState;
+    this._states.push(initialState);
+    this._states.push(finalState);
+
+    console.log(this);
 }
 
 function getEpsilonClosure(runners) {
@@ -219,6 +245,10 @@ function getTransitionsBySymbol(state, alphabetSymbol) {
     }
 
     return response;
+}
+
+function buildPDATransitionSymbol(alphabet, popValue, pushValue) {
+    return alphabet + ',' + popValue + '/' + pushValue;
 }
 
 return PDA;
