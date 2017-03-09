@@ -7,7 +7,7 @@ var selectedState = null;
 var insertedAlphabet = null;
 var newTransition = null;
 var controller = null;
-var epsilon = 'ε';
+var epsilon = '\u03B5';
 
 var graph = new joint.dia.Graph;
 var switcher = new Switcher();
@@ -59,6 +59,7 @@ function jQueryInit() {
     });
 
     $('.rhs').keypress(addNewGrammarRule);
+    $('.rhs').val(epsilon);
 }
 
 function setStateName() {
@@ -206,7 +207,7 @@ function minimize() {
 }
 
 function addNewGrammarRule(e) {
-    grammarCtrl.addNewRule(e);
+    if(e.which == 13) grammarCtrl.addNewRule();    
 }
 
 function parseGrammarFromModal() {

@@ -1,16 +1,15 @@
 
 var grammarCtrl = (function() {
 
-function addNewRule(e) {
-    let tr = null;
-
-    if(e.which != 13) return;
-    tr = $('#grammar-rules tbody tr:last-child td:last-child');
-    if(!tr.find('input').val()) return;
-
-
+function addNewRule() {
     $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
     $('.rhs').keypress(addNewGrammarRule);
+    setEpsilonValue();
+}
+
+function setEpsilonValue() {
+    let tr = $('#grammar-rules tbody tr:last-child td:last-child');
+    tr.find('input').val(epsilon);
 }
 
 function parseGrammarFromModal() {
@@ -29,7 +28,8 @@ function parseGrammarFromModal() {
         productions.push(production);
     });
 
-    if(!flag) return null;
+    if(!flag) { alert('You must specify a production variable!'); return null;}
+    console.log(productions);
     return productions;
 }
 
@@ -43,6 +43,7 @@ function processImportedGrammar(json) {
     let productions = JSON.parse(json);
     console.log(productions);
 
+    clearGrammar();
     $('.lhs').val(productions[0].left);
     $('.rhs').val(productions[0].right);
 
@@ -63,10 +64,12 @@ function clearGrammar() {
     rows.remove();
     $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
     $('.rhs').keypress(addNewGrammarRule);
+    setEpsilonValue();
 }
 
 return {
     addNewRule: addNewRule,
+    setEpsilonValue: setEpsilonValue,
     parseGrammarFromModal: parseGrammarFromModal,
     saveGrammar: saveGrammar,
     processImportedGrammar: processImportedGrammar,
