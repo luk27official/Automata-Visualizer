@@ -2,6 +2,9 @@
 var grammarCtrl = (function() {
 
 function addNewRule() {
+    let tr = $('#grammar-rules tbody tr:last-child td:last-child');
+    if(!tr.find('input').val()) tr.find('input').val(epsilon);
+
     $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
     $('.rhs').keypress(addNewGrammarRule);
     setEpsilonValue();
@@ -23,9 +26,10 @@ function parseGrammarFromModal() {
         production.left = $(this).find($('.lhs')).val();
         production.right = $(this).find($('.rhs')).val();
 
-        if(!production.left) { flag = false; return false; }
-        if(!production.right) production.right = epsilon;
-        productions.push(production);
+        if(production.left) {
+            if(!production.right) production.right = epsilon;
+            productions.push(production);
+        }
     });
 
     if(!flag) { alert('You must specify a production variable!'); return null;}
