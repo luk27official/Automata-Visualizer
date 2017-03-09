@@ -29,13 +29,20 @@ function parseGrammarFromModal() {
         productions.push(production);
     });
 
-    if(!flag) console.log('You must fill every production.');
-    else console.log(productions);
+    if(!flag) return null;
+    return productions;
+}
+
+function saveGrammar(item) {
+    let grammar = parseGrammarFromModal();
+    if(!grammar) return null;
+    saveToDisk(item, grammar, 'grammar.json');
 }
 
 return {
     addNewRule: addNewRule,
-    parseGrammarFromModal: parseGrammarFromModal
+    parseGrammarFromModal: parseGrammarFromModal,
+    saveGrammar: saveGrammar
 }
 
 })();

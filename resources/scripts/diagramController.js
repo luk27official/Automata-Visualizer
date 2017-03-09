@@ -166,6 +166,10 @@ function saveAutomaton(item) {
     saveToDisk(item, jsons, "automaton.json");
 }
 
+function saveGrammar(item) {
+    grammarCtrl.saveGrammar(item);
+}
+
 function saveToDisk(item, valueToSave, fileName) {
     $(item).attr("href", "data:application/octet-stream," + encodeURIComponent(JSON.stringify(valueToSave))).attr("download", fileName);
 }
