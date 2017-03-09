@@ -53,14 +53,24 @@ function processImportedGrammar(json) {
         $('#grammar-rules tbody tr:last-child').find('.rhs').val(productions[i].right);
     }
 
+    $('.rhs').keypress(addNewGrammarRule);
     $('#modal-grammar').modal('open');
+}
+
+function clearGrammar() {
+    let rows = $('#grammar-rules tbody tr');
+
+    rows.remove();
+    $('#grammar-rules > tbody:last-child').append('<tr><td><div class="input-field inline"><input class="lhs" placeholder="Production" type="text" autofocus></div></td><td><div class="input-field "><input type="text" value="&#x2192" disabled></div></td><td><div class="input-field inline"><input class="rhs" placeholder="Terminal" type="text"></div></td></tr>');
+    $('.rhs').keypress(addNewGrammarRule);
 }
 
 return {
     addNewRule: addNewRule,
     parseGrammarFromModal: parseGrammarFromModal,
     saveGrammar: saveGrammar,
-    processImportedGrammar: processImportedGrammar
+    processImportedGrammar: processImportedGrammar,
+    clearGrammar: clearGrammar
 }
 
 })();

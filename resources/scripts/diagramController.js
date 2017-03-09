@@ -156,6 +156,10 @@ function complementAutomata() {
     loadAutomatonInNewTab(result, 'DFA');
 }
 
+function clearGrammar() {
+    grammarCtrl.clearGrammar();
+}
+
 function saveAutomaton(item) {
     let jsons = [];
     let automaton_json = automaton.toJSON();
