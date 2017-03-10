@@ -33,9 +33,11 @@ function processWord(word) {
     let runners = [{state: this.getInitialState(), word: word, stack: [this.initialSymbolStack]}];
     let runnersLength = 0;
     let verdict = true;
+    let response = true;
 
     for(let symbol in word) {
-        this.getEpsilonClosure(runners);
+        response = this.getEpsilonClosure(runners);
+        if(!response) return {valid: false, msg: 'Execution stopped.'};
         runnersLength = runners.length;
 
         for(let i = 0; i < runnersLength; i++) {
@@ -75,28 +77,52 @@ function convertToFinalState(initialSymbolStack) {
 function getEpsilonClosure(runners) {
     let transitions = [];
     let currentRunner = null;
+    let value = null;
+    let snapshotsCounter = 0;
+    let response = null;
 
     for(let i = 0; i < runners.length; i++) {
         currentRunner = runners[i];
         transitions = this.getTransitionsBySymbol(currentRunner.state, epsilon);
-        transitions = transitions.filter(function(transition) {
-            let value = this.parseTransitionSymbol(transition.getSymbol());
-            return this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack);
-        }, this);
+        // transitions = transitions.filter(function(transition) {
+        //     let value = this.parseTransitionSymbol(transition.getSymbol());
+        //     return this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack);
+        // }, this);
+        for(let x = 0; x < transitions.length; x++) {
+            value = this.parseTransitionSymbol(transitions[x].getSymbol());
+            if(this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack)) continue;
+            transitions.splice(x--, 1);
+        }
 
         if(!transitions.length) continue;
         this.travelEpsilonTransitions(runners, currentRunner, transitions);
+
+        snapshotsCounter++;
+        if(snapshotsCounter < 2000) continue;
+        response = confirm(runners.length + ' snapshots are currently active. Want to continue?');
+        if(response) snapshotsCounter = 0;
+        else return false;
     }
+
+    return true;
 }
+
+
 
 function consumeSymbol(runner, runners) {
     let symbol = runner.word[0];
     let transitions = this.getTransitionsBySymbol(runner.state, symbol);
+    let value = null;
 
-    transitions = transitions.filter(function(transition) {
-        let value = this.parseTransitionSymbol(transition.getSymbol());
-        return this.comparePopSymbolWithStackSymbol(value.pop, runner.stack);
-    }, this);
+    // transitions = transitions.filter(function(transition) {
+    //     let value = this.parseTransitionSymbol(transition.getSymbol());
+    //     return this.comparePopSymbolWithStackSymbol(value.pop, runner.stack);
+    // }, this);
+    for(let x = 0; x < transitions.length; x++) {
+        value = this.parseTransitionSymbol(transitions[x].getSymbol());
+        if(this.comparePopSymbolWithStackSymbol(value.pop, runner.stack)) continue;
+        transitions.splice(x--, 1);
+    }
     if(!transitions.length) return false;
     return this.travelTransitions(runner, runners, transitions);
 
@@ -142,7 +168,7 @@ function travelEpsilonTransitions(runners, currentRunner, transitions) {
         transitionValues = this.parseTransitionSymbol(currentTransition.getSymbol());
         this.applyStackOperation(newRunner.stack, transitionValues);
         //Considerar hacer un chequeo en busca de runners duplicados en la lista. Para esto comparar el estado y la pila de cada uno.
-        if(!this.checkIfNewRunnerAlreadyExists(newRunner, runners)) runners.push(newRunner);
+        /*if(!this.checkIfNewRunnerAlreadyExists(newRunner, runners))*/ runners.push(newRunner);
     }
 }
 
