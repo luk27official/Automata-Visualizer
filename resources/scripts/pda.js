@@ -78,7 +78,7 @@ function getEpsilonClosure(runners) {
 
     for(let i = 0; i < runners.length; i++) {
         currentRunner = runners[i];
-        transitions = this.getTransitionsBySymbol(currentRunner.state, 'E');
+        transitions = this.getTransitionsBySymbol(currentRunner.state, epsilon);
         transitions = transitions.filter(function(transition) {
             let value = this.parseTransitionSymbol(transition.getSymbol());
             return this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack);
@@ -167,8 +167,8 @@ function checkIfNewRunnerAlreadyExists(newRunner, runners) {
 }
 
 function applyStackOperation(stack, values) {
-    if(values.pop !== 'E') for(let i = 0; i < values.pop.length; i++) stack.pop();
-    if(values.push !== 'E') for(let i = values.push.length - 1; i >= 0; i--) stack.push(values.push[i]);
+    if(values.pop !== epsilon) for(let i = 0; i < values.pop.length; i++) stack.pop();
+    if(values.push !== epsilon) for(let i = values.push.length - 1; i >= 0; i--) stack.push(values.push[i]);
 }
 
 function parseTransitionSymbol(transitionSymbol) {
@@ -220,7 +220,7 @@ function getInitialSymbolStack() {
 }
 
 function comparePopSymbolWithStackSymbol(popValue, stack) {
-    if(popValue === 'E') return true;
+    if(popValue === epsilon) return true;
 
     for(let i = 0; i < popValue.length; i++) {
         if(popValue[i] !== stack[stack.length - (i + 1)]) return false;

@@ -44,9 +44,9 @@ function resetTransitionInputs() {
 }
 
 function getTransitionValues() {
-    let alphabet = $('#symbol-input').val() ? $('#symbol-input').val() : 'E';
-    let popValue = $('#pop-input').val() ? $('#pop-input').val() : 'E';
-    let pushValue = $('#push-input').val() ? $('#push-input').val() : 'E';
+    let alphabet = $('#symbol-input').val() ? $('#symbol-input').val() : epsilon;
+    let popValue = $('#pop-input').val() ? $('#pop-input').val() : epsilon;
+    let pushValue = $('#push-input').val() ? $('#push-input').val() : epsilon;
 
     return {alphabet: alphabet, pop: popValue, push: pushValue};
 }
