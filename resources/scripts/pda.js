@@ -7,6 +7,7 @@ function PDA() {
     this.initialSymbolStack = 'Z';
     this.runnersCounter = 0;
     this.runnersLimit = 512;
+    this.lastChanceToGoDeeper = 0;
 
     this.getInitialSymbolStack = getInitialSymbolStack;
     this._processWord = processWord;
@@ -38,13 +39,16 @@ function processWord(word) {
     let runner = {state: this.getInitialState(), word: word, stack: [this.initialSymbolStack]}
     this.runnersCounter = 0;
     this.runnersLimit = 512;
+    this.lastChanceToGoDeeper = 0;
 
-    return this.evaluateRunner(runner);
+    return this.evaluateRunner(runner, null, null, null);
 }
 
-function evaluateRunner(runner) {
+function evaluateRunner(runner, pattern, lastIndexStack, previousState) {
     let activeRunners = [];
     let acceptanceFlag = false;
+    let newLastIndexStack = null;
+    let probablePattern = null;
 
     if(++this.runnersCounter === this.runnersLimit) {
         if(!confirm(this.runnersCounter + ' snapshots have been generated. Want to continue?')) 
@@ -58,11 +62,36 @@ function evaluateRunner(runner) {
         return this.checkWordAcceptance(activeRunners);
     }
 
+    if(!pattern) {
+        lastIndexStack = runner.stack.length - 1;
+        pattern = runner.stack[lastIndexStack];
+        previousState = runner.state.getInternalName();
+    }
+    else {
+        newLastIndexStack = runner.stack.length - 1;
+        if(newLastIndexStack > lastIndexStack) probablePattern = runner.stack.slice(lastIndexStack, newLastIndexStack + 1).join('');
+        else pattern = runner.stack[newLastIndexStack];
+        
+        if(newLastIndexStack > lastIndexStack) {
+            if(runner.stack.length - 1 > runner.word.length) {
+                if(this.lastChanceToGoDeeper === 1) {
+                    this.lastChanceToGoDeeper = 0;
+                    if(probablePattern === pattern && runner.state.getInternalName() === previousState) return {valid: false, msg: 'stack infinite loop'};
+                }
+                else this.lastChanceToGoDeeper++;
+            }
+        }
+
+        lastIndexStack = newLastIndexStack;
+        pattern = probablePattern;
+        previousState = runner.state.getInternalName();
+    }
+
     this.consumeSymbol(runner, activeRunners);
     this.getEpsilonClosure(runner, activeRunners);
 
     for(let i = 0; i < activeRunners.length; i++) {
-        acceptanceFlag = this.evaluateRunner(activeRunners[i]);
+        acceptanceFlag = this.evaluateRunner(activeRunners[i], pattern, lastIndexStack, previousState);
         if(acceptanceFlag.valid) return acceptanceFlag;
     }
 
