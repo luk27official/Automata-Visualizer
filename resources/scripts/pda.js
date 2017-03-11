@@ -4,9 +4,11 @@ var PDA = (function() {
 function PDA() {
     NFAE.call(this);
 
-    this.getInitialSymbolStack = getInitialSymbolStack;
-
     this.initialSymbolStack = 'Z';
+    this.runnersCounter = 0;
+    this.runnersLimit = 512;
+
+    this.getInitialSymbolStack = getInitialSymbolStack;
     this._processWord = processWord;
     this.convertToFinalState = convertToFinalState;
     this.getEpsilonClosure = getEpsilonClosure;
@@ -24,30 +26,88 @@ function PDA() {
     this.getTransitionsBySymbol = getTransitionsBySymbol;
     this.checkIfNewRunnerAlreadyExists = checkIfNewRunnerAlreadyExists;
     this.buildPDATransitionSymbol = buildPDATransitionSymbol;
+
+    this.evaluateRunner = evaluateRunner;
+    this.filterTransitions = filterTransitions;
 }
 
 PDA.prototype = Object.create(NFAE.prototype);
 PDA.prototype.constructor = PDA;
 
 function processWord(word) {
-    let runners = [{state: this.getInitialState(), word: word, stack: [this.initialSymbolStack]}];
-    let runnersLength = 0;
-    let verdict = true;
-    let response = true;
+    let runner = {state: this.getInitialState(), word: word, stack: [this.initialSymbolStack]}
+    this.runnersCounter = 0;
+    this.runnersLimit = 512;
 
-    for(let symbol in word) {
-        response = this.getEpsilonClosure(runners);
-        if(!response) return {valid: false, msg: 'Execution stopped.'};
-        runnersLength = runners.length;
+    return this.evaluateRunner(runner);
+}
 
-        for(let i = 0; i < runnersLength; i++) {
-            verdict = this.consumeSymbol(runners[i], runners);
-            if(!verdict) { runners.splice(i--, 1); runnersLength--; }
-        }
+function evaluateRunner(runner) {
+    let activeRunners = [];
+    let acceptanceFlag = false;
+
+    if(++this.runnersCounter === this.runnersLimit) {
+        if(!confirm(this.runnersCounter + ' snapshots have been generated. Want to continue?')) 
+            return {valid: true, msg: 'Execution has stopped.'};
+        this.runnersLimit *= 2;
     }
 
-    this.getEpsilonClosure(runners);
-    return this.checkWordAcceptance(runners);
+    if(!runner.word) {
+        activeRunners.push(runner);
+        this.getEpsilonClosure(runner, activeRunners);
+        return this.checkWordAcceptance(activeRunners);
+    }
+
+    this.consumeSymbol(runner, activeRunners);
+    this.getEpsilonClosure(runner, activeRunners);
+
+    for(let i = 0; i < activeRunners.length; i++) {
+        acceptanceFlag = this.evaluateRunner(activeRunners[i]);
+        if(acceptanceFlag.valid) return acceptanceFlag;
+    }
+
+    return {valid: false, msg: 'Word not accepted!!'};
+}
+
+function consumeSymbol(runner, activeRunners) {
+    let newRunner = null;
+    let transitions = this.getTransitionsBySymbol(runner.state, runner.word[0]);
+
+    this.filterTransitions(transitions, runner);
+    for(let transition in transitions) {
+        newRunner = this.createNewRunner(transitions[transition].getTarget(), runner.word.substring(1), runner.stack);
+        this.applyStackOperation(newRunner.stack, this.parseTransitionSymbol(transitions[transition].getSymbol()));
+        activeRunners.push(newRunner);
+    }
+}
+
+function getEpsilonClosure(runner, activeRunners) {
+    let newRunner = null;
+    let transitions = [];
+
+    transitions = this.getTransitionsBySymbol(runner.state, epsilon);
+    this.filterTransitions(transitions, runner);
+    for(let transition in transitions) {
+        newRunner = this.createNewRunner(transitions[transition].getTarget(), runner.word, runner.stack);
+        this.applyStackOperation(newRunner.stack, this.parseTransitionSymbol(transitions[transition].getSymbol()));
+        activeRunners.push(newRunner);
+    }
+}
+
+function checkWordAcceptance(runners) {
+    for(let runner in runners) {
+        if(runners[runner].state.isFinal()) return {valid: true, msg: 'Word accepted!!'};;
+    }
+
+    return {valid: false, msg: 'Word not accepted!!'};
+}
+
+function filterTransitions(transitions, currentRunner) {
+    for(let x = 0; x < transitions.length; x++) {
+        value = this.parseTransitionSymbol(transitions[x].getSymbol());
+        if(this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack)) continue;
+        transitions.splice(x--, 1);
+    }
 }
 
 function convertToFinalState(initialSymbolStack) {
@@ -72,68 +132,6 @@ function convertToFinalState(initialSymbolStack) {
     this._states.push(finalState);
 
     console.log(this);
-}
-
-function getEpsilonClosure(runners) {
-    let transitions = [];
-    let currentRunner = null;
-    let value = null;
-    let snapshotsCounter = 0;
-    let response = null;
-
-    for(let i = 0; i < runners.length; i++) {
-        currentRunner = runners[i];
-        transitions = this.getTransitionsBySymbol(currentRunner.state, epsilon);
-        // transitions = transitions.filter(function(transition) {
-        //     let value = this.parseTransitionSymbol(transition.getSymbol());
-        //     return this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack);
-        // }, this);
-        for(let x = 0; x < transitions.length; x++) {
-            value = this.parseTransitionSymbol(transitions[x].getSymbol());
-            if(this.comparePopSymbolWithStackSymbol(value.pop, currentRunner.stack)) continue;
-            transitions.splice(x--, 1);
-        }
-
-        if(!transitions.length) continue;
-        this.travelEpsilonTransitions(runners, currentRunner, transitions);
-
-        snapshotsCounter++;
-        if(snapshotsCounter < 2000) continue;
-        response = confirm(runners.length + ' snapshots are currently active. Want to continue?');
-        if(response) snapshotsCounter = 0;
-        else return false;
-    }
-
-    return true;
-}
-
-
-
-function consumeSymbol(runner, runners) {
-    let symbol = runner.word[0];
-    let transitions = this.getTransitionsBySymbol(runner.state, symbol);
-    let value = null;
-
-    // transitions = transitions.filter(function(transition) {
-    //     let value = this.parseTransitionSymbol(transition.getSymbol());
-    //     return this.comparePopSymbolWithStackSymbol(value.pop, runner.stack);
-    // }, this);
-    for(let x = 0; x < transitions.length; x++) {
-        value = this.parseTransitionSymbol(transitions[x].getSymbol());
-        if(this.comparePopSymbolWithStackSymbol(value.pop, runner.stack)) continue;
-        transitions.splice(x--, 1);
-    }
-    if(!transitions.length) return false;
-    return this.travelTransitions(runner, runners, transitions);
-
-}
-
-function checkWordAcceptance(runners) {
-    for(let runner in runners) {
-        if(runners[runner].state.isFinal()) return {valid: true, msg: 'Word accepted!!'};;
-    }
-
-    return {valid: false, msg: 'Word not accepted!!'};;
 }
 
 function travelTransitions(runner, runners, transitions) {
