@@ -27,6 +27,8 @@ Automaton.prototype.toJSON = toJSON;
 Automaton.prototype.clone = clone;
 Automaton.prototype.minimize = minimize;
 Automaton.prototype.resetStateInternalNames = resetStateInternalNames;
+Automaton.prototype.getFinalStates = getFinalStates;
+Automaton.prototype.getTransitions = getTransitions;
 
 //Protected
 Automaton.prototype._checkInitialState = checkInitialState;
@@ -274,6 +276,7 @@ function chooseRightAutomaton(automaton) {
     if(automaton instanceof DFA) return new DFA();
     if(automaton instanceof NFAE) return new NFAE();
     if(automaton instanceof NFA) return new NFA();
+    if(automaton instanceof PDA) return new PDA();
 }
 
 function runNextCloningIteration(newStates, pendingStates, currentState) {
@@ -354,4 +357,31 @@ function resetStateInternalNames() {
         states[state].setName('q' + this._counter);
         states[state].setInternalName('q' + this._counter++);
     }
+}
+
+function getFinalStates() {
+    let finals = [];
+
+    for(let state in this._states) {
+        if(this._states[state].isFinal()) finals.push(this._states[state]);
+    }
+
+    return finals;
+}
+
+function getTransitions() {
+    let stateTransitions = [];
+    let transitions = [];
+    let currentState = null;
+
+    for(let state in this._states) {
+        currentState = this._states[state];
+        stateTransitions = currentState._getTransitions();
+
+        for(let transition in stateTransitions) {
+            transitions.push(stateTransitions[transition]);
+        }
+    }
+
+    return transitions;
 }
