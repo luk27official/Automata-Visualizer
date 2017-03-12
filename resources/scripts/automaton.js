@@ -274,9 +274,9 @@ function clone() {
 
 function chooseRightAutomaton(automaton) {
     if(automaton instanceof DFA) return new DFA();
+    if(automaton instanceof PDA) return new PDA();
     if(automaton instanceof NFAE) return new NFAE();
     if(automaton instanceof NFA) return new NFA();
-    if(automaton instanceof PDA) return new PDA();
 }
 
 function runNextCloningIteration(newStates, pendingStates, currentState) {

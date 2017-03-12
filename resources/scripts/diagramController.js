@@ -215,6 +215,10 @@ function convertGrammarToPDA() {
     loadAutomatonInNewTab(pda, 'PDA');
 }
 
+function convertToGrammar() {
+    controller.convertToGrammar(automaton);
+}
+
 function loadAutomatonInNewTab(newAutomaton, type) {
     automatonJson = newAutomaton.toJSON();
     automatonJson.type = type;

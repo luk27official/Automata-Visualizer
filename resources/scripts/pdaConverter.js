@@ -6,6 +6,8 @@ function convertPDAToGrammar(pda) {
     let productions = [];
 
     runFirstStep(clone, productions);
+    runSecondStep(clone, productions);
+    console.log(productions);
 }
 
 function runFirstStep(pda, productions) {
@@ -33,7 +35,7 @@ function runSecondStep(pda, productions) {
         currentTransition = transitions[transition];
         transitionValue = pda.parseTransitionSymbol(currentTransition.getSymbol());
         if(transitionValue.push !== epsilon) continue;
-        production.left = buildGrammarVariable(currentTransition.getSource(), transitionValue.pop, currentTransition.getTarget());
+        production.left = buildGrammarVariable(currentTransition.getSource().getInternalName(), transitionValue.pop, currentTransition.getTarget().getInternalName());
         production.right = transitionValue.alphabet;
         productions.push(production);
     }

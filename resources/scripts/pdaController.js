@@ -4,11 +4,16 @@ var pdaCtrl = (function() {
 function pdaCtrl() {
     this.insertedAlphabet = null;
 
+    this.convertToGrammar = convertToGrammar;
     this.setTransition = setTransition;
     this.removeNewTransition = removeNewTransition;
     this.resetTransitionInputs = resetTransitionInputs;
     this.getTransitionValues = getTransitionValues;
     this.setAlphabet = setAlphabet;
+}
+
+function convertToGrammar(automaton) {
+    pdaConverter.convertPDAToGrammar(automaton);
 }
 
 function setTransition(newTransition, automaton, diagram) {
