@@ -81,6 +81,14 @@ function runThirdStep(pda, productions, transitions) {
 }
 
 function simplifyGrammar(terminals, productions) {
+    removeVariablesThatDontExistOnLeft(terminals, productions);
+    removeUniqueVariablesThatRepeatOnRight(productions);
+    console.log(productions);
+    replaceTripletsWithSymbols(productions);
+
+}
+
+function removeVariablesThatDontExistOnLeft(terminals, productions) {
     let currentProduction = null;
     let rightValue = null;
     let existsFlag = false;
@@ -93,6 +101,91 @@ function simplifyGrammar(terminals, productions) {
 
         productions.splice(i--, 1);
     }
+}
+
+function removeUniqueVariablesThatRepeatOnRight(productions) {
+    let currentProduction = null;
+    let rightValue = null;
+    let leftValue = null;
+
+    for(let i = 0; i < productions.length; i++) {
+        currentProduction = productions[i];
+        leftValue = currentProduction.left;
+        rightValue = currentProduction.right.split(',');
+        if(!checkIfValueIsInRightValue(leftValue, rightValue)) continue;
+        if(checkIfLeftValueRepeatsOnProductionsLeft(leftValue, productions, i)) continue;
+
+        i = removeProductionThatHasValueOnRight(leftValue, i, productions);
+        productions.splice(i--, 1);
+    }
+}
+
+function replaceTripletsWithSymbols(productions) {
+    let currentProduction = null;
+    let rightValue = null;
+    let productionVariable = null;
+    let symbols = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','T','U','V','W','X','Y'];
+    let currentLetterPos = 0;
+    let usedFlag = false;
+
+    for(let i = 0; i < productions.length; i++) {
+        currentProduction = productions[i];
+        productionVariable = currentProduction.left;
+        if(productionVariable.length === 1) continue;
+
+        for(let x = 0; x < productions.length; x++) {
+            if(productions[x].left.length !== 1) {
+                if(productions[x].left === productionVariable) { productions[x].left = symbols[currentLetterPos]; usedFlag = true; }
+            }
+
+            rightValue = productions[x].right.split(',');
+            for(let y = 0; y < rightValue.length; y++) {
+                if(rightValue[y].length !== 1 && rightValue[y] === productionVariable) {
+                    rightValue[y] = symbols[currentLetterPos];
+                    usedFlag = true;
+                }
+            }
+
+            productions[x].right = rightValue.join();
+        }
+
+        if(usedFlag) { usedFlag = false; currentLetterPos++; }
+    }
+}
+
+function removeProductionThatHasValueOnRight(value, index, productions) {
+    let currentProduction = null;
+    let rightValue = null;
+
+    for(let i = 0; i < productions.length; i++) {
+        if(i === index) continue;
+
+        currentProduction = productions[i];
+        rightValue = currentProduction.right.split(',');
+        if(!checkIfValueIsInRightValue(value, rightValue)) continue;
+
+        if(i < index) index--;
+        productions.splice(i--, 1);
+    }
+
+    return index;
+}
+
+function checkIfValueIsInRightValue(leftValue, rightValue) {
+    for(let value in rightValue) {
+        if(leftValue === rightValue[value]) return true;
+    }
+
+    return false;
+}
+
+function checkIfLeftValueRepeatsOnProductionsLeft(leftValue, productions, index) {
+    for(let i = 0; i < productions.length; i++) {
+        if(i === index) continue;
+        if(leftValue === productions[i].left) return true;
+    }
+
+    return false;
 }
 
 function checkExistance(terminals, productions, rightValue) {
