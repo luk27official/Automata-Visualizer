@@ -13,7 +13,7 @@ function pdaCtrl() {
 }
 
 function convertToGrammar(automaton) {
-    pdaConverter.convertPDAToGrammar(automaton);
+    return pdaConverter.convertPDAToGrammar(automaton);
 }
 
 function setTransition(newTransition, automaton, diagram) {

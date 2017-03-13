@@ -9,9 +9,11 @@ function convertPDAToGrammar(pda) {
     runFirstStep(clone, productions);
     transitions = runSecondStep(clone, productions);
     runThirdStep(pda, productions, transitions);
+    console.log(JSON.parse(JSON.stringify(productions)));
+
     simplifyGrammar(pda._alphabet, productions);
 
-    console.log(productions);
+    return productions;
 }
 
 function runFirstStep(pda, productions) {
@@ -84,9 +86,7 @@ function simplifyGrammar(terminals, productions) {
     removeVariablesThatDontExistOnLeft(terminals, productions);
     removeUniqueVariablesThatRepeatOnRight(productions);
     replaceTripletsWithSymbols(productions);
-    console.log(productions);
     removeCommasFromRightValue(productions);
-
 }
 
 function removeVariablesThatDontExistOnLeft(terminals, productions) {

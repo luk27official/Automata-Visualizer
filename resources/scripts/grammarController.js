@@ -51,9 +51,10 @@ function saveGrammar(item) {
 }
 
 function processImportedGrammar(json) {
-    let productions = JSON.parse(json);
-    console.log(productions);
+    fillGrammarModal(JSON.parse(json));
+}
 
+function fillGrammarModal(productions) {
     clearGrammar();
     $('.lhs').val(productions[0].left);
     $('.rhs').val(productions[0].right);
@@ -85,6 +86,7 @@ return {
     saveGrammar: saveGrammar,
     processImportedGrammar: processImportedGrammar,
     clearGrammar: clearGrammar,
+    fillGrammarModal: fillGrammarModal,
     convertToPDA: convertToPDA
 }
 

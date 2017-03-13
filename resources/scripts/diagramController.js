@@ -225,8 +225,12 @@ function convertGrammarToPDA() {
 }
 
 function convertToGrammar() {
+    let productions = null;
+
     if(!controller.setAlphabet(automaton)) return;
-    controller.convertToGrammar(automaton);
+    productions = controller.convertToGrammar(automaton);
+
+    grammarCtrl.fillGrammarModal(productions);
 }
 
 function loadAutomatonInNewTab(newAutomaton, type) {
