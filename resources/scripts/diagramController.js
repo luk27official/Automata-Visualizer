@@ -225,6 +225,7 @@ function convertGrammarToPDA() {
 }
 
 function convertToGrammar() {
+    if(!controller.setAlphabet(automaton)) return;
     controller.convertToGrammar(automaton);
 }
 

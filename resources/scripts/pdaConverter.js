@@ -9,6 +9,7 @@ function convertPDAToGrammar(pda) {
     runFirstStep(clone, productions);
     transitions = runSecondStep(clone, productions);
     runThirdStep(pda, productions, transitions);
+    simplifyGrammar(pda._alphabet, productions);
 
     console.log(productions);
 }
@@ -77,6 +78,54 @@ function runThirdStep(pda, productions, transitions) {
             productions.push(production);
         }
     }
+}
+
+function simplifyGrammar(terminals, productions) {
+    let currentProduction = null;
+    let rightValue = null;
+    let existsFlag = false;
+
+    for(let i = 0; i < productions.length; i++) {
+        currentProduction = productions[i];
+        rightValue = currentProduction.right.split(',');
+        existsFlag = checkExistance(terminals, productions, rightValue);
+        if(existsFlag) continue;
+
+        productions.splice(i--, 1);
+    }
+}
+
+function checkExistance(terminals, productions, rightValue) {
+    let currentValue = null;
+
+    for(let i = 0; i < rightValue.length; i++) {
+        currentValue = rightValue[i];
+        if(checkIfValueIsTerminal(terminals, currentValue) || currentValue === epsilon) continue;
+        if(checkIfItIsVariableProduction(productions, currentValue)) continue;
+
+        return false;
+    }
+
+    return true;
+}
+
+function checkIfValueIsTerminal(terminals, value) {
+    for(let terminal in terminals) {
+        if(terminals[terminal] === value) return true;
+    }
+
+    return false;
+}
+
+function checkIfItIsVariableProduction(productions, value) {
+    let currentProduction = null;
+
+    for(let production in productions) {
+        currentProduction = productions[production];
+        if(currentProduction.left === value) return true;
+    }
+
+    return false;
 }
 
 function generatePermutation(states, pushValue) {
