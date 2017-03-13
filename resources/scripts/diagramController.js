@@ -180,11 +180,20 @@ function saveToDisk(item, valueToSave, fileName) {
 }
 
 function importAutomaton(event) {
-    importFile(event, controller.processImportedGraph);
+    importFile(event, processImportedGraph);
 }
 
 function importGrammar(event) {
     importFile(event, grammarCtrl.processImportedGrammar);
+}
+
+function processImportedGraph(json) {
+    let newAutomaton = JSON.parse(json);
+    let logic = newAutomaton[0];
+    let visuals = newAutomaton[1];
+    changeAutomaton(document.getElementById(logic.type));
+    automaton.buildFromJSON(logic);
+    graph.fromJSON(visuals);
 }
 
 function importFile(event, importCallback) {
