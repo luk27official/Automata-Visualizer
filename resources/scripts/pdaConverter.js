@@ -83,8 +83,9 @@ function runThirdStep(pda, productions, transitions) {
 function simplifyGrammar(terminals, productions) {
     removeVariablesThatDontExistOnLeft(terminals, productions);
     removeUniqueVariablesThatRepeatOnRight(productions);
-    console.log(productions);
     replaceTripletsWithSymbols(productions);
+    console.log(productions);
+    removeCommasFromRightValue(productions);
 
 }
 
@@ -150,6 +151,16 @@ function replaceTripletsWithSymbols(productions) {
         }
 
         if(usedFlag) { usedFlag = false; currentLetterPos++; }
+    }
+}
+
+function removeCommasFromRightValue(productions) {
+    let currentProduction = null;
+    let rightValue = null;
+
+    for(let i = 0; i < productions.length; i++) {
+        currentProduction = productions[i];
+        currentProduction.right = currentProduction.right.replace(/,/gi, '');
     }
 }
 
