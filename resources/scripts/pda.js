@@ -9,7 +9,6 @@ function PDA() {
     this.runnersLimit = 512;
     this.lastChanceToGoDeeper = 0;
 
-    //this.getInitialSymbolStack = getInitialSymbolStack;
     this._processWord = processWord;
     this.convertToFinalState = convertToFinalState;
     this.getEpsilonClosure = getEpsilonClosure;
@@ -20,12 +19,9 @@ function PDA() {
     this.parsePopSymbol = parsePopSymbol;
     this.runParser = runParser;
     this.comparePopSymbolWithStackSymbol = comparePopSymbolWithStackSymbol;
-    //this.travelEpsilonTransitions = travelEpsilonTransitions;
-    //this.travelTransitions = travelTransitions;
     this.applyStackOperation = applyStackOperation;
     this.createNewRunner = createNewRunner;
     this.getTransitionsBySymbol = getTransitionsBySymbol;
-    //this.checkIfNewRunnerAlreadyExists = checkIfNewRunnerAlreadyExists;
     this.buildPDATransitionSymbol = buildPDATransitionSymbol;
 
     this.evaluateRunner = evaluateRunner;
@@ -161,62 +157,6 @@ function convertToFinalState(initialSymbolStack) {
     console.log(this);
 }
 
-// function travelTransitions(runner, runners, transitions) {
-//     let currentRunners = [runner];
-//     let newRunner = {};
-//     let values = null;
-
-//     for(let i = 0; i < transitions.length - 1; i++) {
-//         newRunner = this.createNewRunner(runner.state, runner.word, runner.stack);
-//         currentRunners.push(newRunner);
-//         runners.push(newRunner);
-//     }
-
-//     for(let i = 0; i < transitions.length; i++) {
-//         currentRunners[i].state = transitions[i].getTarget();
-//         currentRunners[i].word = currentRunners[i].word.substring(1);
-//         values = this.parseTransitionSymbol(transitions[i].getSymbol());
-//         this.applyStackOperation(currentRunners[i].stack, values);
-//     }
-
-//     return true;
-// }
-
-// function travelEpsilonTransitions(runners, currentRunner, transitions) {
-//     let currentTransition = null;
-//     let transitionValues = null;
-//     let newRunner = {};
-
-//     for(let transition in transitions) {
-//         currentTransition = transitions[transition];
-//         newRunner = this.createNewRunner(currentTransition.getTarget(), currentRunner.word, currentRunner.stack);
-//         transitionValues = this.parseTransitionSymbol(currentTransition.getSymbol());
-//         this.applyStackOperation(newRunner.stack, transitionValues);
-//         //Considerar hacer un chequeo en busca de runners duplicados en la lista. Para esto comparar el estado y la pila de cada uno.
-//         /*if(!this.checkIfNewRunnerAlreadyExists(newRunner, runners))*/ runners.push(newRunner);
-//     }
-// }
-
-// function checkIfNewRunnerAlreadyExists(newRunner, runners) {
-//     let currentRunner = null;
-//     let match = 0;
-
-//     for(let runner in runners) {
-//         match = 0;
-//         currentRunner = runners[runner];
-//         if(currentRunner.state.getInternalName() !== newRunner.state.getInternalName() || currentRunner.word !== newRunner.word) continue;
-//         if(currentRunner.stack.length !== newRunner.stack.length) continue;
-
-//         for(let i = 0; i < currentRunner.stack.length; i++) {
-//             if(currentRunner.stack[i] === newRunner.stack[i]) match++;
-//         }
-
-//         if(match === currentRunner.stack.length) return true;
-//     }
-
-//     return false;
-// }
-
 function applyStackOperation(stack, values) {
     if(values.pop !== epsilon) for(let i = 0; i < values.pop.length; i++) stack.pop();
     if(values.push !== epsilon) for(let i = values.push.length - 1; i >= 0; i--) stack.push(values.push[i]);
@@ -265,10 +205,6 @@ function runParser(startPos, transitionSymbol, delimiter, i) {
 
     return {symbol: symbol, pos: i};
 }
-
-// function getInitialSymbolStack() {
-//     return this.initialSymbolStack;
-// }
 
 function comparePopSymbolWithStackSymbol(popValue, stack) {
     if(popValue === epsilon) return true;
