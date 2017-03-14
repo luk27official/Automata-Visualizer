@@ -9,10 +9,10 @@ function convertPDAToGrammar(pda) {
     runFirstStep(clone, productions);
     transitions = runSecondStep(clone, productions);
     runThirdStep(pda, productions, transitions);
+    
+
+    //simplifyGrammar(pda._alphabet, productions);
     console.log(JSON.parse(JSON.stringify(productions)));
-
-    simplifyGrammar(pda._alphabet, productions);
-
     return productions;
 }
 
@@ -69,7 +69,11 @@ function runThirdStep(pda, productions, transitions) {
             rightValue = [];
             currentRow = getRowFromTable(truthTable, i);
             production.left = buildGrammarVariable(currentTransition.getSource().getInternalName(), transitionValue.pop, currentRow[transitionValue.push.length - 1]);
+
             rightValue.push(transitionValue.alphabet);
+            // if(transitionValue.alphabet === epsilon) continue;
+            // rightValue.push(transitionValue.alphabet);
+            
             rightValue.push(buildGrammarVariable(currentTransition.getTarget().getInternalName(), transitionValue.push[0], currentRow[0]));
 
             for(let x = 1; x < transitionValue.push.length; x++) {

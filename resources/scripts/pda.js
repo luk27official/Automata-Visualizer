@@ -69,7 +69,7 @@ function evaluateRunner(runner, pattern, lastIndexStack, previousState) {
         
         if(newLastIndexStack > lastIndexStack) {
             if(runner.stack.length - 1 > runner.word.length) {
-                if(this.lastChanceToGoDeeper === 1) {
+                if(this.lastChanceToGoDeeper === 4) {
                     this.lastChanceToGoDeeper = 0;
                     if(probablePattern === pattern && runner.state.getInternalName() === previousState) return {valid: false, msg: 'stack infinite loop'};
                 }
