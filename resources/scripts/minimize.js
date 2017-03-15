@@ -46,6 +46,8 @@ function runMinimization() {
     newAutomaton = buildNewAutomaton(stateBlocks);
     if(sinkFlag) removeSinkState(newAutomaton);
 
+    newAutomaton.resetStateInternalNames();
+
     originalAutomaton = mainBlock = alphabet = null;
     sinkFlag = false;
     
@@ -183,7 +185,7 @@ function buildNewAutomaton(blocks) {
 
     newAutomaton = new DFA();
     newAutomaton._states = newStates;
-    newAutomaton.resetStateInternalNames();
+    //newAutomaton.resetStateInternalNames();
     newAutomaton._initialState = initialState;
 
     return newAutomaton;
