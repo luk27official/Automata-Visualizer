@@ -1,6 +1,5 @@
 
 var automaton = null;
-//var currentAutomaton = null;
 var diagram = null;
 var selectedCell = null;
 var selectedState = null;
@@ -23,7 +22,6 @@ function setUp() {
     let config = loader.checkSource({switcher: switcher, graph: graph, paper: paper});
     automaton = config.automaton;
     controller = config.controller;
-    //currentAutomaton = config.currentAutomaton;
     diagram = config.diagram;
 
     $('#' + 'DFA').removeClass('active');
@@ -35,7 +33,6 @@ function setUp() {
 
 function jQueryInit() {
     $('#toolbar').hide();
-    //$(".button-collapse").sideNav();
     $('.button-collapse').sideNav({
         menuWidth: 450, // Default is 300
         edge: 'left', // Choose the horizontal origin
@@ -236,7 +233,6 @@ function convertToGrammar() {
 function loadAutomatonInNewTab(newAutomaton, type) {
     automatonJson = newAutomaton.toJSON();
     automatonJson.type = type;
-    //Validar que newAutomaton tenga los nuevos estados
     dataToSend = JSON.stringify(automatonJson);
     window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
 }
@@ -248,7 +244,6 @@ function clearGraph() {
 function changeAutomaton(item) {
     if(!confirm('Changing the type of Automaton will erase the current graph. Are you sure about this?')) return;
     $('#' + automaton.toString()).removeClass('active');
-    //currentAutomaton = item.id;
     item.className = 'active';
     resetGraph(item);
 }
