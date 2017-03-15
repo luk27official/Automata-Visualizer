@@ -5,6 +5,7 @@ var NFAE = (function() {
         NFA.call(this);
 
         this.convertToDFA = convertToDFA;
+        this.toString = toString;
 
         this._processWord = processWord;
         this._getEpsilonClosure = getEpsilonClosure;
@@ -137,6 +138,10 @@ var NFAE = (function() {
                 currentStates.push(transitions[transition].getTarget());
             }
         }
+    }
+
+    function toString() {
+        return 'NFAE';
     }
 
     return NFAE;

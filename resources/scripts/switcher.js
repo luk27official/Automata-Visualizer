@@ -16,6 +16,7 @@ function generateNewAutomaton(name) {
             $('#convertDFA').hide();
             $('#convert-to-grammar').hide();
             $('#automata-operations').show();
+            $('#minimize').show();
             $('#regex-operations').show();
             $('#regular-language-operations').show();
             return {automaton: new DFA(), controller: new dfaCtrl()}

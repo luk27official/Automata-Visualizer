@@ -16,7 +16,7 @@ function checkSource(options) {
 
     if(data) {
         config = urlLoader.constructAutomatonFromUrl(options, this._renderAutomaton);
-        return this._renderAutomaton(config.diagram, config.automaton, config.currentAutomaton, config.controller);
+        return this._renderAutomaton(config.diagram, config.automaton, config.controller);
     }
 
     return this._startNormal(options);
@@ -25,18 +25,16 @@ function checkSource(options) {
 function startNormal(options) {
     let automaton = new DFA();
     let controller = new dfaCtrl();
-    let currentAutomaton = 'DFA';
     let diagram = new Diagram(graph, paper, automaton);
 
     return {
         automaton: automaton,
         controller: controller,
-        currentAutomaton: currentAutomaton,
         diagram: diagram
     }
 }
 
-function renderAutomaton(diagram, automaton, currentAutomaton, controller) {
+function renderAutomaton(diagram, automaton, controller) {
     let states = automaton.getStates(); 
 
     this._generateVisualStates(states, diagram);
@@ -45,8 +43,7 @@ function renderAutomaton(diagram, automaton, currentAutomaton, controller) {
     return {
         automaton: automaton,
         controller: controller,
-        diagram: diagram,
-        currentAutomaton: currentAutomaton
+        diagram: diagram
     };
 }
 

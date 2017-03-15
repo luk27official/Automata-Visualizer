@@ -5,6 +5,7 @@ function NFA() {
     Automaton.call(this);
 
     this.convertToDFA = convertToDFA;
+    this.toString = toString;
 
     this._processWord = processWord;
     this._convert = convert;
@@ -218,6 +219,10 @@ function createDFAState(newStateName, constructedInternalName, pendingStates, sy
     currentState.addTransition(newState, symbol, 0);
     newStates.push(newState);
     pendingStates.push(newState);
+}
+
+function toString() {
+    return 'NFA';
 }
 
 return NFA;

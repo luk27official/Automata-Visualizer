@@ -5,6 +5,7 @@ function DFA() {
     Automaton.call(this);
 
     this.getStateTargetForSymbol = getStateTargetForSymbol;
+    this.toString = toString;
     this._runValidations = runValidations;
     this._processWord = processWord;
     this._validateStateTransitions = validateStateTransitions;
@@ -98,6 +99,10 @@ function checkSymbolDuplication(symbols) {
     }
 
     return {valid: true};
+}
+
+function toString() {
+    return 'DFA';
 }
 
 return DFA;

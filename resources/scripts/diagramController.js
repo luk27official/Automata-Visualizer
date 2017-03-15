@@ -1,6 +1,6 @@
 
 var automaton = null;
-var currentAutomaton = null;
+//var currentAutomaton = null;
 var diagram = null;
 var selectedCell = null;
 var selectedState = null;
@@ -23,11 +23,11 @@ function setUp() {
     let config = loader.checkSource({switcher: switcher, graph: graph, paper: paper});
     automaton = config.automaton;
     controller = config.controller;
-    currentAutomaton = config.currentAutomaton;
+    //currentAutomaton = config.currentAutomaton;
     diagram = config.diagram;
 
     $('#' + 'DFA').removeClass('active');
-    document.getElementById(currentAutomaton).className = 'active';
+    document.getElementById(automaton.toString()).className = 'active';
 
     registerEventHandlers(paper, graph);
     jQueryInit();
@@ -131,7 +131,7 @@ function addAutomatonToOperandsList() {
     clone = automaton.clone();
     if(!clone) { alert('No initial state has been set.'); return; }
     renderJson = graph.toJSON();
-    regularLanguaje.operands.push({operand: clone, name: operandName, type: currentAutomaton, renderJson: renderJson});
+    regularLanguaje.operands.push({operand: clone, name: operandName, type: automaton.toString(), renderJson: renderJson});
     $('#operands').append('<a href="#!" class="collection-item">' + operandName + '</a>');
     console.log(regularLanguaje.operands);
 }
@@ -165,7 +165,7 @@ function saveAutomaton(item) {
     let jsons = [];
     let automaton_json = automaton.toJSON();
     let automaton_visuals = graph.toJSON();
-    automaton_json.type = currentAutomaton;
+    automaton_json.type = automaton.toString();
     jsons.push(automaton_json);
     jsons.push(automaton_visuals);
     saveToDisk(item, jsons, "automaton.json");
@@ -242,13 +242,13 @@ function loadAutomatonInNewTab(newAutomaton, type) {
 }
 
 function clearGraph() {
-    changeAutomaton(document.getElementById(currentAutomaton));
+    changeAutomaton(document.getElementById(automaton.toString()));
 }
 
 function changeAutomaton(item) {
     if(!confirm('Changing the type of Automaton will erase the current graph. Are you sure about this?')) return;
-    $('#' + currentAutomaton).removeClass('active');
-    currentAutomaton = item.id;
+    $('#' + automaton.toString()).removeClass('active');
+    //currentAutomaton = item.id;
     item.className = 'active';
     resetGraph(item);
 }

@@ -26,6 +26,7 @@ function PDA() {
 
     this.evaluateRunner = evaluateRunner;
     this.filterTransitions = filterTransitions;
+    this.toString = toString;
 }
 
 PDA.prototype = Object.create(NFAE.prototype);
@@ -236,6 +237,10 @@ function getTransitionsBySymbol(state, alphabetSymbol) {
 
 function buildPDATransitionSymbol(alphabet, popValue, pushValue) {
     return alphabet + ',' + popValue + '/' + pushValue;
+}
+
+function toString() {
+    return 'PDA';
 }
 
 return PDA;
