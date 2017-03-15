@@ -40,13 +40,13 @@ function removeNewTransition(newTransition) {
 function resetTransitionInputs() {
     $('#tape-read-input').val('');
     $('#tape-write-input').val('');
-    $('#direction-input').val('');
+    $('select option[value="L"]').attr("selected",true);
 }
 
 function getTransitionValues() {
-    let readValue = $('#tape-read-input').val();
-    let writeValue = $('#tape-write-input').val();
-    let direction = $('#direction-input').val();
+    let readValue = $('#tape-read-input').val() ? $('#tape-read-input').val() : 'B';
+    let writeValue = $('#tape-write-input').val() ? $('#tape-read-input').val() : 'B';
+    let direction = $('#direction-input').val() ? $('#tape-read-input').val() : 'B';
 
     return { readValue: readValue, writeValue: writeValue, direction: direction };
 }

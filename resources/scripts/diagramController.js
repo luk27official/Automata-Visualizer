@@ -51,6 +51,7 @@ function jQueryInit() {
         }
     }
     );
+    $('select').material_select();
     $('#set-name').click(function() {
         if(!selectedCell) return;
         setStateName();
