@@ -46,7 +46,8 @@ function jQueryInit() {
         inDuration: 200, // Transition in duration
         outDuration: 200, // Transition out duration
         ready: function(modal, trigger) {
-            $('#symbol-input').focus();
+            if(automaton instanceof PDA) $('#symbol-input').focus();
+            else if(automaton instanceof Turing) $('#tape-read-input').focus();
         }
     }
     );

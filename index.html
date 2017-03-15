@@ -46,6 +46,7 @@
 					<li id="NFA" style="cursor: pointer" onclick="changeAutomaton(this)"><a>NFA</a></li>
 					<li id="NFAE" style="cursor: pointer" onclick="changeAutomaton(this)"><a>NFAE</a></li>
 					<li id="PDA" style="cursor: pointer" onclick="changeAutomaton(this)"><a>PDA</a></li>
+					<li id="Turing" style="cursor: pointer" onclick="changeAutomaton(this)"><a>Turing</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -61,6 +62,25 @@
 				</div>				
 				<div class="input-field inline">
 					<input id="push-input" placeholder="Push stack symbol" type="text">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="setTransition()">Accept</a>
+				<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" onclick="controller.removeNewTransition(newTransition)">Cancel</a>
+			</div>
+		</div>
+
+		<!-- Turing Transition Modal Structure -->
+		<div id="modal-turing" class="modal">
+			<div class="modal-content">
+				<div class="input-field inline">
+					<input id="tape-read-input" placeholder="read symbol" type="text" autofocus>
+				</div>				
+				<div class="input-field inline">
+					<input id="tape-write-input" placeholder="write stack symbol" type="text">
+				</div>				
+				<div class="input-field inline">
+					<input id="direction-input" placeholder="direction symbol" type="text">
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -165,6 +185,7 @@
 		<script src="resources/scripts/dfaController.js"></script>
 		<script src="resources/scripts/nfaController.js"></script>
 		<script src="resources/scripts/grammarController.js"></script>
+		<script src="resources/scripts/turingController.js"></script>
 		<script src="resources/scripts/diagramController.js"></script>
 	</body>
 </html>

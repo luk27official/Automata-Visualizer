@@ -54,6 +54,7 @@ function changeSourceChangeTarget(link) {
     if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
         newTransition = link;
         if(automaton instanceof PDA) $('#modal-pda').modal('open');
+        else if(automaton instanceof Turing) $('#modal-turing').modal('open');
         else setTransition();
     }
 }

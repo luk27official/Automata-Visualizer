@@ -43,7 +43,16 @@ function generateNewAutomaton(name) {
             $('#minimize').hide();
             $('#regex-operations').hide();
             $('#regular-language-operations').hide();
+            $('#grammar-operations').show();
             return {automaton: new PDA(), controller: new pdaCtrl()}
+
+        case 'Turing':
+            $('#convertDFA').hide();
+            $('#automata-operations').hide();
+            $('#regex-operations').hide();
+            $('#regular-language-operations').hide();
+            $('#grammar-operations').hide();
+            return {automaton: new Turing(), controller: new turingCtrl()}
         
         default:
             return null;

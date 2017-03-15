@@ -10,6 +10,7 @@ function Turing() {
 
     this._processWord = processWord;
     this.evaluate = evaluate;
+    this.toString = toString;
 
     this.moveHead = moveHead;
     this.parseTransitionLabel = parseTransitionLabel;
@@ -83,6 +84,10 @@ function parseTransitionLabel(transitionLabel) {
 function resetTape() {
     this.tape = [this.tapeDefaultSymbol];
     this.head = null;
+}
+
+function toString() {
+    return 'Turing';
 }
 
 return Turing;
