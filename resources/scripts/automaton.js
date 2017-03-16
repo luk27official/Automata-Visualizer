@@ -44,8 +44,8 @@ Automaton.prototype._getTargetsForCloning = getTargetsForCloning;
 Automaton.prototype._createState = createState;
 
 function run(word) {
-    // let status = this._runValidations(word);
-    // if(!status.valid) return status;
+    let status = this._runValidations(word);
+    if(!status.valid) return status;
 
     return this._processWord(word);
 }

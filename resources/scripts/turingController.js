@@ -45,8 +45,8 @@ function resetTransitionInputs() {
 
 function getTransitionValues() {
     let readValue = $('#tape-read-input').val() ? $('#tape-read-input').val() : 'B';
-    let writeValue = $('#tape-write-input').val() ? $('#tape-read-input').val() : 'B';
-    let direction = $('#direction-input').val() ? $('#tape-read-input').val() : 'B';
+    let writeValue = $('#tape-write-input').val() ? $('#tape-write-input').val() : 'B';
+    let direction = $('#direction-input').val();
 
     return { readValue: readValue, writeValue: writeValue, direction: direction };
 }

@@ -16,6 +16,7 @@ function Turing() {
     this.parseTransitionLabel = parseTransitionLabel;
     this.resetTape = resetTape;
     this.getRightTransition = getRightTransition;
+    this._runValidations = runValidations;
 }
 
 Turing.prototype = Object.create(Automaton.prototype);
@@ -70,7 +71,7 @@ function getRightTransition(transitions, tapeSymbol) {
 
 function moveHead(direction) {
     if(direction === 'R') this.head++;
-    else this.head--;
+    else if(direction === 'L') this.head--;
 }
 
 function parseTransitionLabel(transitionLabel) {
@@ -88,6 +89,10 @@ function resetTape() {
 
 function toString() {
     return 'Turing';
+}
+
+function runValidations(word) {
+    return {valid: true};
 }
 
 return Turing;

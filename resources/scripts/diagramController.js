@@ -94,7 +94,7 @@ function evaluateWord() {
 
     if(!controller.setAlphabet(automaton)) return;
     word = prompt('Insert the word to evaluate:');
-    //if(!word) return;
+    if(word === null) return;
 
     status = automaton.run(word);
     console.log(status.msg);
