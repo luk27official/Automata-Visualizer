@@ -23,6 +23,7 @@ function checkTransitionForEachSymbol() {
     let sink = new State('sink', 9999);
     sink.setInternalName(sinkStateInternalName);
     let states = originalAutomaton.getStates();
+    states.push(sink);
 
     for(let state in states) {
         for(let symbol in alphabet) {
@@ -33,7 +34,7 @@ function checkTransitionForEachSymbol() {
         }
     }
 
-    if(sinkFlag) states.push(sink);
+    //if(sinkFlag) states.push(sink);
 }
 
 function runMinimization() {
