@@ -3,7 +3,6 @@ var events = {
     blankPointerClick: blankPointerClick,
     cellPointerDown: cellPointerDown,
     cellPointerClick: cellPointerClick,
-    changeSourceChangeTarget:changeSourceChangeTarget,
     changeTarget: changeTarget,
     changeSource: changeSource,
     changePosition: changePosition,
@@ -50,24 +49,22 @@ function cellPointerClick(cellView, evt, x, y) {
     }
 }
 
-function changeSourceChangeTarget(link) {
-    if(link.get('source').id && link.get('target').id && !link.attributes.labels) {
-        newTransition = link;
-        if(automaton instanceof PDA) $('#modal-pda').modal('open');
-        else if(automaton instanceof Turing) $('#modal-turing').modal('open');
-        else setTransition();
-    }
-}
-
 function changeTarget(link) {
     if(link.get('target').id) {
-        console.log('cambio');
+        if(!link.attributes.labels) {
+            createNewTransition(link);
+        }
+        else {
+            events.remove(link);
+            updateTransition(link);
+        }
     }
 }
 
 function changeSource(link) {
     if(link.get('source').id) {
-        console.log('cambio');
+        removeLinkSource(link);
+        updateTransition(link);
     }
 }
 
@@ -96,4 +93,20 @@ function changePosition(element) {
 
 function remove(cell) {
     if(cell.isLink()) diagram.removeLink(cell);
+}
+
+function createNewTransition(link) {
+    newTransition = link;
+    if(automaton instanceof PDA) $('#modal-pda').modal('open');
+    else if(automaton instanceof Turing) $('#modal-turing').modal('open');
+    else setTransition();
+}
+
+function updateTransition(link) {
+    newTransition = link;
+    changeTransition();
+}
+
+function removeLinkSource(link) {
+    diagram.removeLinkSource(link);
 }

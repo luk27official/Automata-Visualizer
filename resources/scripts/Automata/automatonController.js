@@ -12,6 +12,7 @@ automatonCtrl.prototype.executeRegularOperation = executeRegularOperation;
 automatonCtrl.prototype.complementAutomata = complementAutomata;
 automatonCtrl.prototype.minimize = minimize;
 automatonCtrl.prototype.setTransition = setTransition;
+automatonCtrl.prototype.changeTransition = changeTransition;
 
 function convertToRegex(automaton) {
     let clone = null;
@@ -85,7 +86,6 @@ function minimize(automaton) {
     newTransition.label(0, {
         position: 0.5,
         attrs: {
-            //rect: {fill: 'white'},
             text: {fill: 'black', text: name}
         }
     });
@@ -93,6 +93,16 @@ function minimize(automaton) {
     let state = automaton.getState(source.id);
     diagram.curveTransition(source.id, target.id, newTransition, state);
     state.addTransition(automaton.getState(target.id), name, newTransition.id);
+    console.log(automaton);
+}
+
+ function changeTransition(newTransition, automaton, diagram) {
+    let source = newTransition.getSourceElement();
+    let target = newTransition.getTargetElement();
+
+    let state = automaton.getState(source.id);
+    diagram.curveTransition(source.id, target.id, newTransition, state);
+    state.addTransition(automaton.getState(target.id), newTransition.attributes.labels[0].attrs.text.text, newTransition.id);
     console.log(automaton);
 }
 

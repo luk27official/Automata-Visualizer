@@ -12,6 +12,7 @@ function Diagram(graph, paper, automaton) {
     this.generateVisualElement = generateVisualElement;
     this.generateVisualLink = generateVisualLink;
     this.curveTransition = curveTransition;
+    this.removeLinkSource = removeLinkSource;
 }
 
 function removeInitialSymbol() {
@@ -23,6 +24,21 @@ function removeLink(link) {
     let source = this.graph.getCell(link.attributes.source.id);
     let state = this.automaton.getState(source.id);
     state.removeTransition(link.id);
+    console.log(this.automaton);
+}
+
+function removeLinkSource(link) {
+    if(!link.get('target').id) return;
+    let target = this.graph.getCell(link.attributes.target.id);
+    let state = this.automaton.getState(target.id);
+
+    for(let i = 0; i < state._me.length; i++) {
+        if(state._me[i].getId() === link.id) {
+            state._me[i].getSource().removeTransition(link.id)
+            break;
+        }
+    }
+
     console.log(this.automaton);
 }
 

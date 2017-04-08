@@ -74,6 +74,10 @@ function setStateName() {
      controller.setTransition(newTransition, automaton, diagram);
 }
 
+function changeTransition() {
+    controller.changeTransition(newTransition, automaton, diagram);
+}
+
 function setInitial(checkbox) {
     automaton.updateStateType(selectedState, {initial: checkbox.checked}, diagram.removeInitialSymbol);
     if(selectedState.isInitial()) diagram.setInitialSymbol(selectedCell);
@@ -292,7 +296,6 @@ function registerEventHandlers(paper, graph) {
     paper.on('blank:pointerclick', events.blankPointerClick);
     paper.on('cell:pointerdown', events.cellPointerDown);
     paper.on('cell:pointerclick', events.cellPointerClick);
-    graph.on('change:source change:target', events.changeSourceChangeTarget);
     graph.on('remove', events.remove);
     graph.on('change:target', events.changeTarget);
     graph.on('change:source', events.changeSource);
