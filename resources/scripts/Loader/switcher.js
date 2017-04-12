@@ -35,7 +35,7 @@ function generateNewAutomaton(name) {
             $('#automata-operations').show();
             $('#regex-operations').show();
             $('#regular-language-operations').show();
-            return {automaton: new NFAE(), controller: new nfaCtrl()}
+            return {automaton: new NFAE(), controller: new nfaeCtrl()}
 
         case 'PDA':
             $('#convertDFA').hide();

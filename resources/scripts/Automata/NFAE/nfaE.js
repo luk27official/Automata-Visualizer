@@ -133,7 +133,7 @@ var NFAE = (function() {
         for(let i = 0; i < currentStates.length; i++) {
             transitions = currentStates[i]._getTransitions();
             for(let transition in transitions) {
-                if(transitions[transition].getSymbol() !== 'E' && transitions[transition].getSymbol() !== 'e') continue;
+                if(transitions[transition].getSymbol() !== epsilon) continue;
                 if(this._checkIfStateAlreadyExists(currentStates, transitions[transition].getTarget())) continue;
                 currentStates.push(transitions[transition].getTarget());
             }
