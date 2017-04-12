@@ -104,12 +104,12 @@ function buildUnionAutomaton(left, right) {
     let statesRight = right.getStates();
 
     automaton._states = statesLeft.concat(statesRight);
-    initialState.addTransition(statesLeft[0], 'E', 0);
-    initialState.addTransition(statesRight[0], 'E', 0);
+    initialState.addTransition(statesLeft[0], epsilon, 0);
+    initialState.addTransition(statesRight[0], epsilon, 0);
     automaton.getStates().unshift(initialState);
     automaton.getStates().push(lastState);
-    statesLeft[statesLeft.length-1].addTransition(lastState, 'E', 0);
-    statesRight[statesRight.length-1].addTransition(lastState, 'E', 0);
+    statesLeft[statesLeft.length-1].addTransition(lastState, epsilon, 0);
+    statesRight[statesRight.length-1].addTransition(lastState, epsilon, 0);
 
     return automaton;
 }
@@ -118,7 +118,7 @@ function buildConcatAutomaton(left, right) {
     let automaton = new Automaton();
 
     automaton._states = left.getStates().concat(right.getStates());
-    left.getStates()[left.getStates().length-1].addTransition(right.getStates()[0], 'E', 0);
+    left.getStates()[left.getStates().length-1].addTransition(right.getStates()[0], epsilon, 0);
     return automaton;
 }
 
@@ -127,10 +127,10 @@ function buildKleeneAutomaton(expression) {
     let lastState = new State('q' + counter++, 0);
     let states = expression.getStates();
 
-    initialState.addTransition(states[0], 'E', 0);
-    initialState.addTransition(lastState, 'E', 0);
-    states[states.length-1].addTransition(lastState, 'E', 0);
-    states[states.length-1].addTransition(states[0], 'E', 0);
+    initialState.addTransition(states[0], epsilon, 0);
+    initialState.addTransition(lastState, epsilon, 0);
+    states[states.length-1].addTransition(lastState, epsilon, 0);
+    states[states.length-1].addTransition(states[0], epsilon, 0);
     states.unshift(initialState);
     states.push(lastState);
 
