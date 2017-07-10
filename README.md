@@ -1,5 +1,5 @@
 # Automata-Visualizer
-Editor made with JointJS and jQuery in which you can interact with different kinds of automata and grammars.
+Visualizer and editor made with JointJS and jQuery. Use it to try out different automata and context-free grammars.
 
 <h2>Features:</h2>
 <ul>
