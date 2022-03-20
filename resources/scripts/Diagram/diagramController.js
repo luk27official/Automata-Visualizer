@@ -12,8 +12,8 @@ var graph = new joint.dia.Graph;
 var switcher = new Switcher();
 var loader = new Loader();
 var toolbarAction = 'select';
-var width = 1920;
-var height = 1080;
+var width = "100vw";
+var height = "85vh";
 var paper = generateNewPaper();
 
 setUp();
@@ -240,7 +240,7 @@ function loadAutomatonInNewTab(newAutomaton, type) {
     automatonJson = newAutomaton.toJSON();
     automatonJson.type = type;
     dataToSend = JSON.stringify(automatonJson);
-    window.open('file:///C:/Users/alefe/Documents/Code/JS/Automata/index.html?data=' + encodeURIComponent(dataToSend));
+    window.open('index.html?data=' + encodeURIComponent(dataToSend));
 }
 
 function clearGraph() {
